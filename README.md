@@ -1,2 +1,2 @@
-# kaster
-Offline Password Manager
+# Kaster Password Vault
+Offline Password Vault
