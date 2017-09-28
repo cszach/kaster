@@ -1,2 +1,4 @@
+*.pyc
 lib/
 .idea/
+__pycache__/
