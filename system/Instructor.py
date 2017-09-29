@@ -1,7 +1,3 @@
-class Instructor:
-    def __init__(self):
-        pass
-
-
-    def print_help(self):
-        print("Kaster Password Vault")
+def print_help():
+    """Print the manual page of Kaster, which includes all arguments"""
+    print("Kaster Password Vault")
