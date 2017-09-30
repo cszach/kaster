@@ -1,10 +1,10 @@
 from global_var import *
-from random import choice
+from random import choice, randint
 
 
 def random_string(*args):
     """
-    Return a random string
+    Generate and return a random string
 
     Modes:
         ns : Not specified
@@ -65,9 +65,20 @@ def random_string(*args):
 
 def random_hex(length):
     """
-    Return a randomly generated hexadecimal number
+    Generate and return a random hexadecimal number
     :param length: Number of digits in the output hexadecimal
     :return: A randomly generated hexadecimal number with [length] digits
     Example: random_hex(7) returns a hexadecimal number with 7 digits
     """
     return "".join([random.choice(numbers + lowercase_chars[:6]) for _ in range(length)])
+
+
+def random_number(length, to_bin):
+    """
+    Generate a random number, and return it either in decimals or binary
+    :param length: Number of digits of the output number (in decimals)
+    :param to_bin: A boolean to tell the program to convert the number to binary or not
+    :return: A random number in decimals, or that number but converted to binary
+    """
+    flag = randint(10 ** (length - 1), length ** 10 - 1)
+    return flag if not to_bin else to_bin(flag)
