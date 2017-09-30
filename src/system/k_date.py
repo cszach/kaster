@@ -43,7 +43,7 @@ def time(t_format):
     t_format = t_format.upper().split(":")
     flag = []
 
-    for i in range(t_format):
+    for i in range(len(t_format)):
         if t_format[i] == "S":
             flag.append(now.second)
         elif t_format[i] == "M":
