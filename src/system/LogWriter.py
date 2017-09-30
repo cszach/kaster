@@ -1,7 +1,7 @@
 import sys
 import os
 import global_var
-from k_date import date
+from k_date import date, time
 
 
 # Kaster' log file manipulator, deals everything that involves the log file
@@ -23,6 +23,6 @@ class LogWriter(object):
     def write_to_log(self, log_str):
         try:
             with open(global_var.log_file_dir, "a") as f:
-                f.write(date(kaster.date_format) + log_str + "\n")
+                f.write(("[%s %s] %s" + "\n") % (time(global_var.time_format), date(global_var.date_format, log_str)))
         except FileNotFoundError:
             create_log_file()
