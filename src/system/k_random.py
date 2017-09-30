@@ -68,7 +68,7 @@ def random_string(*args):
     if False or None in (args[1], args[2], args[3], args[4]):
         allowed_chars = uppercase_chars + lowercase_chars + numbers + special_chars
 
-    return "".join([random.choice(allowed_chars) for _ in range(args[0])])
+    return "".join([choice(allowed_chars) for _ in range(int(args[0]))])
 
 
 def random_hex(length):
@@ -78,4 +78,4 @@ def random_hex(length):
     :return: A randomly generated hexadecimal number with [length] digits
     Example: random_hex(7) returns a hexadecimal number with 7 digits
     """
-    return "".join([random.choice(numbers + lowercase_chars[:6]) for _ in range(length)])
+    return "".join([choice(numbers + lowercase_chars[:6]) for _ in range(length)])
