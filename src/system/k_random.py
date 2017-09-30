@@ -9,14 +9,16 @@ def random_string(*args):
     Modes:
         ns : Not specified
         ps : Password
+        pn : PIN
 
     random_string(mode):
-        mode : |ns|ps|
-            ns: Not specified -> Return a random string with a length between 1 and 30
-            ps: Password -> Return a random string. Length 12 to 30. Can contain printable ASCII
+        mode : |ns|ps|pn|
+            ns: Not specified -> Return a random string with a length between 1 and 30.
+            ps: Password -> Return a random string. Length 12 to 30. Can contain printable ASCII.
+            pn: PIN -> Return a random string. Length from 2 to 12. Can only contain ASCII numbers.
 
     random_string(mode, length)
-        mode : |ps|
+        mode : |ps|pn|
         length: length of the string to be returned
 
     random_string(length, a1, a2, a3, a4)
@@ -46,6 +48,12 @@ def random_string(*args):
         if len(args) == 6:
             return random_string(args[1], args[2], args[3], args[4], args[5])
 
+    if args[0] == "pn":
+        if len(args) == 1:
+            return random_string(randint(2, 12), None, None, True, None)
+        if len(args) == 2:
+            return random_string(args[1], None, None, True, None)
+
     allowed_chars = ""  # A string that holds the characters that can be presented in the output string
 
     if args[1]:
@@ -57,7 +65,7 @@ def random_string(*args):
     if args[4]:
         allowed_chars += special_chars
 
-    if None in (args[1], args[2], args[3], args[4]):
+    if False or None in (args[1], args[2], args[3], args[4]):
         allowed_chars = uppercase_chars + lowercase_chars + numbers + special_chars
 
     return "".join([random.choice(allowed_chars) for _ in range(args[0])])
@@ -71,14 +79,3 @@ def random_hex(length):
     Example: random_hex(7) returns a hexadecimal number with 7 digits
     """
     return "".join([random.choice(numbers + lowercase_chars[:6]) for _ in range(length)])
-
-
-def random_number(length, to_bin):
-    """
-    Generate a random number, and return it either in decimals or binary
-    :param length: Number of digits of the output number (in decimals)
-    :param to_bin: A boolean to tell the program to convert the number to binary or not
-    :return: A random number in decimals, or that number but converted to binary
-    """
-    flag = randint(10 ** (length - 1), length ** 10 - 1)
-    return flag if not to_bin else to_bin(flag)
