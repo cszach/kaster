@@ -19,7 +19,6 @@ class LogWriter(object):
             with open(global_var.log_file_dir, "w") as f:
                 f.write("Log file created on %s." % (date(kaster.date_format)))
         except FileExistsError:
-            os.mknod(global_var.log_file_dir)
             return
         except Exception as e:
             print(e)
@@ -38,5 +37,5 @@ class LogWriter(object):
             with open(global_var.log_file_dir, "a") as f:
                 f.write(("[%s %s] %s" + "\n") % (time(global_var.time_format), date(global_var.date_format), log_str))
         except IOError:
-            create_log_file()
-            write_to_log(self, log_str, print_log)
+            self.create_log_file()
+            self.write_to_log(log_str, print_log)
