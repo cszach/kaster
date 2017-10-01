@@ -15,7 +15,7 @@ import Instructor
 sys.path.insert(0, "generator")
 import generator
 
-pre_kaster.check_program_file_dir()
+pre_kaster.main()  # Processes to ran on startup
 
 com = sys.argv[1:]
 if len(com) == 0:
