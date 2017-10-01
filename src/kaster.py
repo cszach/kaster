@@ -8,11 +8,11 @@ __email__ = "novakglow@gmail.com"
 __status__ = "Development"
 
 import sys
-sys.path.insert(0, "../system")
+sys.path.insert(0, "system")
 import global_var
 import pre_kaster
 import Instructor
-sys.path.insert(0, "../generator")
+sys.path.insert(0, "generator")
 import generator
 
 pre_kaster.check_program_file_dir()
