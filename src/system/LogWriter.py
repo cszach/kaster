@@ -37,6 +37,9 @@ class LogWriter(object):
                 print(log_str)
             with open(global_var.log_file_dir, "a") as f:
                 f.write(("[%s %s] %s" + "\n") % (time(global_var.time_format), date(global_var.date_format), log_str))
-        except IOError:
-            create_log_file()
-            write_to_log(self, log_str)
+        except IOError as e:
+            if not os.path.isfile(global_var.log_file_dir):
+                self.create_log_file()
+                print("Error: Log file was not found. Outputs weren't saved.")
+            else:
+                print("Run the program as root")
