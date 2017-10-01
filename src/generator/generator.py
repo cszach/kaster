@@ -8,15 +8,6 @@ from LogWriter import LogWriter
 log_writer = LogWriter()
 
 
-def get_next_handler(run, the_var, the_value, log_msg):
-    try:
-        the_var = int(the_value)
-        run += 1
-    except ValueError:
-        log_writer.write_to_log(log_msg, True)
-        sys.exit(1)
-
-
 def generator(arguments):
     """
     Session for generating string
@@ -47,13 +38,21 @@ def generator(arguments):
         while runner < len(arguments):
             if arguments[runner] == "-l":
                 try:
-                    get_next_handler(runner, p_length, arguments[runner + 1], "Error: Invalid value for password's length")
+                    runner += 1
+                    p_length = int(arguments[runner])
+                except ValueError:
+                    log_writer.write_to_log("Error: Invalid value for password's length", True)
+                    sys.exit(1)
                 except IndexError:
                     log_writer.write_to_log("Error: No arguments to specify the password's length", True)
                     sys.exit(1)
             elif arguments[runner] == "-d":
                 try:
-                    get_next_handler(runner, p_x, arguments[runner + 1], "Error: Invalid value for number of passwords")
+                    runner += 1
+                    p_x = int(arguments[runner])
+                except ValueError:
+                    log_writer.write_to_log("Error: Invalid value for number of passwords", True)
+                    sys.exit(1)
                 except IndexError:
                     log_writer.write_to_log("Error: No arguments to specify the number of passwords", True)
                     sys.exit(1)
@@ -68,7 +67,7 @@ def generator(arguments):
             elif arguments[runner] == "--write-to-log":
                 write_to_log = True
             else:
-                log_writer.write_to_log("Error: Unknown argument \"%s\".", True) % (arguments[runner])
+                log_writer.write_to_log("Error: Unknown argument \"%s\"." % arguments[runner], True)
                 sys.exit(1)
             runner += 1
 
@@ -86,8 +85,11 @@ def generator(arguments):
             if write_to_log:
                 log_writer.write_to_log("Password generated: %s" % output, False)
 
-        del output, flag
-        del p_length, p_x, p_uuc, p_ulc, p_un, p_us, write_to_log
+        try:
+            del output, flag
+            del p_length, p_x, p_uuc, p_ulc, p_un, p_us, write_to_log
+        except UnboundLocalError:
+            sys.exit(1)
 
     if arguments[0] in ["pn", "pin"]:  # Generate PIN
         """
@@ -106,20 +108,28 @@ def generator(arguments):
         while runner < len(arguments):
             if arguments[runner] == "-l":
                 try:
-                    get_next_handler(runner, p_length, arguments[runner + 1], "Error: Invalid value for PIN's length")
+                    runner += 1
+                    p_length = int(arguments[runner])
+                except ValueError:
+                    log_writer.write_to_log("Error: Invalid value for PIN's length", True)
+                    sys.exit(1)
                 except IndexError:
                     log_writer.write_to_log("Error: No arguments to specify the PIN's length", True)
                     sys.exit(1)
             elif arguments[runner] == "-d":
                 try:
-                    get_next_handler(runner, p_x, arguments[runner + 1], "Error: Invalid value for number of PINs")
+                    runner += 1
+                    p_x = int(arguments[runner])
+                except ValueError:
+                    log_writer.write_to_log("Error: Invalid value for number of PINs", True)
+                    sys.exit(1)
                 except IndexError:
                     log_writer.write_to_log("Error: No arguments to specify the number of PINs", True)
                     sys.exit(1)
             elif arguments[runner] == "--write-to-log":
                 write_to_log = True
             else:
-                log_writer.write_to_log("Error: Unknown argument \"%s\".", True) % (arguments[runner])
+                log_writer.write_to_log("Error: Unknown argument \"%s\"." % arguments[runner], True)
                 sys.exit(1)
             runner += 1
 
@@ -137,5 +147,8 @@ def generator(arguments):
             if write_to_log:
                 log_writer.write_to_log("PIN generated: %s" % output, False)
 
-        del output, flag
-        del runner, p_length, p_x, write_to_log
+        try:
+            del output, flag
+            del runner, p_length, p_x, write_to_log
+        except UnboundLocalError:
+            sys.exit(1)
