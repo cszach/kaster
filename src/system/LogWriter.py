@@ -39,4 +39,4 @@ class LogWriter(object):
                 f.write(("[%s %s] %s" + "\n") % (time(global_var.time_format), date(global_var.date_format), log_str))
         except IOError:
             create_log_file()
-            write_to_log(self, log_str)
+            write_to_log(self, log_str, print_log)
