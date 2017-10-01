@@ -24,4 +24,7 @@ if len(com) == 0:
 
 if com[0] in ["g", "-g", "gen", "generate", "generator"]:
     # Start generator session
-    generator.generator(com[1:])
+    if len(com) > 1:
+        generator.generator(com[1:])
+    else:
+        Instructor.print_generator_help()
