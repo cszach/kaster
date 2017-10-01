@@ -8,6 +8,15 @@ from LogWriter import LogWriter
 log_writer = LogWriter()
 
 
+def get_next_handler(run, the_var, the_value, log_msg):
+    try:
+        the_var = int(the_value)
+        run += 1
+    except ValueError:
+        log_writer.write_to_log(log_msg, True)
+        sys.exit(1)
+
+
 def generator(arguments):
     """
     Session for generating string
@@ -38,24 +47,14 @@ def generator(arguments):
         while runner < len(arguments):
             if arguments[runner] == "-l":
                 try:
-                    p_length = int(arguments[runner + 1])
-                    runner += 1
-                except ValueError:
-                    log = "Error: Invalid value for password's length."
-                    print(log)
-                    log_writer.write_to_log(log)
-                    del log
-                    sys.exit(1)
+                    get_next_handler(runner, p_length, arguments[runner + 1], "Error: Invalid value for password's length")
+                except IndexError:
+                    log_writer.write_to_log("Error: No arguments to specify the password's length", True)
             elif arguments[runner] == "-d":
                 try:
-                    p_x = int(arguments[runner + 1])
-                    runner += 1
-                except ValueError:
-                    log = "Error: Invalid value for number of passwords."
-                    print(log)
-                    log_writer.write_to_log(log)
-                    del log
-                    sys.exit(1)
+                    get_next_handler(runner, p_x, arguments[runner + 1], "Error: Invalid value for number of passwords")
+                except IndexError:
+                    log_writer.write_to_log("Error: No arguments to specify the number of passwords", True)
             elif arguments[runner] == "-u":
                 p_uuc = True
             elif arguments[runner] == "-l":
@@ -100,18 +99,22 @@ def generator(arguments):
         p_x : number of output PINs
         """
         runner = 1
-        p_length = randint(2, 12)
+        p_length = None
         p_x = 1
         write_to_log = False
 
         # TODO: Scan arguments
         while runner < len(arguments):
             if arguments[runner] == "-l":
-                p_length = arguments[runner + 1]
-                runner += 1
+                try:
+                    get_next_handler(runner, p_length, arguments[runner + 1], "Error: Invalid value for PIN's length")
+                except IndexError:
+                    log_writer.write_to_log("Error: No arguments to specify the PIN's length", True)
             elif arguments[runner] == "-d":
-                p_x = arguments[runner + 1]
-                runner += 1
+                try:
+                    get_next_handler(runner, p_x, arguments[runner + 1], "Error: Invalid value for number of PINs")
+                except IndexError:
+                    log_writer.write_to_log("Error: No arguments to specify the number of PINs", True)
             elif arguments[runner] == "--write-to-log":
                 write_to_log = True
             else:
@@ -123,11 +126,18 @@ def generator(arguments):
             runner += 1
 
         # TODO: Generate and output PINs
+        if p_length is None:
+            flag = True
+        else:
+            flag = False
+
         for i in range(p_x):
+            if flag:
+                p_length = randint(4, 12)
             output = k_random.random_string("pn", p_length)
             print("Output [%d] %s" % (i + 1, output))
             if write_to_log:
                 log_writer.write_to_log(output)
 
-        del output
+        del output, flag
         del runner, p_length, p_x, write_to_log
