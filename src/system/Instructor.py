@@ -1,3 +1,38 @@
+def print_generator_help():
+    """Print the manual page of Kaster's generator"""
+    print("Generator")
+    print("  Call generator: |g|-g|gen|generate|generator|")
+    print("  Arguments:")
+    print("    |pw|ps|password| : Generate password")
+    print("      Example: ./kaster.py -g pw")
+    print("    Arguments for password generation: [-l (length)|-d (duplicate)|-u|-l|-n|-s|--write-to-log]")
+    print("      -l : Specify the output password's length")
+    print("         Example: './kaster.py gen ps -l 12' will generate a password that contains 12 characters")
+    print("      -d : Specify the number of output passwords")
+    print("         Example: './kaster.py gen ps -d 3' will generate 3 passwords")
+    print("                  './kaster.py generate password -d 5 -l 8' will generate 5 passwords, each is 8 chars long")
+    print("      -u : Tell the generator to use uppercase characters")
+    print("         The output password of './kaster.py gen ps -u' will be a string of uppercase characters only.")
+    print("      -l : Tell the generator to use lowercase characters")
+    print("      -n : Tell the generator to use numbers")
+    print("      -s : Tell the generator to use special characters")
+    print("         The output password of './kaster.py gen ps -u -l' will be a string that only contains")
+    print("         uppercase characters and lowercase characters")
+    print("         The output password of './kaster.py -g pw -u -l -n' will not contain special characters")
+    print("      --write-to-log: Tell the generator to save outputs to log file")
+    print("    |pn|pin| : Generate PIN")
+    print("      Example: ./kaster.py generator pin")
+    print("    Arguments for PIN generation: [-l (length)|-d (duplicate)|--write-to-log]")
+    print("      -l : Specify the output PIN's length / number of digits")
+    print("         Example: './kaster.py gen pn -l 4' will generate a 4-digit PIN")
+    print("      -d : Specify the number of output PINs")
+    print("                  './kaster.py gen pin -d 10' will generate 10 PINs")
+    print("      --write-to-log: Tell the generator to save outputs to log file")
+    print("Note: for -l and -d arguments, if you want a random number, use 'shuf'")
+    print("Example: ./kaster.py generate password -l $(shuf -i 10-20 -n 1)")
+    print("In that case, we've passed a random number between 10 and 20 (both inclusive) as the length")
+
+
 def print_help():
     """Print the manual page of Kaster, which includes all arguments"""
     print("Kaster Password Vault")
