@@ -1,0 +1,21 @@
+#!/bin/bash
+if [ "$EUID" -ne 0 ]
+then 
+    echo "Run this file using bash as root."
+    exit 1
+fi
+
+# Create directory for program's files
+if [ ! -d /usr/share/kaster ]
+then
+    mkdir /usr/share/kaster
+fi
+
+# Create log file
+if ! [[ -e /usr/share/kaster/log.dat ]];
+then
+    touch /usr/share/kaster/log.dat
+    DATETIME=$(date "+%H:%M:%S %d/%m/%Y")
+    echo "Log file created on $DATETIME" > /usr/share/kaster/log.dat
+fi
+
