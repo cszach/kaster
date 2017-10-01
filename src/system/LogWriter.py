@@ -19,7 +19,6 @@ class LogWriter(object):
             with open(global_var.log_file_dir, "w") as f:
                 f.write("Log file created on %s." % (date(kaster.date_format)))
         except FileExistsError:
-            os.mknod(global_var.log_file_dir)
             return
         except Exception as e:
             print(e)
@@ -43,3 +42,11 @@ class LogWriter(object):
                 print("Error: Log file was not found. Outputs weren't saved.")
             else:
                 print("Run the program as root")
+
+    def delete_log_file(self):
+        """
+        Delete the log file
+        :return:
+        """
+        if os.path.isfile(global_var.log_file_dir):
+            os.remove(global_var.log_file_dir)
