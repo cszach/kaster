@@ -3,6 +3,7 @@ def print_generator_help():
     print("Generator")
     print("  Call generator: |g|-g|gen|generate|generator|")
     print("  Arguments:")
+    print("    -----------------------------------------------------")
     print("    |pw|ps|password| : Generate password")
     print("      Example: ./kaster.py -g pw")
     print("    Arguments for password generation: [-l (length)|-d (duplicate)|-u|-l|-n|-s|--write-to-log]")
@@ -20,6 +21,7 @@ def print_generator_help():
     print("         uppercase characters and lowercase characters")
     print("         The output password of './kaster.py -g pw -u -l -n' will not contain special characters")
     print("      --write-to-log: Tell the generator to save outputs to log file")
+    print("    -----------------------------------------------------")
     print("    |pn|pin| : Generate PIN")
     print("      Example: ./kaster.py generator pin")
     print("    Arguments for PIN generation: [-l (length)|-d (duplicate)|--write-to-log]")
@@ -28,11 +30,14 @@ def print_generator_help():
     print("      -d : Specify the number of output PINs")
     print("                  './kaster.py gen pin -d 10' will generate 10 PINs")
     print("      --write-to-log: Tell the generator to save outputs to log file")
-    print("Note: for -l and -d arguments, if you want a random number, use 'shuf'")
-    print("Example: ./kaster.py generate password -l $(shuf -i 10-20 -n 1)")
-    print("In that case, we've passed a random number between 10 and 20 (both inclusive) as the length")
+    print("    -----------------------------------------------------")
+    print("    Note: for -l and -d arguments, if you want a random number, use 'shuf'")
+    print("    Example: ./kaster.py generate password -l $(shuf -i 10-20 -n 1)")
+    print("    In that case, we've passed a random number between 10 and 20 (both inclusive) as the length")
 
 
 def print_help():
     """Print the manual page of Kaster, which includes all arguments"""
     print("Kaster Password Vault")
+    print_generator_help()
+    # Will add more help here
