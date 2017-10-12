@@ -3,14 +3,12 @@ import sys
 import os
 import global_var
 from datetime import datetime, date
-from LogWriter import LogWriter
-
-k_log_writer = LogWriter()
+import LogWriter
 
 
 def check_program_file_dir():
     if not os.path.isdir(global_var.program_file_dir):
-        k_log_writer.create_log_file()
+        LogWriter.create_log_file()
 
 
 def renew_log_file():
@@ -19,7 +17,11 @@ def renew_log_file():
     :return:
     """
     # Get the date when the log file was created
-    f = open(global_var.log_file_dir, "r")
+    if os.path.isfile(global_var.log_file_dir):
+        f = open(global_var.log_file_dir, "r")
+    else:
+        check_program_file_dir()
+        f = open(global_var.log_file_dir, "r")
     the_date = f.readline()
     f.close()
     del f
@@ -32,8 +34,8 @@ def renew_log_file():
     the_date = datetime(year=the_date[2], month=the_date[1], day=the_date[0])
     if (today - the_date).days >= 30:
         if os.path.isfile(global_var.log_file_dir):
-            k_log_writer.delete_log_file()  # Remove the log file
-        k_log_writer.create_log_file()  # Create new, empty log file
+            LogWriter.delete_log_file()  # Remove the log file
+        LogWriter.create_log_file()  # Create new, empty log file
 
 
 def main():
