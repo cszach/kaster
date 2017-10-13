@@ -1,3 +1,26 @@
+def print_log_writer_help():
+    """Print the manual page of Kaster's log writer (LogWriter())"""
+    print("Log writer")
+    print("  Call log writer: |lw|-lw|log-writer|-log-writer")
+    print("  Arguments: |--create-log-file|--new-log-file|--log (message)|--write-to-log (message, option)")
+    print("             |--del-log|--delete-log-file")
+    print("    --create-log-file : Create a new log file. Do nothing if the log file exists.")
+    print("      Example usage: ./kaster.py lw --create-log-file")
+    print("    --new-log-file : Create a new log file. Renew the log file if the log file exists.")
+    print("      Example usage: ./kaster.py -lw --new-log-file")
+    print("    --log : Write a string (passed as argument) to log file")
+    print("      Example: './kaster.py lw --log Hello World!' will append the string \"Hello World!\" to the log file")
+    print("    --write-to-log : Call LogWriter's write_to_log method (source code: Line 31, src/system/LogWriter.py)")
+    print("      Calling this is the same as calling '--log', but --write-to-log will also include time & date")
+    print("      The second argument is the option to print the log message to the console.")
+    print("      If it is 0, the message will be printed to the console. Otherwise, it won't be.")
+    print("      Example: './kaster.py -log-writer --write-to-log \"Next to me is date\" 0' ...")
+    print("      ...will append a string like \"[23:7:10 4/5/2010]\" to the log file, and print that string to console")
+    print("    --del-log : Delete the log file")
+    print("    --delete-log-file : Same as --del-log, which is used to delete the log file")
+    print("      Example: ./kaster.py -log-writer --del-log")
+
+
 def print_generator_help():
     """Print the manual page of Kaster's generator"""
     print("Generator")
@@ -39,5 +62,11 @@ def print_generator_help():
 def print_help():
     """Print the manual page of Kaster, which includes all arguments"""
     print("Kaster Password Vault")
+    print("Kaster Password Vault is an offline password manager that is integrated with many features.")
+    print("Developed by Nguyen Hoang Duong (@NOVAglow on GitHub).")
+    print("Program files are stored at /usr/share/kaster")
+    print("Full path to log file: /usr/share/kaster/log.dat")
+    print()
+    print_log_writer_help()
     print_generator_help()
     # Will add more help here
