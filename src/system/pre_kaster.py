@@ -2,7 +2,7 @@
 import sys
 import os
 import global_var
-from datetime import datetime, date
+from datetime import datetime
 import LogWriter
 
 
@@ -20,12 +20,13 @@ def renew_log_file():
     if os.path.isfile(global_var.log_file_dir):
         f = open(global_var.log_file_dir, "r")
     else:
-        check_program_file_dir()
-        f = open(global_var.log_file_dir, "r")
-    the_date = f.readline()
+        LogWriter.create_log_file()
+        # f = open(global_var.log_file_dir, "r")
+        return  # If no log file found then just return
+    the_date = f.readline()  # Get the first line of the log file
     f.close()
     del f
-    the_date = the_date[29:].split("/")
+    the_date = the_date[20:-2].split("/")  # Get the date from the first line of log file ("Log file created on...")
     the_date = [int(i) for i in the_date]  # Convert string components to int
 
     # Compare and delete
