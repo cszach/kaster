@@ -1,72 +1,20 @@
-def print_log_writer_help():
-    """Print the manual page of Kaster's log writer (LogWriter())"""
-    print("Log writer")
-    print("  Call log writer: |lw|-lw|log-writer|-log-writer")
-    print("  Arguments: |--create-log-file|--new-log-file|--log (message)|--write-to-log (message, option)")
-    print("             |--del-log|--delete-log-file")
-    print("    --create-log-file : Create a new log file. Do nothing if the log file exists.")
-    print("      Example usage: ./kaster.py lw --create-log-file")
-    print("    --new-log-file : Create a new log file. Renew the log file if the log file exists.")
-    print("      Example usage: ./kaster.py -lw --new-log-file")
-    print("    --log : Write a string (passed as argument) to log file")
-    print("      Example: './kaster.py lw --log Hello World!' will append the string \"Hello World!\" to the log file")
-    print("    --write-to-log : Call LogWriter's write_to_log method (source code: Line 31, src/system/LogWriter.py)")
-    print("      Calling this is the same as calling '--log', but --write-to-log will also include time & date")
-    print("      The second argument is the option to print the log message to the console.")
-    print("      If it is 0, the message will be printed to the console. Otherwise, it won't be.")
-    print("      Example: './kaster.py -log-writer --write-to-log \"Next to me is date\" 0' ...")
-    print("      ...will append a string like \"[23:7:10 4/5/2010]\" to the log file, and print that string to console")
-    print("    --del-log : Delete the log file")
-    print("    --delete-log-file : Same as --del-log, which is used to delete the log file")
-    print("      Example: ./kaster.py -log-writer --del-log")
-
-
-def print_generator_help():
-    """Print the manual page of Kaster's generator"""
-    print("Generator")
-    print("  Call generator: |g|-g|gen|generate|generator|")
-    print("  Arguments:")
-    print("    -----------------------------------------------------")
-    print("    |pw|ps|password| : Generate password")
-    print("      Example: ./kaster.py -g pw")
-    print("    Arguments for password generation: [-l (length)|-d (duplicate)|-u|-l|-n|-s|--write-to-log]")
-    print("      -l : Specify the output password's length")
-    print("         Example: './kaster.py gen ps -l 12' will generate a password that contains 12 characters")
-    print("      -d : Specify the number of output passwords")
-    print("         Example: './kaster.py gen ps -d 3' will generate 3 passwords")
-    print("                  './kaster.py generate password -d 5 -l 8' will generate 5 passwords, each is 8 chars long")
-    print("      -u : Tell the generator to use uppercase characters")
-    print("         The output password of './kaster.py gen ps -u' will be a string of uppercase characters only.")
-    print("      -l : Tell the generator to use lowercase characters")
-    print("      -n : Tell the generator to use numbers")
-    print("      -s : Tell the generator to use special characters")
-    print("         The output password of './kaster.py gen ps -u -l' will be a string that only contains")
-    print("         uppercase characters and lowercase characters")
-    print("         The output password of './kaster.py -g pw -u -l -n' will not contain special characters")
-    print("      --write-to-log: Tell the generator to save outputs to log file")
-    print("    -----------------------------------------------------")
-    print("    |pn|pin| : Generate PIN")
-    print("      Example: ./kaster.py generator pin")
-    print("    Arguments for PIN generation: [-l (length)|-d (duplicate)|--write-to-log]")
-    print("      -l : Specify the output PIN's length / number of digits")
-    print("         Example: './kaster.py gen pn -l 4' will generate a 4-digit PIN")
-    print("      -d : Specify the number of output PINs")
-    print("                  './kaster.py gen pin -d 10' will generate 10 PINs")
-    print("      --write-to-log: Tell the generator to save outputs to log file")
-    print("    -----------------------------------------------------")
-    print("    Note: for -l and -d arguments, if you want a random number, use 'shuf'")
-    print("    Example: ./kaster.py generate password -l $(shuf -i 10-20 -n 1)")
-    print("    In that case, we've passed a random number between 10 and 20 (both inclusive) as the length")
-
-
-def print_help():
-    """Print the manual page of Kaster, which includes all arguments"""
-    print("Kaster Password Vault")
-    print("Kaster Password Vault is an offline password manager that is integrated with many features.")
-    print("Developed by Nguyen Hoang Duong (@NOVAglow on GitHub).")
-    print("Program files are stored at /usr/share/kaster")
-    print("Full path to log file: /usr/share/kaster/log.dat")
-    print()
-    print_log_writer_help()
-    print_generator_help()
-    # Will add more help here
+def main(man_page_name):
+    """
+    Main process for Instructor
+    :return:
+    """
+    if man_page_name is None:
+        # Read all the manual pages
+        print("Kaster Password Vault's help")
+        print()
+        man_pages = ["man_generic.txt", "man_lw.txt"]
+        for man in man_pages:
+            main(man)
+        del man, man_pages
+    else:
+        # Read specified manual page
+        f = open("manual/" + man_page_name, "r")
+        f_content = f.read()
+        f.close()
+        print(f_content)
+        del f, f_content

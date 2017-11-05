@@ -1,151 +1,114 @@
+"""
+Password generator
+Not to be confused with the generator in the password vault,
+this generator only generates passwords.
+It does not generate IV, key, pseudorandom number or anything else.
+"""
+
 import sys
-from random import randint
+import os
 sys.path.insert(0, "../system")
+from random import randint
 import k_random
-import LogWriter
+import Instructor
 
 
-def generator(arguments):
+def generator(com_list):
     """
     Session for generating string
-    :param arguments: Arguments to be passed to the generator
+    :param com_list: Arguments to be passed to the generator
     :return:
     """
-    if arguments[0] in ["pw", "ps", "password"]:  # Generate password
-        """
-        Setup
-        
-        runner : current index
-        p_length : password length (string)
-        p_x : number of output passwords (string)
-        p_uuc : use uppercase characters (boolean)
-        p_ulc : use lowercase characters (boolean)
-        p_un : use numbers (boolean)
-        p_us : use symbols (boolean)
-        write_to_log : write to log file the output (boolean)
-        
-        """
-        runner = 1
-        p_length = None
-        p_x = 1
-        p_uuc = p_ulc = p_un = p_us = None
-        write_to_log = False
+    if len(com_list) == 0:
+        Instructor.main("man_gen.txt")
+        sys.exit(0)
 
-        # TODO: Scan arguments
-        while runner < len(arguments):
-            if arguments[runner] == "-l":
-                try:
-                    runner += 1
-                    p_length = int(arguments[runner])
-                except ValueError:
-                    LogWriter.write_to_log("Error: Invalid value for password's length", True)
-                    sys.exit(1)
-                except IndexError:
-                    LogWriter.write_to_log("Error: No arguments to specify the password's length", True)
-                    sys.exit(1)
-            elif arguments[runner] == "-d":
-                try:
-                    runner += 1
-                    p_x = int(arguments[runner])
-                except ValueError:
-                    LogWriter.write_to_log("Error: Invalid value for number of passwords", True)
-                    sys.exit(1)
-                except IndexError:
-                    LogWriter.write_to_log("Error: No arguments to specify the number of passwords", True)
-                    sys.exit(1)
-            elif arguments[runner] == "-u":
-                p_uuc = True
-            elif arguments[runner] == "-l":
-                p_ulc = True
-            elif arguments[runner] == "-n":
-                p_un = True
-            elif arguments[runner] == "-s":
-                p_us = True
-            elif arguments[runner] == "--write-to-log":
-                write_to_log = True
-            else:
-                LogWriter.write_to_log("Error: Unknown argument \"%s\"." % arguments[runner], True)
+    """
+    Setup variable
+    p_length: Length of output password(s)
+              If it is None, 
+    """
+    # Get options and arguments
+    p_length = None
+    p_duplicate = 1
+    p_use_upper = None
+    p_use_lower = None
+    p_use_number = None
+    p_use_symbol = None
+    output_file_name = None
+
+    for g_opt, g_arg in com_list:
+        if g_opt == "--pss":
+            break  # Break and generate a random password real quick
+        elif g_opt in ("-l", "--length"):
+            try:
+                p_length = int(g_arg)
+            except ValueError:
+                print("Error: Invalid value for password's length '%s'. Quitting..." % g_arg)
                 sys.exit(1)
-            runner += 1
-
-        # TODO: Generate password(s) and print them as output
-        if p_length is None:
-            flag = True
+        elif g_opt in ("-d", "--duplicate"):
+            try:
+                p_duplicate = int(g_arg)
+            except ValueError:
+                print("Error: Invalid value for number of passwords '%s'. Quitting..." % g_arg)
+                sys.exit(1)
+        elif g_opt in ("-o", "--output"):
+            if not os.path.isfile(g_arg):  # If the file does not exist
+                output_file_name = g_arg
+            else:
+                print("File '%s' has already existed." % g_arg)
+                u_choice = input("Do you want to append or overwrite the file? Or abort operation? [A|O|C] ")
+                if u_choice.lower() == "o":
+                    os.remove(g_arg)
+                    open(g_arg, "a").close()
+                    output_file_name = g_arg
+                    del u_choice
+                elif u_choice.lower() == "c":
+                    del u_choice
+                    sys.exit(8)
+                elif u_choice.lower() != "a":
+                    output_file_name = None
+                    print("Warning: Unrecognized option '%s'. Option is ignored." % u_choice)
+                    del u_choice
+                    continue
+                else:
+                    output_file_name = g_arg
+        elif g_opt == "--upper":
+            p_use_upper = True
+        elif g_opt == "--lower":
+            p_use_lower = True
+        elif g_opt == "--number":
+            p_use_number = True
+        elif g_opt == "--symbol":
+            p_use_symbol = True
         else:
-            flag = False
-
-        for i in range(p_x):
-            if flag:
-                p_length = randint(12, 30)
-            output = k_random.random_string(p_length, p_uuc, p_ulc, p_un, p_us)
-            print("Output [%d] %s" % (i + 1, output))
-            if write_to_log:
-                LogWriter.write_to_log("Password generated: %s" % output, False)
-
-        try:
-            del output, flag
-            del p_length, p_x, p_uuc, p_ulc, p_un, p_us, write_to_log
-        except UnboundLocalError:
+            print("Error: Not recognized option '%s'. Quitting..." % g_opt)
             sys.exit(1)
 
-    if arguments[0] in ["pn", "pin"]:  # Generate PIN
-        """
-        Setup
-        
-        runner : current index
-        p_length : number of digits to be presented
-        p_x : number of output PINs
-        """
-        runner = 1
-        p_length = None
-        p_x = 1
-        write_to_log = False
+    # Generate password session
 
-        # TODO: Scan arguments
-        while runner < len(arguments):
-            if arguments[runner] == "-l":
-                try:
-                    runner += 1
-                    p_length = int(arguments[runner])
-                except ValueError:
-                    LogWriter.write_to_log("Error: Invalid value for PIN's length", True)
-                    sys.exit(1)
-                except IndexError:
-                    LogWriter.write_to_log("Error: No arguments to specify the PIN's length", True)
-                    sys.exit(1)
-            elif arguments[runner] == "-d":
-                try:
-                    runner += 1
-                    p_x = int(arguments[runner])
-                except ValueError:
-                    LogWriter.write_to_log("Error: Invalid value for number of PINs", True)
-                    sys.exit(1)
-                except IndexError:
-                    LogWriter.write_to_log("Error: No arguments to specify the number of PINs", True)
-                    sys.exit(1)
-            elif arguments[runner] == "--write-to-log":
-                write_to_log = True
-            else:
-                LogWriter.write_to_log("Error: Unknown argument \"%s\"." % arguments[runner], True)
-                sys.exit(1)
-            runner += 1
+    # Check if the length for output password(s) is specified
+    # If not, have flag_rl to tell the generate to have the password's length random every time
+    flag_rl = None
+    if p_length is None:
+        flag_rl = True
 
-        # TODO: Generate and output PINs
-        if p_length is None:
-            flag = True
-        else:
-            flag = False
+    # Preparing file
+    f = None
+    if output_file_name is not None:
+        f = open(output_file_name, "a")
 
-        for i in range(p_x):
-            if flag:
-                p_length = randint(4, 12)
-            output = k_random.random_string("pn", p_length)
-            print("Output [%d] %s" % (i + 1, output))
-            if write_to_log:
-                LogWriter.write_to_log("PIN generated: %s" % output, False)
+    # Output
+    for i in range(p_duplicate):
+        if flag_rl:
+            p_length = randint(12, 30)
+        g_output = k_random.random_string(p_length, p_use_upper, p_use_lower, p_use_number, p_use_symbol)
+        print("Output [%d] %s" %
+              (i + 1, g_output))
+        if output_file_name is not None:
+            f.write(g_output + "\n")
 
-        try:
-            del output, flag
-            del runner, p_length, p_x, write_to_log
-        except UnboundLocalError:
-            sys.exit(1)
+    if output_file_name is not None:
+        f.close()
+    del p_length, p_duplicate, p_use_upper, p_use_lower, p_use_number, p_use_symbol
+    del flag_rl, g_output, f, output_file_name
