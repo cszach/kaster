@@ -35,13 +35,14 @@ if len(sys.argv[1:]) == 0:
 # Get all the arguments specified
 try:
     opts, args = getopt.getopt(sys.argv[1:],
-                               "hca:l:d:o:",
+                               "ha:l:d:o:",
                                ["help", "version", "info",
                                 "lw", "gen",
                                 "create", "append=", "log=", "clear", "delete",
-                                "obj=", "length=", "duplicate=", "upper", "lower", "number", "symbol",
+                                "pss", "length=", "duplicate=", "upper", "lower", "number", "symbol",
                                 "output="])
 except getopt.GetoptError as e:
+    print("Error: ", end="")
     print(e)
     print("Pass option '-h' or '--help' to see the available options and arguments")
     sys.exit(2)
@@ -56,6 +57,9 @@ for opt, arg in opts:
         sys.exit(0)
     elif opt == "--lw":
         LogWriter.lw_main(opts[1:])
+        sys.exit(0)
+    elif opt == "--gen":
+        generator.generator(opts[1:])
         sys.exit(0)
     else:
         print("Error: Wrong use of option '%s'. Quitting..." % opt)
