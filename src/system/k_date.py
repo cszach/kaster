@@ -1,8 +1,5 @@
 from datetime import datetime
 
-months_name = ["January", "February", "March", "April", "May", "June",
-               "July", "August", "September", "October", "November", "December"]
-
 
 def k_now(time_f, date_f):
     """
