@@ -1,0 +1,5 @@
+Generic Options
+
+  -h, --help     : Show all manual pages and exit
+      --version  : Show version of the program (with the program's name in front) and exit
+      -- info    : Show program's information (program name, version, short introduction, and developers)
