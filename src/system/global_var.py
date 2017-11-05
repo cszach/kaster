@@ -1,8 +1,8 @@
 # System
 program_file_dir = "/usr/share/kaster"
 log_file_dir = program_file_dir + "/log.dat"
-date_format = "DD/MM/YYYY"
-time_format = "H:M:S"
+date_format = "%d/%m/%Y"
+time_format = "%H:%M:%S"
 
 # Strings for aid in random string generator
 uppercase_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
