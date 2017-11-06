@@ -50,24 +50,24 @@ except getopt.GetoptError as e:
 for opt, arg in opts:
     if opt in ("-h", "--help"):
         Instructor.main(None)
-        sys.exit(0)
     elif opt == "--version":
         print(__program__)
         print("Version " + __version__)
-        sys.exit(0)
+    elif opt == "--info":
+        print(__program__ + " " + __version__)
+        print("Kaster Password Vault is a CLI offline password manager.")
+        print("Brought to you by " + __author__)
     elif opt == "--lw":
         LogWriter.lw_main(opts[1:])
-        sys.exit(0)
     elif opt == "--gen":
         try:
             generator.generator(opts[1:])
         except KeyboardInterrupt:
             print()
             print("Got keyboard interruption, quitting...")
-        finally:
-            sys.exit(0)
     else:
         print("Error: Wrong use of option '%s'. Quitting..." % opt)
         sys.exit(1)
+    sys.exit(0)
 
 print("Error: Invalid argument '%s'. Quitting..." % args[0])
