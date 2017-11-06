@@ -9,7 +9,7 @@ Generator
   Options:
 
         --gen       : Call generator
-        --pss       : Generate a random password with an ideal strength
+    -h, --help      : Print this manual page and exit
     -l, --length    : Specify length of the output password(s), must be in between 12 and 30
     -d, --duplicate : Specify number of output passwords
     -o, --output    : Specify output file to write the output
