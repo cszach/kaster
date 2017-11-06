@@ -65,10 +65,12 @@ def random_string(*args):
     if args[4]:
         allowed_chars += special_chars
 
+    pss_length = randint(12, 30) if args[0] is None else args[0]
+
     if args[1] == args[2] == args[3] == args[4] == (False or None):
         allowed_chars = uppercase_chars + lowercase_chars + numbers + special_chars
 
-    return "".join([choice(allowed_chars) for _ in range(int(args[0]))])
+    return "".join([choice(allowed_chars) for _ in range(pss_length)])
 
 
 def random_hex(length):

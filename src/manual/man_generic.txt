@@ -1,5 +1,8 @@
 Generic Options
 
   -h, --help     : Show all manual pages and exit
+                   If this option is specified after a calling a subprogram,
+                   then the manual page for that subprogram will be printed.
+                     (Example: ''./kaster.py --gen -h' will print the generator's manual page)
       --version  : Show version of the program (with the program's name in front) and exit
       -- info    : Show program's information (program name, version, short introduction, and developers)
