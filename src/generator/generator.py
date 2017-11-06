@@ -9,7 +9,6 @@ This generator generates passwords mainly by calling k_random (found in the 'sys
 import sys
 import os
 sys.path.insert(0, "../system")
-from random import randint
 import k_random
 import Instructor
 
@@ -20,9 +19,10 @@ def generator(com_list):
     :param com_list: Arguments to be passed to the generator
     :return:
     """
+    # If no option is specified for the generator, generate a random password
     if len(com_list) == 0:
-        Instructor.main("man_gen.txt")
-        sys.exit(0)
+        generator([("--duplicate", "1")])
+        return
 
     """
     Setup variable
@@ -50,8 +50,8 @@ def generator(com_list):
     output_file_name = None
 
     for g_opt, g_arg in com_list:
-        if g_opt == "--pss":
-            break  # Break and generate a random password real quick
+        if g_opt in ("-h", "--help"):
+            Instructor.main("man_gen.txt")
         elif g_opt in ("-l", "--length"):
             try:
                 p_length = int(g_arg)
@@ -99,21 +99,13 @@ def generator(com_list):
 
     # Generate password session
 
-    # Check if the length for output password(s) is specified
-    # If not, have flag_rl to tell the generate to have the password's length random every time
-    flag_rl = None
-    if p_length is None:
-        flag_rl = True
-
-    # Preparing file
+    # Prepare file if an output file name is specified
     f = None
     if output_file_name is not None:
         f = open(output_file_name, "a")
 
     # Output
     for i in range(p_duplicate):
-        if flag_rl:
-            p_length = randint(12, 30)
         g_output = k_random.random_string(p_length, p_use_upper, p_use_lower, p_use_number, p_use_symbol)
         print("Output [%d] %s" %
               (i + 1, g_output))
@@ -123,4 +115,4 @@ def generator(com_list):
     if output_file_name is not None:
         f.close()
     del p_length, p_duplicate, p_use_upper, p_use_lower, p_use_number, p_use_symbol
-    del flag_rl, g_output, f, output_file_name
+    del g_output, f, output_file_name
