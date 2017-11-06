@@ -3,6 +3,7 @@ Password generator
 Not to be confused with the generator in the password vault,
 this generator only generates passwords.
 It does not generate IV, key, pseudorandom number or anything else.
+This generator generates passwords mainly by calling k_random (found in the 'system' folder)
 """
 
 import sys
@@ -25,8 +26,19 @@ def generator(com_list):
 
     """
     Setup variable
-    p_length: Length of output password(s)
-              If it is None, 
+    p_length         : Length of output password(s).
+                       If it is None, p_length will be a random value
+                       between 12 and 30 (inclusive) for every iteration.
+    p_duplicate      : Number of output passwords. Set to 1 by default.
+    p_use_upper,
+    p_use_lower,
+    p_use_number,
+    p_use_symbol     : Booleans to tell the generator to use uppercase characters,
+                       lowercase characters, numbers, and letters or not, respectively.
+                       True if it must use. False otherwise.
+                       However, if all of them are set to False or None, they will all
+                       be turned to True.
+    output_file_name : The name for the output file (string).
     """
     # Get options and arguments
     p_length = None
