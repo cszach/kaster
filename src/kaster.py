@@ -39,7 +39,7 @@ try:
                                ["help", "version", "info",
                                 "lw", "gen",
                                 "create", "append=", "log=", "clear", "delete",
-                                "pss", "length=", "duplicate=", "upper", "lower", "number", "symbol",
+                                "length=", "duplicate=", "upper", "lower", "number", "symbol",
                                 "output="])
 except getopt.GetoptError as e:
     print("Error: ", end="")
@@ -59,8 +59,13 @@ for opt, arg in opts:
         LogWriter.lw_main(opts[1:])
         sys.exit(0)
     elif opt == "--gen":
-        generator.generator(opts[1:])
-        sys.exit(0)
+        try:
+            generator.generator(opts[1:])
+        except KeyboardInterrupt:
+            print()
+            print("Got keyboard interruption, quitting...")
+        finally:
+            sys.exit(0)
     else:
         print("Error: Wrong use of option '%s'. Quitting..." % opt)
         sys.exit(1)
