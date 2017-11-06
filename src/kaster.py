@@ -39,7 +39,7 @@ try:
                                ["help", "version", "info",
                                 "lw", "gen",
                                 "create", "append=", "log=", "clear", "delete",
-                                "pss", "length=", "duplicate=", "upper", "lower", "number", "symbol",
+                                "length=", "duplicate=", "upper", "lower", "number", "symbol",
                                 "output="])
 except getopt.GetoptError as e:
     print("Error: ", end="")
