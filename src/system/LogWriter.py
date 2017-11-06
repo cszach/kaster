@@ -63,7 +63,9 @@ def lw_main(com_list):
         Instructor.main("man_lw.txt")
         sys.exit(0)
     for l_idx, (l_opt, l_arg) in enumerate(com_list):
-        if l_opt == "--create":
+        if l_opt in ("-h", "--help"):
+            Instructor.main("man_lw.txt")
+        elif l_opt == "--create":
             create_log_file()
         elif l_opt == "--append":
             if os.path.isfile(global_var.log_file_dir):
