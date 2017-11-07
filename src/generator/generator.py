@@ -55,12 +55,20 @@ def generator(com_list):
         elif g_opt in ("-l", "--length"):
             try:
                 p_length = int(g_arg)
+                if p_length > 30 or p_length < 12:
+                    print("Warning: Invalid password's length (%d). Must be in between 12 and 30." % p_length)
+                    print("Assigning p_length to None...")
+                    p_length = None
             except ValueError:
                 print("Error: Invalid value for password's length '%s'. Quitting..." % g_arg)
                 sys.exit(1)
         elif g_opt in ("-d", "--duplicate"):
             try:
                 p_duplicate = int(g_arg)
+                if p_duplicate < 1:
+                    print("Warning: Invalid value for duplication (%d). Must be greater than 0." % p_duplicate)
+                    print("Assigning p_duplicate to 1...")
+                    p_duplicate = 1
             except ValueError:
                 print("Error: Invalid value for number of passwords '%s'. Quitting..." % g_arg)
                 sys.exit(1)
