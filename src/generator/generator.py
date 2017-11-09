@@ -52,6 +52,9 @@ def generator(com_list):
     for g_opt, g_arg in com_list:
         if g_opt in ("-h", "--help"):
             Instructor.main("man_gen.txt")
+            # If that is the only option, exit right away to avoid creating a password
+            if len(com_list) == 1:
+                sys.exit(0)
         elif g_opt in ("-l", "--length"):
             try:
                 p_length = int(g_arg)
