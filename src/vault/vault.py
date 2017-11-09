@@ -4,7 +4,7 @@ sys.path.insert(0, "../system")
 import Instructor
 
 
-def v_main(com_list):
+def vault(com_list):
     """
     Main program for the vault
     :param com_list: Arguments passed to the vault
