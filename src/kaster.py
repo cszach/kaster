@@ -19,6 +19,8 @@ import LogWriter
 import Instructor
 sys.path.insert(0, "generator")
 import generator
+sys.path.insert(0, "vault")
+import vault
 
 # Check if the user has logged in as root
 if os.getenv("SUDO_USER") is None:
@@ -37,7 +39,7 @@ try:
     opts, args = getopt.getopt(sys.argv[1:],
                                "ha:l:d:o:",
                                ["help", "version", "info",
-                                "lw", "gen",
+                                "lw", "gen", "vault",
                                 "create", "append=", "log=", "clear", "delete",
                                 "length=", "duplicate=", "upper", "lower", "number", "symbol",
                                 "output="])
@@ -62,6 +64,13 @@ for opt, arg in opts:
     elif opt == "--gen":
         try:
             generator.generator(opts[1:])
+        except KeyboardInterrupt:
+            print()
+            print("Got keyboard interruption, quitting...")
+    elif opt == "--vault":
+        # Might remove this try except and handle keyboard interruption in vault.vault() instead
+        try:
+            vault.vault(opts[1:])
         except KeyboardInterrupt:
             print()
             print("Got keyboard interruption, quitting...")
