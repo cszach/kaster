@@ -23,6 +23,21 @@ def k_count_occur(input_str, holder_str):
     return flag
 
 
+def close_score(ep, main_inp, std_inp):
+    std_inp_min = int(std_inp.split(":")[0])
+    std_inp_max = int(std_inp.split(":")[1])
+    if main_inp >= std_inp_min and main_inp <= std_inp_max:
+        return 2
+    len_range = std_inp_max - std_inp_min
+    range_one_min = std_inp_min - (len_range * (ep / 100))
+    range_one_max = std_inp_max + (len_range * (ep / 100))
+    if main_inp >= range_one_min and main_inp <= range_one_max:
+        del len_range, range_one_min, range_one_max
+        return 1
+    del len_range, range_one_min, range_one_max
+    return 0
+
+
 def k_check_pss(pss, k_std_file_path):
     """
     Function to check if a password is strong enough compare to the given standard.
@@ -40,5 +55,9 @@ def k_check_pss(pss, k_std_file_path):
     """
     exec(open(k_std_file_path).read())
     flag = 0
+    flag += close_score(std_p_ep, k_count_occur(pss, uppercase_chars), std_p_upper)
+    flag += close_score(std_p_ep, k_count_occur(pss, lowercase_chars), std_p_lower)
+    flag += close_score(std_p_ep, k_count_occur(pss, numbers), std_p_num)
+    flag += close_score(std_p_ep, k_count_occur(pss, special_chars), std_p_sym)
     return flag
 
