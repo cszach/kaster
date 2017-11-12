@@ -1,4 +1,3 @@
-import os
 from global_var import uppercase_chars, lowercase_chars, numbers, special_chars
 
 
@@ -24,6 +23,19 @@ def k_count_occur(input_str, holder_str):
 
 
 def close_score(ep, main_inp, std_inp):
+    """
+    Return score base on how close main_inp is to the std_inp
+    std_inp is a string in the form of 'A:B', so A -> B is the range.
+    If main_inp is within that range, score is 2.
+    There is also another range. This range is A - ((B - A) * (ep / 100)) -> B + ((B - A) * (ep / 100)).
+    If main_inp is in this range but not in A -> B, the score is 1.
+    Otherwise, the score is 0.
+    This aids in k_check_pss.
+    :param ep: A percentage factor to determine the relative range
+    :param main_inp: Main input as an integer
+    :param std_inp: A string defining the range that main_inp should be in within
+    :return: A score (0, 1, 2) that tells how close main_inp is to the range given by std_inp
+    """
     std_inp_min = int(std_inp.split(":")[0])
     std_inp_max = int(std_inp.split(":")[1])
     if main_inp >= std_inp_min and main_inp <= std_inp_max:
@@ -48,16 +60,25 @@ def k_check_pss(pss, k_std_file_path):
         - std_p_lower {string} : Define the minimum and maximum number of lowercase alphabetical characters (>= 1)
         - std_p_num {string} : Define the minimum and maximum number of numeric characters (>= 1)
         - std_p_sym {string} : Define the minimum and maximum number of special characters (>= 1)
-    If the number of alphabetical characters (std_p_upper.MIN + std_p_lower.MIN) is more than 3, the characters should be found on all three rows of the keyboard.
+    If the number of alphabetical characters (std_p_upper.MIN + std_p_lower.MIN) is more than 2, the characters should be found on all three rows of the keyboard.
     :param pss: Password that needs to be checked
     :param k_std_file_path: A JSON-like file defining standards for a strong password
     :return: A value rating how much the password follows the standard on a scale of 10
     """
-    exec(open(k_std_file_path).read())
-    flag = 0
+    exec(open(k_std_file_path).read())  # Read file that defines the standard
+    flag = 0  # Initial score
+    # Add scores
     flag += close_score(std_p_ep, k_count_occur(pss, uppercase_chars), std_p_upper)
     flag += close_score(std_p_ep, k_count_occur(pss, lowercase_chars), std_p_lower)
     flag += close_score(std_p_ep, k_count_occur(pss, numbers), std_p_num)
     flag += close_score(std_p_ep, k_count_occur(pss, special_chars), std_p_sym)
+    if int(std_p_upper.split(":")[0]) + int(std_p_lower.split(":")[0]) > 2:
+        # Define variables to check how extended the alphabetical characters in the password are
+        top_row = "QWERTYUIOPqwertyuiop"
+        middle_row = "ASDFGHJKLasdfghjkl"
+        bottom_row = "ZXCVBNMzxcvbnm"
+        if k_count_occur(pss, top_row) + k_count_occur(pss, middle_row) + k_count_occur(pss, bottom_row) < 3:
+            flag -= 1
+        del top_row, middle_row, bottom_row
     return flag
 
