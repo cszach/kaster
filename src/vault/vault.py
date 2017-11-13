@@ -1,7 +1,19 @@
 import sys
 import os
+from getpass import getpass
 sys.path.insert(0, "../system")
+import global_var
+import pre_vault
 import Instructor
+
+
+def clear_vault_dir():
+    """
+    Clear vault's folder (/usr/share/kaster/vault).
+    :return:
+    """
+    os.system("rm -rf /usr/share/kaster/vault")
+    os.mkdir(global_var.program_file_dir + "/vault")
 
 
 def vault(com_list):
