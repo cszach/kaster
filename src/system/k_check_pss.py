@@ -38,12 +38,12 @@ def close_score(ep, main_inp, std_inp):
     """
     std_inp_min = int(std_inp.split(":")[0])
     std_inp_max = int(std_inp.split(":")[1])
-    if main_inp >= std_inp_min and main_inp <= std_inp_max:
+    if std_inp_min <= main_inp <= std_inp_max:
         return 2
     len_range = std_inp_max - std_inp_min
     range_one_min = std_inp_min - (len_range * (ep / 100))
     range_one_max = std_inp_max + (len_range * (ep / 100))
-    if main_inp >= range_one_min and main_inp <= range_one_max:
+    if range_one_min <= main_inp <= range_one_max:
         del len_range, range_one_min, range_one_max
         return 1
     del len_range, range_one_min, range_one_max
@@ -65,9 +65,18 @@ def k_check_pss(pss, k_std_file_path):
     :param k_std_file_path: A JSON-like file defining standards for a strong password
     :return: A value rating how much the password follows the standard on a scale of 10
     """
-    exec(open(k_std_file_path).read())  # Read file that defines the standard
+    f = open(k_std_file_path)
+    std_p_ep = eval(f.readline()[:-1])
+    std_p_length = f.readline()[:-1]
+    std_p_upper = f.readline()[:-1]
+    std_p_lower = f.readline()[:-1]
+    std_p_num = f.readline()[:-1]
+    std_p_sym = f.readline()[:-1]
+    f.close()
+    del f
     flag = 0  # Initial score
     # Add scores
+    flag += close_score(std_p_ep, len(pss), std_p_length)
     flag += close_score(std_p_ep, k_count_occur(pss, uppercase_chars), std_p_upper)
     flag += close_score(std_p_ep, k_count_occur(pss, lowercase_chars), std_p_lower)
     flag += close_score(std_p_ep, k_count_occur(pss, numbers), std_p_num)
@@ -77,8 +86,9 @@ def k_check_pss(pss, k_std_file_path):
         top_row = "QWERTYUIOPqwertyuiop"
         middle_row = "ASDFGHJKLasdfghjkl"
         bottom_row = "ZXCVBNMzxcvbnm"
-        if k_count_occur(pss, top_row) + k_count_occur(pss, middle_row) + k_count_occur(pss, bottom_row) < 3:
+        if k_count_occur(pss, top_row) < 1 or k_count_occur(pss, middle_row) < 1 or k_count_occur(pss, bottom_row) < 1:
             flag -= 1
         del top_row, middle_row, bottom_row
+    del std_p_ep, std_p_length, std_p_upper, std_p_lower, std_p_num, std_p_sym
     return flag
 
