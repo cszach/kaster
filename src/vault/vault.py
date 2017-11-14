@@ -1,6 +1,5 @@
 import sys
 import os
-from getpass import getpass
 sys.path.insert(0, "../system")
 import global_var
 import pre_vault
@@ -25,6 +24,18 @@ def vault(com_list):
     for v_opt, v_arg in com_list:
         if v_opt in ("-h", "--help"):
             Instructor.main("man_vault.txt")
+        elif v_opt == "--account":
+            if pre_vault.check_user_account() == 0:
+                print("Username: %s" % os.environ["SUDO_USER"])
+                if pre_vault.account_state() != 0:
+                    print("Account state: NOT OK")
+                else:
+                    print("Account state: OK")
+            else:
+                if input("No account created, create one now? [Y|N] ").lower() == "y":
+                    pre_vault.main(True)
+                else:
+                    sys.exit(0)
         else:
             print("Not recognized option '%s'. Quitting..." % v_opt)
             sys.exit(1)
