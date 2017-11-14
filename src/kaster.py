@@ -42,7 +42,8 @@ try:
                                 "lw", "gen", "vault",
                                 "create", "append=", "log=", "clear", "delete",
                                 "length=", "duplicate=", "upper", "lower", "number", "symbol",
-                                "output="])
+                                "output=",
+                                "account"])
 except getopt.GetoptError as e:
     print("Error: ", end="")
     print(e)
