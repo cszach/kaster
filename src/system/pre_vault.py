@@ -11,38 +11,58 @@ from Crypto.Hash import SHA512
 
 def check_user_account():
     """
-    Check if the user account exists.
-    If it does, return 0.
-    If it does not but there are files that save logins, return -1.
-    Otherwise, return 1.
-    :return: An indicator integer
+    Check if a Kaster account is created, and if yes, check the state of the account
+    Return 0 if everything is okay.
+    Return -1 if no account is created.
+    Return 1 if something is wrong.
+    :return: An integer indicates user's account state
     """
-    if os.path.isfile(program_file_dir + "/0000.kas") \
-            and os.path.isfile(program_file_dir + "/0000.salt"):  # Basically checks if master password has been created
-        return 0
-    if not os.path.isdir(vault_file_dir) \
-            or not os.path.isfile(vault_file_dir + "/0000.kas") or not os.path.isfile(program_file_dir + "/0000.salt"):
-        return 1
-    if len(fnmatch.filter(os.listdir(vault_file_dir), "*.kas")) > 1:
-        return -1
-
-
-def account_state():
-    """
-    Check account state
-    :return: 0 if everything is okay overall, 1 if something is NOT okay
-    """
-    print("In session: pre_vault.account_state()")
     flag = 0
-    for i in range(1, 10000):
-        if os.path.isfile(vault_file_dir + "{0:04}".format(i) + ".dat"):
-            if not os.path.isfile(vault_file_dir + "{0:04}".format(i) + ".kas"):
-                print("Warning: Password not found for login #%s" % ("{0:04}".format(i)))
-                flag = 1
-            if not os.path.isfile(vault_file_dir + "{0:04}".format(i) + ".kiv"):
-                print("Warning: IV not found for login #%s" % ("{0:04}".format(i)))
-                flag = 1
-    return flag
+    # If no account has not yet been created, exit
+    # It doesn't matter because when a new account is created,
+    # all files containing credentials, key, and IVs will be deleted
+    if not os.path.isfile(program_file_dir + "/0000.kas"):
+        print("No account created.")
+        return -1
+    print("Username: %s" % os.environ["SUDO_USER"])
+    f_checker = open(program_file_dir + "/0000.kas", "rb")
+    first_line = f_checker.readline()
+    if first_line == b"":
+        flag = 1
+        print("Warning: 0000.kas is empty")
+    elif first_line != bytes(os.environ["SUDO_USER"] + "\n", "utf-8"):
+        flag = 1
+        print("Warning: Got wrong username '%s', expected '%s'." % (os.environ["SUDO_USER"], first_line))
+    del first_line
+    if f_checker.read() == b"":
+        flag = 1
+        print("Warning: Couldn't find master password hash.")
+    f_checker.close()
+    if not os.path.isfile(program_file_dir + "/0000.salt"):
+        flag = 1
+        print("Warning: Couldn't find file containing master password salt.")
+        print("Should clear vault's files after this operation.")
+    else:
+        f_checker = open(program_file_dir + "/0000.salt")
+        if len(f_checker.read()) != 32:
+            flag = 1
+            print("Warning: Unexpected file length: File containing salt.")
+    del f_checker
+    for file in fnmatch.filter(os.listdir(vault_file_dir), "*.dat"):
+        if not os.path.isfile(vault_file_dir + "/" + file[:-4] + ".kas"):
+            print("Warning: Couldn't find file containing password for login #%s" % file[:-4])
+            flag = 1
+        if not os.path.isfile(vault_file_dir + "/" + file[:-4] + ".kiv"):
+            print("Warning: Couldn't find file containing IV for login #%s" % file[:-4])
+            flag = 1
+    if flag == 0:
+        print("Account state: OK")
+        del flag
+        return 0
+    else:
+        print("Account state: NOT OK")
+        del flag
+        return 1
 
 
 def create_default_std():
@@ -68,6 +88,10 @@ def sign_up():
     Sign up session
     :return:
     """
+    # Clear vault path
+    if os.path.isdir(vault_file_dir):
+        os.system("rm -rf %s" % vault_file_dir)
+    os.mkdir(vault_file_dir)
     mst_pass = None
     p_hash = SHA512.new()
     try:
@@ -90,7 +114,7 @@ def sign_up():
                     input("Hit Enter to continue")
                     break
         elif getpass("Confirm password: ") == mst_pass:
-            if k_check_pss(mst_pass, std_file_dir + "/kaster.std") != 10:
+            if k_check_pss(mst_pass, std_file_dir + "/kaster.std") != 10:  # Compare password to Kaster's standard
                 os.system("clear")
                 print("Warning: Your password is not strong enough based on Kaster Password Standard.")
                 print("You can enter nothing to get a randomly-generated password")
@@ -106,10 +130,12 @@ def sign_up():
         p_hash.update((mst_pass + salt).encode("utf-8"))
         f.write(p_hash.digest())
         f.close()
+        os.system("chmod o-r %s" % (program_file_dir + "/0000.kas"))
         f = open(program_file_dir + "/0000.salt", "w")
         f.write(salt)
         del salt
         f.close()
+        os.system("chmod o-r %s" % (program_file_dir + "/0000.salt"))
         del f, mst_pass
         print("New account for user %s created." % os.environ["SUDO_USER"])
         LogWriter.write_to_log("Created an account for %s." % os.environ["SUDO_USER"])
@@ -126,24 +152,9 @@ def main(create_acc):
     :param create_acc: Boolean to tell if creating an account is required
     :return:
     """
-    if not os.path.isdir(std_file_dir):
-        os.mkdir(std_file_dir)
-    if not os.path.isdir(vault_file_dir):
-        os.mkdir(vault_file_dir)
     create_default_std()
     # Check if master.kas exists
     # If it does not, it highly means the user hasn't created an account yet
     if not create_acc:
         return
-    if check_user_account() == 1:
-        # Clear vault folder
-        # Just in case the user fucks up the files
-        os.system("rm -rf %s" % vault_file_dir)
-        os.mkdir(vault_file_dir)
-        # Start sign up session
-        sign_up()
-    elif check_user_account() == -1:
-        print("Warning: Master password is not found but files that save login credentials/passwords were found")
-        if input("Do you want to clear them? (You should) [Y|N]") == "Y":
-            os.system("rm -rf %s" % vault_file_dir)
-        sign_up()
+    sign_up()
