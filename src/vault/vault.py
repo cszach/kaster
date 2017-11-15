@@ -21,17 +21,18 @@ def vault(com_list):
     :param com_list: Arguments passed to the vault
     :return:
     """
+    if len(com_list) == 0:
+        Instructor.main("man_vault.txt")
+        sys.exit(0)
+    pre_vault.main(False)
     for v_opt, v_arg in com_list:
         if v_opt in ("-h", "--help"):
             Instructor.main("man_vault.txt")
         elif v_opt == "--account":
-            if pre_vault.check_user_account() == 0:
-                print("Username: %s" % os.environ["SUDO_USER"])
-                if pre_vault.account_state() != 0:
-                    print("Account state: NOT OK")
-                else:
-                    print("Account state: OK")
-            else:
+            print("In session: pre_vault.check_user_account()...")
+            result = pre_vault.check_user_account()
+            print("pre_vault.check_user_account() session ended.")
+            if result == -1:
                 if input("No account created, create one now? [Y|N] ").lower() == "y":
                     pre_vault.main(True)
                 else:
