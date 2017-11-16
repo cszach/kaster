@@ -1,6 +1,5 @@
 # System
 program_file_dir = "/usr/share/kaster"
-log_file_dir = program_file_dir + "/log.dat"
 generator_file_dir = program_file_dir + "/gen"
 std_file_dir = program_file_dir + "/std"
 vault_file_dir = program_file_dir + "/vault"
