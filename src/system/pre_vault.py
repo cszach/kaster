@@ -24,8 +24,11 @@ def check_user_account():
     if not os.path.isfile(program_file_dir + "/0000.kas"):
         print("No account created.")
         return -1
+
     print("Username: %s" % os.environ["SUDO_USER"])
+
     f_checker = open(program_file_dir + "/0000.kas", "rb")
+    # Check 0000.kas file content
     first_line = f_checker.readline()
     if first_line == b"":
         flag = 1
@@ -38,6 +41,8 @@ def check_user_account():
         flag = 1
         print("Warning: Couldn't find master password hash.")
     f_checker.close()
+
+    # Check file containing salt
     if not os.path.isfile(program_file_dir + "/0000.salt"):
         flag = 1
         print("Warning: Couldn't find file containing master password salt.")
@@ -48,6 +53,8 @@ def check_user_account():
             flag = 1
             print("Warning: Unexpected file length: File containing salt.")
     del f_checker
+
+    # Check the availability of vault's files
     for file in fnmatch.filter(os.listdir(vault_file_dir), "*.dat"):
         if not os.path.isfile(vault_file_dir + "/" + file[:-4] + ".kas"):
             print("Warning: Couldn't find file containing password for login #%s" % file[:-4])
@@ -55,6 +62,8 @@ def check_user_account():
         if not os.path.isfile(vault_file_dir + "/" + file[:-4] + ".kiv"):
             print("Warning: Couldn't find file containing IV for login #%s" % file[:-4])
             flag = 1
+
+    # Result
     if flag == 0:
         print("Account state: OK")
         del flag
@@ -126,13 +135,13 @@ def sign_up():
             os.remove(program_file_dir + "/0000.kas")
             del f, mst_pass
             sys.exit(12)
-        salt = k_random.random_hex(32)
-        p_hash.update((mst_pass + salt).encode("utf-8"))
-        f.write(p_hash.digest())
+        salt = k_random.random_hex(32)  # Create salt
+        p_hash.update((mst_pass + salt).encode("utf-8"))  # Create hash
+        f.write(p_hash.digest())  # Save hash
         f.close()
-        os.system("chmod o-r %s" % (program_file_dir + "/0000.kas"))
+        os.system("chmod o-r %s" % (program_file_dir + "/0000.kas"))  # Make file unreadable to non-sudo privilege
         f = open(program_file_dir + "/0000.salt", "w")
-        f.write(salt)
+        f.write(salt)  # Save salt
         del salt
         f.close()
         os.system("chmod o-r %s" % (program_file_dir + "/0000.salt"))
@@ -140,6 +149,8 @@ def sign_up():
         print("New account for user %s created." % os.environ["SUDO_USER"])
         LogWriter.write_to_log("Created an account for %s." % os.environ["SUDO_USER"])
     except (KeyboardInterrupt, Exception):
+        # Remove file containing user name and encrypted password (0000.kas) and file containing salt (0000.salt)
+        # to avoid problems when user enters --account next.
         os.remove(program_file_dir + "/0000.kas")
         if os.path.isfile(program_file_dir + "/0000.salt"):
             os.remove(program_file_dir + "/0000.salt")
@@ -154,7 +165,7 @@ def main(create_acc):
     """
     create_default_std()
     # Check if master.kas exists
-    # If it does not, it highly means the user hasn't created an account yet
+    # If it does not, we just assume that the user hasn't created an account yet
     if not create_acc:
         return
     sign_up()
