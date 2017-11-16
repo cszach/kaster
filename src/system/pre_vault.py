@@ -23,6 +23,8 @@ def check_user_account():
     # all files containing credentials, key, and IVs will be deleted
     if not os.path.isfile(program_file_dir + "/0000.kas"):
         print("No account created.")
+        LogWriter.write_to_log("pre_vault.check_user_account() : "
+                               "0000.kas not found -> No account created, session abort")
         return -1
 
     print("Username: %s" % os.environ["SUDO_USER"])
@@ -33,43 +35,57 @@ def check_user_account():
     if first_line == b"":
         flag = 1
         print("Warning: 0000.kas is empty")
+        LogWriter.write_to_log("pre_vault.check_user_account() : Found file /usr/share/kaster/0000.kas to be empty")
     elif first_line != bytes(os.environ["SUDO_USER"] + "\n", "utf-8"):
         flag = 1
         print("Warning: Got wrong username '%s', expected '%s'." % (os.environ["SUDO_USER"], first_line))
+        LogWriter.write_to_log("pre_vault.check_user_account() : Username that is written in "
+                               "/usr/share/kaster/0000.kas does not seem to match with current username")
     del first_line
     if f_checker.read() == b"":
         flag = 1
         print("Warning: Couldn't find master password hash.")
+        LogWriter.write_to_log("pre_vault.check_user_account() : Found no password hash, this is a danger")
     f_checker.close()
 
     # Check file containing salt
     if not os.path.isfile(program_file_dir + "/0000.salt"):
         flag = 1
         print("Warning: Couldn't find file containing master password salt.")
+        LogWriter.write_to_log("pre_vault.check_user_account() : Found no file containing the salt that is used "
+                               "for master password's hashing, this is a danger")
         print("Should clear vault's files after this operation.")
     else:
         f_checker = open(program_file_dir + "/0000.salt")
         if len(f_checker.read()) != 32:
             flag = 1
             print("Warning: Unexpected file length: File containing salt.")
+            LogWriter.write_to_log("pre_vault.check_user_account() : Unexpected length: /usr/share/kaster/0000.salt, "
+                                   "the file might have been modified")
     del f_checker
 
     # Check the availability of vault's files
     for file in fnmatch.filter(os.listdir(vault_file_dir), "*.dat"):
         if not os.path.isfile(vault_file_dir + "/" + file[:-4] + ".kas"):
             print("Warning: Couldn't find file containing password for login #%s" % file[:-4])
+            LogWriter.write_to_log("pre_vault.check_user_account() : "
+                                   "Found no file containing password for login #%s" % file[:-4])
             flag = 1
         if not os.path.isfile(vault_file_dir + "/" + file[:-4] + ".kiv"):
             print("Warning: Couldn't find file containing IV for login #%s" % file[:-4])
+            LogWriter.write_to_log("pre_vault.check_user_account() : "
+                                   "Found no file containing IV for login #%s" % file[:-4])
             flag = 1
 
     # Result
     if flag == 0:
         print("Account state: OK")
+        LogWriter.write_to_log("pre_vault.check_user_account() : Found no problem, session end")
         del flag
         return 0
     else:
         print("Account state: NOT OK")
+        LogWriter.write_to_log("pre_vault.check_user_account() : Found problem(s), session end")
         del flag
         return 1
 

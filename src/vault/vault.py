@@ -2,6 +2,7 @@ import sys
 import os
 sys.path.insert(0, "../system")
 import global_var
+import LogWriter
 import pre_vault
 import Instructor
 
@@ -29,9 +30,14 @@ def vault(com_list):
         if v_opt in ("-h", "--help"):
             Instructor.main("man_vault.txt")
         elif v_opt == "--account":
+            LogWriter.write_to_log("Start session: pre_vault.check_user_account()")
             print("In session: pre_vault.check_user_account()...")
-            result = pre_vault.check_user_account()
-            print("pre_vault.check_user_account() session ended.")
+            try:
+                result = pre_vault.check_user_account()
+            except Exception:
+                print("Session encountered an error: pre_vault.check_user_account()")
+            print("Finish session: pre_vault.check_user_account()...")
+            LogWriter.write_to_log("End session: pre_vault.check_user_account()")
             if result == -1:
                 if input("No account created, create one now? [Y|N] ").lower() == "y":
                     pre_vault.main(True)
