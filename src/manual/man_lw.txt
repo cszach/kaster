@@ -6,12 +6,13 @@ Log Writer
 
   Options:
 
-    --lw     : Call log writer
-    --create : Create a log file
-    --append : Append a string to the log file
-    --log    : Just like --append, but append the string with the date and time in front
-    --clear  : Clear content in the log file
-    --delete : Delete the log file
+        --lw     : Call log writer
+    -h, --help   : Print this manual page and exit
+        --create : Create a log file
+        --append : Append a string to the log file
+        --log    : Just like --append, but append the string with the date and time in front
+        --clear  : Clear content in the log file
+        --delete : Delete the log file
 
 
   Examples:
