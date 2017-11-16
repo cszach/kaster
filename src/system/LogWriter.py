@@ -1,12 +1,11 @@
 import sys
 import os
-import global_var
+from global_var import *
 from k_date import k_now
 import Instructor
 
 
 # Kaster' log file manipulator, deals everything that involves the log file
-origin = os.getcwd()
 
 
 def create_log_file():
@@ -14,19 +13,13 @@ def create_log_file():
     Create program's log file (log.dat) in /usr/share/kaster
     :return:
     """
-    try:
-        if not os.path.isdir(global_var.program_file_dir):  # Check program's directory existence
-            os.mkdir(global_var.program_file_dir)  # If the directory does not exist then create one
-        if not os.path.isfile(global_var.log_file_dir):
-            open(global_var.log_file_dir, "a").close()  # Create empty log file
-        with open(global_var.log_file_dir, "w") as f:
-            f.write("Log file created on %s\n" % k_now(global_var.time_format, global_var.date_format))
-        del f
-    except Exception as e:
-        print("An error has occurred. If permission is denied, try running the program as root.")
-        print("Error:")
-        print(e)
-        sys.exit(1)
+    if not os.path.isdir(program_file_dir):  # Check program's directory existence
+        os.mkdir(program_file_dir)  # If the directory does not exist then create one
+    if not os.path.isfile(program_file_dir + "/log.dat"):
+        open(program_file_dir + "/log.dat", "a").close()  # Create empty log file
+    with open(program_file_dir + "/log.dat", "w") as f:
+        f.write("Log file created on %s\n" % k_now(time_format, date_format))
+    del f
 
 
 def write_to_log(log_str):
@@ -35,13 +28,10 @@ def write_to_log(log_str):
     :param log_str: The log message to be written to the log file
     :return:
     """
-    try:
-        with open(global_var.log_file_dir, "a") as f:
-            f.write(("[%s] %s" + "\n") % (k_now(global_var.time_format, global_var.date_format), log_str))
-    except IOError:
-        if not os.path.isfile(global_var.log_file_dir):
-            create_log_file()
-            print("Error: Log file was not found. Outputs weren't saved.")
+    if not os.path.isfile(program_file_dir + "/log.dat"):
+        create_log_file()
+    with open(program_file_dir + "/log.dat", "a") as f:
+        f.write(("[%s] %s" + "\n") % (k_now(time_format, date_format), log_str))
 
 
 def delete_log_file():
@@ -49,8 +39,8 @@ def delete_log_file():
     Delete the log file
     :return:
     """
-    if os.path.isfile(global_var.log_file_dir):
-        os.remove(global_var.log_file_dir)
+    if os.path.isfile(program_file_dir + "/log.dat"):
+        os.remove(program_file_dir + "/log.dat")
 
 
 def lw_main(com_list):
@@ -68,17 +58,18 @@ def lw_main(com_list):
         elif l_opt == "--create":
             create_log_file()
         elif l_opt == "--append":
-            if os.path.isfile(global_var.log_file_dir):
-                with open(global_var.log_file_dir, "a") as f:
+            if os.path.isfile(program_file_dir + "/log.dat"):
+                with open(program_file_dir + "/log.dat", "a") as f:
                     f.write(l_arg + "\n")
                 del f
+
             else:
                 if input("Log file does not exist, create one and write now? [Y|N] ").lower() == "y":
                     create_log_file()
                     lw_main([(l_opt, l_arg)] + com_list[l_idx + 1:])
                     break
         elif l_opt == "--log":
-            if os.path.isfile(global_var.log_file_dir):
+            if os.path.isfile(program_file_dir + "/log.dat"):
                 write_to_log(l_arg)
             else:
                 if input("Log file does not exist, create one and write now? [Y|N] ").lower() == "y":
@@ -86,9 +77,9 @@ def lw_main(com_list):
                     lw_main([(l_opt, l_arg)] + com_list[l_idx + 1:])
                     break
         elif l_opt == "--clear":
-            if os.path.isfile(global_var.log_file_dir):
-                os.remove(global_var.log_file_dir)
-                open(global_var.log_file_dir, "a").close()
+            if os.path.isfile(program_file_dir + "/log.dat"):
+                os.remove(program_file_dir + "/log.dat")
+                create_log_file()
             else:
                 print("Log file does not exist")
         elif l_opt == "--delete":
