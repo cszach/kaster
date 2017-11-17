@@ -173,6 +173,42 @@ def sign_up():
         return
 
 
+def sign_in():
+    """
+    Sign in session
+    :return:
+    """
+    print("Sign In")
+    print("==============================")
+    print("Username: %s" % os.environ["SUDO_USER"])
+
+    # Get password hash right away
+    # No get password then get hash 'cuz that's more dangerous, perhaps?
+    f = open(program_file_dir + "/0000.kas", "rb")
+    f.readline()
+    p_hash = f.read()
+    f.close()
+
+    # Get salt
+    f = open(program_file_dir + "/0000.salt", "r")
+    p_salt = f.read()
+    f.close()
+    del f
+
+    input_mst_pass = getpass("Password: ")
+    hash_factor = SHA512.new()
+    hash_factor.update((input_mst_pass + p_salt).encode("utf-8"))
+    del input_mst_pass, p_salt
+    # Check if the input password hash is the same as the saved hash
+    if hash_factor.digest() != p_hash:
+        print("Authentication failed: Wrong password.")
+        del p_hash, hash_factor
+        return 1
+
+    del p_hash, hash_factor
+    return 0
+
+
 def main(create_acc):
     """
     All processes to be ran if pre_vault is called.
@@ -180,8 +216,7 @@ def main(create_acc):
     :return:
     """
     create_default_std()
-    # Check if master.kas exists
-    # If it does not, we just assume that the user hasn't created an account yet
+
     if not create_acc:
         return
     sign_up()
