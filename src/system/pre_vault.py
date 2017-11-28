@@ -139,10 +139,12 @@ def sign_up():
                     input("Hit Enter to continue")
                     break
         elif getpass("Confirm password: ") == mst_pass:
-            if k_check_pss(mst_pass, std_file_dir + "/kaster.std") != 10:  # Compare password to Kaster's standard
+            pss_score = k_check_pss(mst_pass, std_file_dir + "/kaster.std")
+            if pss_score != 10:  # Compare password to Kaster's standard
                 os.system("clear")
-                print("Warning: Your password is not strong enough based on Kaster Password Standard.")
+                print("Warning: Your password is not strong enough based on Kaster Password Standard (%d/10)." % pss_score)
                 print("You can enter nothing to get a randomly-generated password")
+                del pss_score, mst_pass
                 sign_up()
                 return
         else:
