@@ -13,6 +13,9 @@ def create_log_file():
     Create program's log file (log.dat) in /usr/share/kaster
     :return:
     """
+    if os.path.isfile(program_file_dir + "/log.dat"):
+        print("Log file is already created.")
+        return
     if not os.path.isdir(program_file_dir):  # Check program's directory existence
         os.mkdir(program_file_dir)  # If the directory does not exist then create one
     if not os.path.isfile(program_file_dir + "/log.dat"):
