@@ -1,5 +1,6 @@
 import sys
 import os
+import traceback
 sys.path.insert(0, "../system")
 import global_var
 import LogWriter
@@ -34,8 +35,12 @@ def vault(com_list):
             print("In session: pre_vault.check_user_account()...")
             try:
                 result = pre_vault.check_user_account()
-            except Exception:
+            except Exception as e:
+                LogWriter.write_to_log("Failed session: pre_vault.check_user_account() with exception: %s" % e)
                 print("Session encountered an error: pre_vault.check_user_account()")
+                print("Full traceback")
+                traceback.print_exc()
+                sys.exit(1)
             print("Finish session: pre_vault.check_user_account()...")
             LogWriter.write_to_log("End session: pre_vault.check_user_account()")
             if result == -1:
