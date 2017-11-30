@@ -1,1 +1,14 @@
 Password Manager
+  Description:
+
+    The Password Manager is a subprogram (which is actually the core of the program) that manages logins' credentials.
+
+
+  Options:
+
+        --vault   : Call password manager
+    -h, --help    : Print this manual page and exit
+        --account : Start session pre_vault.check_user_account() to check user's Kaster account's status
+                    If no account is created, prompt to create one
+        --new     : Create a new login if the user has an account and the account state is okay
+                    If there is no account or account's state is not okay, alert user and exit
