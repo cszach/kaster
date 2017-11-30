@@ -22,8 +22,8 @@ Generator
 
   Examples:
 
-    Print this manual page and exit: ./kaster.py --gen
-    Generate a random password: ./kaster.py --gen --pss"
+    Print this manual page and exit: ./kaster.py --gen -h
+    Generate a random password: ./kaster.py --gen
     Generate 3 random passwords, all are 15 characters in length: ./kaster.py --gen -l 15 --duplicate="3"
     Generate 5 random passwords that only contain uppercase characters: ./kaster.py --gen --duplicate="5" --upper
     Generate 2 random passwords that only use lowercase characters and numbers: ./kaster.py --gen --duplicate="2" --lower --number
