@@ -10,6 +10,7 @@ def main(man_page_name):
         man_pages = ["man_generic.txt", "man_lw.txt", "man_gen.txt"]
         for man in man_pages:
             main(man)
+            input()
         del man, man_pages
     else:
         # Read specified manual page
