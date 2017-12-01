@@ -1,4 +1,5 @@
 from global_var import uppercase_chars, lowercase_chars, numbers, special_chars
+from LogWriter import write_to_log
 
 
 def k_count_occur(input_str, holder_str):
@@ -65,6 +66,8 @@ def k_check_pss(pss, k_std_file_path):
     :param k_std_file_path: A JSON-like file defining standards for a strong password
     :return: A value rating how much the password follows the standard on a scale of 10
     """
+    write_to_log("Start session: k_check_pss()")
+    print("In session: k_check_pss()")
     f = open(k_std_file_path)
     std_p_ep = eval(f.readline()[:-1])
     std_p_length = f.readline()[:-1]
@@ -90,5 +93,7 @@ def k_check_pss(pss, k_std_file_path):
             flag -= 1
         del top_row, middle_row, bottom_row
     del std_p_ep, std_p_length, std_p_upper, std_p_lower, std_p_num, std_p_sym
+    print("Finish session: k_check_pss()")
+    write_to_log("End session: k_check_pss()")
     return flag
 
