@@ -37,17 +37,34 @@ def close_score(ep, main_inp, std_inp):
     :param std_inp: A string defining the range that main_inp should be in within
     :return: A score (0, 1, 2) that tells how close main_inp is to the range given by std_inp
     """
-    std_inp_min = int(std_inp.split(":")[0])
-    std_inp_max = int(std_inp.split(":")[1])
-    if std_inp_min <= main_inp <= std_inp_max:
+    std_inp_min = std_inp.split(":")[0]
+    std_inp_max = std_inp.split(":")[1]
+
+    if std_inp_min == std_inp_max == "":  # This means std_inp = ":", which defines nothing and allows any value
         return 2
-    len_range = std_inp_max - std_inp_min
-    range_one_min = std_inp_min - (len_range * (ep / 100))
-    range_one_max = std_inp_max + (len_range * (ep / 100))
-    if range_one_min <= main_inp <= range_one_max:
-        del len_range, range_one_min, range_one_max
-        return 1
-    del len_range, range_one_min, range_one_max
+
+    if std_inp_min.isdigit() and std_inp_max.isdigit():
+        std_inp_min = int(std_inp_min)
+        std_inp_max = int(std_inp_max)
+        if std_inp_min <= main_inp <= std_inp_max:
+            return 2
+        else:
+            len_range = std_inp_max - std_inp_min
+            range_one_min = std_inp_min - (len_range * (ep / 100))
+            range_one_max = std_inp_max + (len_range * (ep / 100))
+            if range_one_min <= main_inp <= range_one_max:
+                del len_range, range_one_min, range_one_max
+                return 1
+            del len_range, range_one_min, range_one_max
+
+    if std_inp_min.isdigit():
+        if main_inp >= int(std_inp_min):
+            return 2
+
+    if std_inp_max.isdigit():
+        if main_inp <= int(std_inp_max):
+            return 2
+
     return 0
 
 
