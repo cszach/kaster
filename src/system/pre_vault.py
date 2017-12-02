@@ -1,5 +1,6 @@
 import sys
 import os
+import traceback
 from getpass import getpass
 import fnmatch
 from global_var import *
@@ -98,12 +99,13 @@ def create_default_std():
     if not os.path.isdir(std_file_dir):
         os.mkdir(std_file_dir)
     f = open(std_file_dir + "/kaster.std", "w")
+    f.write("Kaster Password Standard\n")
     f.write("2 / 9 * 100\n")
     f.write("12:30\n")
-    f.write("2:4\n")
-    f.write("2:4\n")
-    f.write("2:4\n")
-    f.write("2:4\n")
+    f.write("3:\n")
+    f.write("3:\n")
+    f.write("3:\n")
+    f.write("3:\n")
     f.close()
     del f
 
@@ -166,12 +168,21 @@ def sign_up():
         del f, mst_pass
         print("New account for user %s created." % os.environ["SUDO_USER"])
         LogWriter.write_to_log("Created an account for %s." % os.environ["SUDO_USER"])
-    except (KeyboardInterrupt, Exception):
-        # Remove file containing user name and encrypted password (0000.kas) and file containing salt (0000.salt)
-        # to avoid problems when user enters --account next.
+    except KeyboardInterrupt:
         os.remove(program_file_dir + "/0000.kas")
         if os.path.isfile(program_file_dir + "/0000.salt"):
             os.remove(program_file_dir + "/0000.salt")
+        LogWriter.write_to_log("Quit sign up session due to keyboard interruption.")
+        print("Got keyboard interruption, quitting...")
+        return
+    except Exception as e:
+        os.remove(program_file_dir + "/0000.kas")
+        if os.path.isfile(program_file_dir + "/0000.salt"):
+            os.remove(program_file_dir + "/0000.salt")
+        LogWriter.write_to_log("An error occurred during a sign up session: %s" % e)
+        print("An error occurred during sign up session.")
+        print("=====Traceback=====")
+        traceback.print_exc()
         return
 
 
