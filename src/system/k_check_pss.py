@@ -56,6 +56,7 @@ def close_score(ep, main_inp, std_inp):
                 del len_range, range_one_min, range_one_max
                 return 1
             del len_range, range_one_min, range_one_max
+            return 0
 
     if std_inp_min.isdigit():
         if main_inp >= int(std_inp_min):
@@ -86,6 +87,7 @@ def k_check_pss(pss, k_std_file_path):
     write_to_log("Start session: k_check_pss()")
     print("In session: k_check_pss()")
     f = open(k_std_file_path)
+    f.readline()
     std_p_ep = eval(f.readline()[:-1])
     std_p_length = f.readline()[:-1]
     std_p_upper = f.readline()[:-1]
