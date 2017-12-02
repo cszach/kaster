@@ -17,6 +17,7 @@ import global_var
 import pre_kaster
 import LogWriter
 import Instructor
+import k_std
 sys.path.insert(0, "generator")
 import generator
 sys.path.insert(0, "vault")
@@ -41,6 +42,7 @@ try:
                                ["help", "version", "info",
                                 "lw", "gen", "vault",
                                 "create", "append=", "log=", "clear", "delete",
+                                "std=",
                                 "length=", "duplicate=", "upper", "lower", "number", "symbol",
                                 "output=",
                                 "account"])
@@ -62,6 +64,9 @@ for opt, arg in opts:
         print("Brought to you by " + __author__)
     elif opt == "--lw":
         LogWriter.lw_main(opts[1:])
+    elif opt == "--std":
+        if k_std.check_std(arg) == 0:
+            k_std.read_std(arg)
     elif opt == "--gen":
         try:
             generator.generator(opts[1:])

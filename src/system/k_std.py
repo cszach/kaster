@@ -27,18 +27,21 @@ def read_std(std_file_name):
     :return:
     """
     f = open(std_file_dir + "/" + std_file_name, "r")
-    print("The %s defines the following rules for password to be considered \"strong\":" % f.readline())
+    print("The %s defines the following rules for a password to be considered \"strong\":" % f.readline()[:-1])
     ep = eval(f.readline())
     print("Length: %s" % to_word(f.readline()))
     print("Number of uppercase characters: %s" % to_word(f.readline()))
     print("Number of lowercase characters: %s" % to_word(f.readline()))
     print("Number of numerical characters: %s" % to_word(f.readline()))
     print("Number of special characters: %s" % to_word(f.readline()))
+    f.close()
+    del f
     if ep == 0:
         print("All of the above rules must be strictly followed under this standard.")
     else:
         print("For factors that have a range (a minimum value and a maximum value),")
-        print("this standard allows them to be about %f%% off the range." % format(ep, ".2f"))
+        print("this standard allows them to be about %s%% off the range." % format(ep, ".2f"))
+    del ep
 
 
 def check_std(std_file_name):
@@ -68,17 +71,20 @@ def check_std(std_file_name):
     flag = None
     try:
         flag = eval(f.readline())
-    except SyntaxError:
+    except (NameError, SyntaxError):
         result = 1
         write_to_log("k_std.check_std() : Cannot evaluate expression at line 2")
         print("Warning: Cannot evaluate expression at line 2, which is used to get the second range")
     for i in range(5):
         flag = f.readline()
         if (not flag.split(":")[0].isdigit() and flag.split(":")[0] != "") or \
-                (not flag.split(":")[1].isdigit() and flag.split(":")[1] != "") or (flag.count(":") != 1):
+                (not flag.split(":")[1][:-1].isdigit() and flag.split(":")[1][:-1] != "") or (flag.count(":") != 1):
             result = 1
-            write_to_log("k_std.check_std() : Invalid rule: %s" % flag)
+            write_to_log("k_std.check_std() : Invalid rule: %s" % flag[:-1])
+            print("Warning: Invalid rule: %s" % flag[:-1])
             continue
     f.close()
+    write_to_log("End session: k_std.check_std()")
+    print("Finish session: k_std.check_std()")
     del f, flag
     return result
