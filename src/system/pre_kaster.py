@@ -1,5 +1,4 @@
 # File for handling stuffs before the program actually start
-import sys
 import os
 from global_var import *
 from datetime import datetime
@@ -9,7 +8,8 @@ import traceback
 
 def renew_log_file():
     """
-    Delete the log file if 30 days (or more) have passed, and create the log file again
+    Delete the log file if either 30 days (or more) have passed or it is larger than 10MB in size,
+    and create the log file again.
     :return:
     """
     # Get the date when the log file was created
@@ -17,6 +17,12 @@ def renew_log_file():
         f = open(program_file_dir + "/log.dat", "r")
     else:
         return  # If no log file found then just return
+
+    if os.path.getsize(program_file_dir + "/log.dat") > 50000000:  # Check if log file's size is larger than 50MB
+        LogWriter.delete_log_file()  # Remove the log file
+        LogWriter.create_log_file()  # Create new, empty log file
+        return
+
     the_date = f.readline()  # Get the first line of the log file, which gives the time when the log file was created
     f.close()
     del f
