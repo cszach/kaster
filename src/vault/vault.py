@@ -155,7 +155,7 @@ def get_login(login_id, master_password):
     del pss
 
     if comment != "":
-        print("Comment: %s" % comment[:-1])
+        print("Comment: %s" % comment)
     del comment
 
 
@@ -197,6 +197,7 @@ def vault(com_list):
                 sys.exit(1)  # Login failed
             if len(com_list[v_idx + 1:]) == 0:  # No further argument -> Login UI
                 LogWriter.write_to_log("Start session: vault > new_login_ui()")
+                print()
                 print("In session: new_login_ui()")
                 try:
                     new_login_ui(master)
@@ -223,7 +224,6 @@ def vault(com_list):
             master = pre_vault.sign_in()
             if master == 1:
                 del master
-                print("Authentication failed: Wrong password")
                 sys.exit(1)  # Login failed
             print()
             get_id = v_arg
