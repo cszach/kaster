@@ -6,6 +6,7 @@ from getpass import getpass
 import fnmatch
 from Crypto.Hash import SHA256
 from Crypto.Cipher import AES
+import pyperclip
 sys.path.insert(0, "../system")
 import global_var
 import LogWriter
@@ -42,6 +43,25 @@ def mediate_check_account():
     print("Finish session: pre_vault.check_user_account()...")
     LogWriter.write_to_log("End session: pre_vault.check_user_account()")
     return result
+
+
+def pre_action():
+    """
+    An operation which alert the user if there's no Kaster account
+    or there's a problem with their account (files missing, invalid files,...).
+    Typically put before performing a password manager action (like --new, --get, ...)
+    :return:
+    """
+    check_result = mediate_check_account()
+    if check_result == -1:
+        print("No account created. Use './kaster.py --vault --account' to create one.")
+        sys.exit(0)
+    if check_result == 1:
+        print("Warning: Found problem(s) during pre_vault.check_user_account() session, "
+              "resolve them and try again")
+        sys.exit(1)
+    del check_result
+    print()
 
 
 def key(inp_pass):
@@ -148,7 +168,7 @@ def get_login(login_id, master_password):
     del f
 
     flag = AES.new(key(master_password), AES.MODE_CFB, iv)
-    pss = flag.decrypt(pss)
+    pss = flag.decrypt(pss).decode("utf-8")
     del flag
     pss = "".join(["*" for _ in pss])
     print("Password: %s" % pss)
@@ -179,15 +199,7 @@ def vault(com_list):
                 else:
                     sys.exit(0)
         elif v_opt == "--new":
-            check_result = mediate_check_account()
-            if check_result == -1:
-                print("No account created. Use './kaster.py --vault --account' to create one.")
-                sys.exit(0)
-            if check_result == 1:
-                print("Warning: Found problem(s) during pre_vault.check_user_account() session, "
-                      "resolve them and try again")
-                sys.exit(1)
-            del check_result
+            pre_action()
             if len(fnmatch.filter(os.listdir(global_var.vault_file_dir), "*.dat")) == 9999:
                 print("Warning: Cannot save a new login, try deleting an existed login")
                 sys.exit(1)
@@ -212,15 +224,7 @@ def vault(com_list):
                 LogWriter.write_to_log("End session: vault > new_login_ui()")
                 print("Finish session: new_login_ui()")
         elif v_opt == "--get":
-            check_result = mediate_check_account()
-            if check_result == -1:
-                print("No account created. Use './kaster.py --vault --account' to create one.")
-                sys.exit(0)
-            if check_result == 1:
-                print("Warning: Found problem(s) during pre_vault.check_user_account() session, "
-                      "resolve them and try again")
-                sys.exit(1)
-            del check_result
+            pre_action()
             master = pre_vault.sign_in()
             if master == 1:
                 del master
@@ -228,8 +232,34 @@ def vault(com_list):
             print()
             get_id = v_arg
             get_login(get_id, master)
-            del master
-            del get_id
+            del master, get_id
+        elif v_opt == "--getpass":
+            pre_action()
+            master = pre_vault.sign_in()
+            if master == 1:
+                del master
+                sys.exit(1)  # Login failed
+
+            get_id = v_arg
+
+            # Get IV
+            f = open("%s/%s.kiv" % (global_var.vault_file_dir, get_id), "rb")
+            iv = f.read()
+            f.close()
+            # Get encrypted password
+            f = open("%s/%s.kas" % (global_var.vault_file_dir, get_id), "rb")
+            pss = f.read()
+            f.close()
+            del f
+
+            # Decrypt password
+            flag = AES.new(key(master), AES.MODE_CFB, iv)
+            del iv, master
+            pss = flag.decrypt(pss)
+            del flag
+            pyperclip.copy(pss.decode("utf-8"))  # Copy password to clipboard
+            print("Password for login #%s copied." % get_id)
+            del pss, get_id
         else:
             print("Not recognized option '%s'. Quitting..." % v_opt)
             sys.exit(1)
