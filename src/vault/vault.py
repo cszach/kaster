@@ -2,10 +2,9 @@ import sys
 import os
 import traceback
 from random import randint
-import zlib
 from getpass import getpass
 import fnmatch
-from Crypto.Hash import SHA512
+from Crypto.Hash import SHA256
 from Crypto.Cipher import AES
 sys.path.insert(0, "../system")
 import global_var
@@ -59,13 +58,13 @@ def key(inp_pass):
     f.close()
 
     # Create hash
-    f_hash = SHA512.new()
+    f_hash = SHA256.new()
     f_hash.update((inp_pass + salt).encode("utf-8"))
     del salt
     flag = f_hash.digest()
     del f_hash
 
-    return zlib.compress(flag)
+    return flag
 
 
 def new_login_ui(master_password):
@@ -104,13 +103,13 @@ def new_login_ui(master_password):
     f.close()
 
     # Create IV and save it
-    iv = os.urandom(24)
+    iv = os.urandom(16)
     f = open("%s/%s.kiv" % (global_var.vault_file_dir, login_id), "wb")
     f.write(iv)
     f.close()
 
     # Save encrypted password
-    flag = AES.new(key(master_password), AES.MODE_CBC, iv)
+    flag = AES.new(key(master_password), AES.MODE_CFB, iv)
     del iv
     f = open("%s/%s.kas" % (global_var.vault_file_dir, login_id), "wb")
     f.write(flag.encrypt(password))
@@ -139,13 +138,15 @@ def vault(com_list):
                 else:
                     sys.exit(0)
         elif v_opt == "--new":
-            if mediate_check_account() == -1:
+            check_result = mediate_check_account()
+            if check_result == -1:
                 print("No account created. Use './kaster.py --vault --account' to create one.")
                 sys.exit(0)
-            if mediate_check_account() == 1:
+            if check_result == 1:
                 print("Warning: Found problem(s) during pre_vault.check_user_account() session, "
                       "resolve them and try again")
                 sys.exit(1)
+            del check_result
             if len(fnmatch.filter(os.listdir(global_var.vault_file_dir), "*.dat")) == 9999:
                 print("Warning: Cannot save a new login, try deleting an existed login")
                 sys.exit(1)
@@ -153,7 +154,7 @@ def vault(com_list):
             if master == 1:
                 del master
                 sys.exit(1)  # Login failed
-            if com_list[v_idx + 1:] == 0:  # No further argument -> Login UI
+            if len(com_list[v_idx + 1:]) == 0:  # No further argument -> Login UI
                 LogWriter.write_to_log("Start session: vault > new_login_ui()")
                 print("In session: new_login_ui()")
                 try:
@@ -163,7 +164,7 @@ def vault(com_list):
                     del master
                     LogWriter.write_to_log("Failed session: vault > new_login_ui() with exception: %s" % e)
                     print("Session encountered an error: new_login_ui()")
-                    print("Full traceback")
+                    print("=====Traceback=====")
                     traceback.print_exc()
                     sys.exit(1)
                 LogWriter.write_to_log("End session: vault > new_login_ui()")
