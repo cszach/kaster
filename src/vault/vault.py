@@ -357,6 +357,105 @@ def vault(com_list):
             pyperclip.copy(pss.decode("utf-8"))  # Copy password to clipboard
             print("Password for login #%s copied." % get_id)
             del pss, get_id
+        elif v_opt == "--edit":
+            pre_action()
+            master = pre_vault.sign_in()
+            if master == 1:
+                del master
+                sys.exit(1)  # Login failed
+            if len(com_list[v_idx + 1:]) == 0:
+                print("Warning: Must specify more options")
+                print("Type './kaster.py --vault --help' for the manual page")
+                sys.exit(1)
+            if not os.path.isfile("%s/%s.dat" % (global_var.vault_file_dir, v_arg)):
+                LogWriter.write_to_log("User attempts to edit a login but Kaster couldn't find it")
+                print("Error: Could not find login #%s" % v_arg)
+                sys.exit(1)
+            login_id = v_arg
+            for edit_opt, new_value in com_list[v_idx + 1:]:
+                if edit_opt == "--name":
+                    flag = new_value
+                    if new_value == "":
+                        print("Empty input for new login name, assigning it to login's ID: %s" % login_id)
+                        flag = login_id
+                    f = open("%s/%s.dat" % (global_var.vault_file_dir, login_id), "rb")
+                    f.readline()
+                    rest = f.read()
+                    f.close()
+                    f = open("%s/%s.dat" % (global_var.vault_file_dir, login_id), "wb")
+                    f.write(bytes(flag + "\n", "utf-8"))
+                    del flag
+                    f.write(rest)
+                    del rest
+                    f.close()
+                    del f
+                elif edit_opt == "--login":
+                    flag = new_value
+                    if new_value == "":
+                        print("Empty input for new login, assigning it to username %s" % os.environ["SUDO_USER"])
+                        flag = os.environ["SUDO_USER"]
+                    f = open("%s/%s.dat" % (global_var.vault_file_dir, login_id), "rb")
+                    mediate_a = f.readline()
+                    f.readline()
+                    rest = f.read()
+                    f.close()
+                    f = open("%s/%s.dat" % (global_var.vault_file_dir, login_id), "wb")
+                    f.write(mediate_a)
+                    del mediate_a
+                    f.write(bytes(flag + "\n", "utf-8"))
+                    del flag
+                    f.write(rest)
+                    del rest
+                    f.close()
+                    del f
+                elif edit_opt == "--password":
+                    flag = new_value
+                    if new_value == "":
+                        print("Empty input for new password, assigning it to a random one...")
+                        flag = random_string("ps")
+                    os.remove("%s/%s.kas" % (global_var.vault_file_dir, login_id))
+                    os.remove("%s/%s.kiv" % (global_var.vault_file_dir, login_id))
+
+                    # IV
+                    iv = os.urandom(16)
+                    f = open("%s/%s.kiv" % (global_var.vault_file_dir, login_id), "wb")
+                    f.write(iv)
+                    f.close()
+
+                    # Save (encrypted) password
+                    enc_object = AES.new(key(master), AES.MODE_CFB, iv)
+                    del iv
+                    f = open("%s/%s.kas" % (global_var.vault_file_dir, login_id), "wb")
+                    f.write(enc_object.encrypt(flag))
+                    del enc_object, flag
+                    f.close()
+                    del f
+                elif edit_opt == "--comment":
+                    flag = new_value
+                    if new_value == "":
+                        print("Empty input for comment, ignoring...")
+                        continue
+                    f = open("%s/%s.dat" % (global_var.vault_file_dir, login_id), "rb")
+                    flag_a = f.readline()
+                    flag_b = f.readline()
+                    f.close()
+                    f = open("%s/%s.dat" % (global_var.vault_file_dir, login_id), "wb")
+                    f.write(flag_a)
+                    del flag_a
+                    f.write(flag_b)
+                    del flag_b
+                    f.write(bytes(flag + "\n", "utf-8"))
+                    del flag
+                    f.close()
+                    del f
+                else:
+                    print("Error: Invalid option %s, aborting..." % edit_opt)
+                    sys.exit(1)
+            del master
+            print("Data updated")
+            LogWriter.write_to_log("Edited login #%s" % login_id)
+            del login_id
+            sys.exit(0)
         elif v_opt == "--del":
             pre_action()
             get_id = "%04d" % int(v_arg)
@@ -400,6 +499,7 @@ def vault(com_list):
             if master == 1:
                 del master
                 sys.exit(1)  # Login failed
+            del master
 
             if input("Are you really sure you want to delete all saved logins? [Y|N] ").lower() == "y":
                 clear_vault_dir()
