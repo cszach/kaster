@@ -240,7 +240,7 @@ def vault(com_list):
                 del master
                 sys.exit(1)  # Login failed
 
-            get_id = v_arg
+            get_id = "%04d" % int(v_arg)
 
             # Get IV
             f = open("%s/%s.kiv" % (global_var.vault_file_dir, get_id), "rb")
@@ -262,7 +262,7 @@ def vault(com_list):
             del pss, get_id
         elif v_opt == "--del":
             pre_action()
-            get_id = v_arg
+            get_id = "%04d" % int(v_arg)
             if not os.path.isfile("%s/%s.dat" % (global_var.vault_file_dir, get_id)):  # If the login does not exist :/
                 LogWriter.write_to_log("User attempts to delete a login but Kaster couldn't find it")
                 print("Error: Couldn't find login associated with ID #%s, quitting..." % get_id)
@@ -272,7 +272,9 @@ def vault(com_list):
             if master == 1:
                 del master
                 sys.exit(1)  # Login failed
+            del master
 
+            flag_exitcode = 0
             if input("Are you really sure you want to delete login #%s? [Y|N] " % get_id).lower() == "y":
                 try:
                     os.remove("%s/%s.dat" % (global_var.vault_file_dir, get_id))
@@ -284,11 +286,29 @@ def vault(com_list):
                     print("An error occurred while deleting login #%s." % get_id)
                     print("=====Traceback=====")
                     traceback.print_exc()
+                    flag_exitcode = 1
                 finally:
                     del get_id
+                    sys.exit(flag_exitcode)
             else:
                 print("Aborting...")
+        elif v_opt == "--delall":
+            pre_action()
+
+            if len(fnmatch.filter(os.listdir(global_var.vault_file_dir), "*.dat")) == 0:
+                print("No saved login.")
                 sys.exit(0)
+
+            master = pre_vault.sign_in()
+            if master == 1:
+                del master
+                sys.exit(1)  # Login failed
+
+            if input("Are you really sure you want to delete all saved logins? [Y|N] ").lower() == "y":
+                clear_vault_dir()
+                LogWriter.write_to_log("Removed all saved logins")
+            else:
+                print("Aborting...")
         else:
             print("Not recognized option '%s'. Quitting..." % v_opt)
             sys.exit(1)
