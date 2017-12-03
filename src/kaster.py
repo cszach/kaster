@@ -45,7 +45,7 @@ try:
                                 "std=",
                                 "length=", "duplicate=", "upper", "lower", "number", "symbol",
                                 "output=",
-                                "account", "new", "get="])
+                                "account", "new", "get=", "getpass="])
 except getopt.GetoptError as e:
     print("Error: ", end="")
     print(e)
