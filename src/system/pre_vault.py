@@ -211,7 +211,7 @@ def sign_in():
     input_mst_pass = getpass("Password: ")
     hash_factor = SHA512.new()
     hash_factor.update((input_mst_pass + p_salt).encode("utf-8"))
-    del input_mst_pass, p_salt
+    del p_salt
     # Check if the input password hash is the same as the saved hash
     if hash_factor.digest() != p_hash:
         print("Authentication failed: Wrong password.")
@@ -219,7 +219,7 @@ def sign_in():
         return 1
 
     del p_hash, hash_factor
-    return 0
+    return input_mst_pass
 
 
 def main(create_acc):
