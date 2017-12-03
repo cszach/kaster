@@ -228,6 +228,8 @@ def main(create_acc):
     :param create_acc: Boolean to tell if creating an account is required
     :return:
     """
+    if not os.path.isdir(vault_file_dir):
+        os.mkdir(vault_file_dir)
     create_default_std()
 
     if not create_acc:
