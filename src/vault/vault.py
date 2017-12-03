@@ -260,6 +260,35 @@ def vault(com_list):
             pyperclip.copy(pss.decode("utf-8"))  # Copy password to clipboard
             print("Password for login #%s copied." % get_id)
             del pss, get_id
+        elif v_opt == "--del":
+            pre_action()
+            get_id = v_arg
+            if not os.path.isfile("%s/%s.dat" % (global_var.vault_file_dir, get_id)):  # If the login does not exist :/
+                LogWriter.write_to_log("User attempts to delete a login but Kaster couldn't find it")
+                print("Error: Couldn't find login associated with ID #%s, quitting..." % get_id)
+                del get_id
+                sys.exit(1)
+            master = pre_vault.sign_in()
+            if master == 1:
+                del master
+                sys.exit(1)  # Login failed
+
+            if input("Are you really sure you want to delete login #%s? [Y|N] " % get_id).lower() == "y":
+                try:
+                    os.remove("%s/%s.dat" % (global_var.vault_file_dir, get_id))
+                    os.remove("%s/%s.kas" % (global_var.vault_file_dir, get_id))
+                    os.remove("%s/%s.kiv" % (global_var.vault_file_dir, get_id))
+                    LogWriter.write_to_log("Removed login #%s" % get_id)
+                except OSError as e:
+                    LogWriter.write_to_log("An error occurred while deleting login #%s: %s" % (get_id, e))
+                    print("An error occurred while deleting login #%s." % get_id)
+                    print("=====Traceback=====")
+                    traceback.print_exc()
+                finally:
+                    del get_id
+            else:
+                print("Aborting...")
+                sys.exit(0)
         else:
             print("Not recognized option '%s'. Quitting..." % v_opt)
             sys.exit(1)
