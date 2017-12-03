@@ -223,6 +223,22 @@ def vault(com_list):
                     sys.exit(1)
                 LogWriter.write_to_log("End session: vault > new_login_ui()")
                 print("Finish session: new_login_ui()")
+        elif v_opt == "--list":
+            pre_action()
+            if len(fnmatch.filter(os.listdir(global_var.vault_file_dir), "*.dat")) == 0:
+                print("No login to list.")
+            else:
+                login_name = None
+                login_id = None
+                print("ID   |Login name")
+                print("=====|==========")
+                for k_login_f in fnmatch.filter(os.listdir(global_var.vault_file_dir), "*.dat"):
+                    f = open("%s/%s" % (global_var.vault_file_dir, k_login_f), "rb")
+                    login_name = f.readline()[:-1].decode("utf-8")
+                    f.close()
+                    login_id = k_login_f[:-4]
+                    print("%s | %s" % (login_id, login_name))
+                del login_name, login_id
         elif v_opt == "--get":
             pre_action()
             master = pre_vault.sign_in()
