@@ -10,6 +10,7 @@ sys.path.insert(0, "../system")
 import global_var
 import LogWriter
 import pre_vault
+from k_random import random_string
 import Instructor
 
 
@@ -89,17 +90,19 @@ def new_login_ui(master_password):
 
     login = input("Login: ")
     if login == "":
-        print("Input empty, assiging login to username: %s" % os.environ["SUDO_USER"])
+        print("Input empty, assigning login to username: %s" % os.environ["SUDO_USER"])
         login = os.environ["SUDO_USER"]
 
-    password = getpass("Password: ")
-    note = input("Note/Comment (you can hit enter if there's nothing): ")
+    password = getpass("Password (leave blank to generate one): ")
+    if password == "":
+        password = random_string("ps")
+    note = input("Note/Comment (leave blank if there's nothing): ")
 
     # Save login name, login, and comment
     f = open("%s/%s.dat" % (global_var.vault_file_dir, login_id), "wb")
-    f.write(bytes(login_name, "utf-8") + b"\n")
-    f.write(bytes(login, "utf-8") + b"\n")
-    f.write(bytes(note, "utf-8") + b"\n")
+    f.write(bytes(login_name + "\n", "utf-8"))
+    f.write(bytes(login + "\n", "utf-8"))
+    f.write(bytes(note + "\n", "utf-8"))
     f.close()
 
     # Create IV and save it
@@ -116,6 +119,44 @@ def new_login_ui(master_password):
     del flag
     f.close()
     del f
+
+
+def get_login(login_id, master_password):
+    """
+    Get login credentials based on login's ID
+    :param login_id: Target login's ID
+    :param master_password: User's Kaster master password
+    :return:
+    """
+    f = open("%s/%s.dat" % (global_var.vault_file_dir, login_id), "rb")
+    print(f.readline().decode("utf-8")[:-1])  # Print login name
+    print("====================")
+    print("Login: %s" % f.readline().decode("utf-8")[:-1])
+    comment = f.readline().decode("utf-8")[:-1]
+    f.close()
+
+    # Get IV
+    f = open("%s/%s.kiv" % (global_var.vault_file_dir, login_id), "rb")
+    iv = f.read()
+    f.close()
+
+    # Get cipher password
+    f = open("%s/%s.kas" % (global_var.vault_file_dir, login_id), "rb")
+    pss = f.read()
+    f.close()
+
+    del f
+
+    flag = AES.new(key(master_password), AES.MODE_CFB, iv)
+    pss = flag.decrypt(pss)
+    del flag
+    pss = "".join(["*" for _ in pss])
+    print("Password: %s" % pss)
+    del pss
+
+    if comment != "":
+        print("Comment: %s" % comment[:-1])
+    del comment
 
 
 def vault(com_list):
@@ -169,6 +210,26 @@ def vault(com_list):
                     sys.exit(1)
                 LogWriter.write_to_log("End session: vault > new_login_ui()")
                 print("Finish session: new_login_ui()")
+        elif v_opt == "--get":
+            check_result = mediate_check_account()
+            if check_result == -1:
+                print("No account created. Use './kaster.py --vault --account' to create one.")
+                sys.exit(0)
+            if check_result == 1:
+                print("Warning: Found problem(s) during pre_vault.check_user_account() session, "
+                      "resolve them and try again")
+                sys.exit(1)
+            del check_result
+            master = pre_vault.sign_in()
+            if master == 1:
+                del master
+                print("Authentication failed: Wrong password")
+                sys.exit(1)  # Login failed
+            print()
+            get_id = v_arg
+            get_login(get_id, master)
+            del master
+            del get_id
         else:
             print("Not recognized option '%s'. Quitting..." % v_opt)
             sys.exit(1)
