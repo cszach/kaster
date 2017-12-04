@@ -6,9 +6,26 @@ Password Manager
 
   Options:
 
-        --vault   : Call password manager
-    -h, --help    : Print this manual page and exit
-        --account : Start session pre_vault.check_user_account() to check user's Kaster account's status
-                    If no account is created, prompt to create one
-        --new     : Create a new login if the user has an account and the account state is okay
-                    If there is no account or account's state is not okay, alert user and exit
+        --vault      : Call password manager
+    -h, --help       : Print this manual page and exit
+        --account    : Start session pre_vault.check_user_account() to check user's Kaster account's status
+                       If no account is created, prompt to create one
+        --new        : Create a new login if the user has an account
+                       If there is no account or account's state is not okay, alert user and exit
+        --list       : List all logins with their names and IDs
+        --get=ID     : Get the login name, name and comment of login #ID
+        --getpass=ID : Copy the password of login #ID to clipboard
+        --edit=ID    : Edit information (login name, login, password, comment) of login #ID
+        --del=ID     : Delete login #ID
+        --delall     : Delete all saved logins
+
+  Editing a login
+
+    To edit a login, you must specify some additional arguments, namely --name, --login, --password and --comment.
+    --edit
+      --name=NEW_LOGIN_NAME
+      --login=NEW_LOGIN
+      --password=NEW_PASSWORD
+      --comment=NEW_COMMENT
+
+    Example: ./kaster.py --vault --edit=4052 --name="www.amazon.com" --comment="Online shopping"
