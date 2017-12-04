@@ -1,10 +1,9 @@
 from global_var import uppercase_chars, lowercase_chars, numbers, special_chars
-from LogWriter import write_to_log
 
 
 def k_count_occur(input_str, holder_str):
     """
-    Sum of the number of occurences of each character in holder_str in input_str
+    Sum of the number of occurrences of each character in holder_str in input_str
     Example:
         input_str = "4re th3se things just gr34t 2?"
         holder_str = "42"
@@ -14,7 +13,7 @@ def k_count_occur(input_str, holder_str):
         # 2 + 1 = 3
     :param input_str: Main string
     :param holder_str: String containing the characters whose number of occurences in input_str should be sum up
-    :return: Sum of number of occurences of every character in holder_str in input_str
+    :return: Sum of number of occurrences of every character in holder_str in input_str
     """
     flag = 0
     for c in holder_str:
@@ -50,6 +49,7 @@ def close_score(ep, main_inp, std_inp):
             return 2
         else:
             len_range = std_inp_max - std_inp_min
+            # Get relative range
             range_one_min = std_inp_min - (len_range * (ep / 100))
             range_one_max = std_inp_max + (len_range * (ep / 100))
             if range_one_min <= main_inp <= range_one_max:
@@ -58,6 +58,7 @@ def close_score(ep, main_inp, std_inp):
             del len_range, range_one_min, range_one_max
             return 0
 
+    # This rest of the function is reached when either one of two sides define nothing
     if std_inp_min.isdigit():
         if main_inp >= int(std_inp_min):
             return 2
@@ -79,7 +80,8 @@ def k_check_pss(pss, k_std_file_path):
         - std_p_lower {string} : Define the minimum and maximum number of lowercase alphabetical characters (>= 1)
         - std_p_num {string} : Define the minimum and maximum number of numeric characters (>= 1)
         - std_p_sym {string} : Define the minimum and maximum number of special characters (>= 1)
-    If the number of alphabetical characters (std_p_upper.MIN + std_p_lower.MIN) is more than 2, the characters should be found on all three rows of the keyboard.
+    If the number of alphabetical characters (std_p_upper.MIN + std_p_lower.MIN) is more than 2,
+    the characters should be found on all three rows of the keyboard.
     :param pss: Password that needs to be checked
     :param k_std_file_path: A JSON-like file defining standards for a strong password
     :return: A value rating how much the password follows the standard on a scale of 10
@@ -111,4 +113,3 @@ def k_check_pss(pss, k_std_file_path):
         del top_row, middle_row, bottom_row
     del std_p_ep, std_p_length, std_p_upper, std_p_lower, std_p_num, std_p_sym
     return flag
-

@@ -17,7 +17,7 @@ import Instructor
 
 def clear_vault_dir():
     """
-    Clear vault's folder (/usr/share/kaster/vault).
+    Clear vault's folder.
     :return:
     """
     os.system("rm -rf /usr/share/kaster/vault")
@@ -79,15 +79,13 @@ def key(inp_pass):
     f = open(k_var.program_file_dir + "/0000.salt", "r")
     salt = f.read()
     f.close()
+    del f
 
     # Create hash
     f_hash = SHA256.new()
     f_hash.update((inp_pass + salt).encode("utf-8"))
     del salt
-    flag = f_hash.digest()
-    del f_hash
-
-    return flag
+    return f_hash.digest()
 
 
 def new_login_ui(master_password, login_id):
@@ -98,7 +96,6 @@ def new_login_ui(master_password, login_id):
     :return:
     """
     print("New login")
-
     login_name = input("Login name: ")
     if login_name == "":
         print("Input empty, assigning login name to login's ID: %s" % login_id)
@@ -132,7 +129,7 @@ def new_login_ui(master_password, login_id):
     del iv
     f = open("%s/%s.kas" % (k_var.vault_file_dir, login_id), "wb")
     f.write(flag.encrypt(password))
-    del flag
+    del flag, password
     f.close()
     del f
 
@@ -154,6 +151,20 @@ def get_login(login_id):
     if comment != "":
         print("Comment: %s" % comment)
     del comment
+
+
+def get_id_from_arg(arg):
+    """
+    Turn argument arg to integer if possible, else terminate the program.
+    Created to get ID without rewriting a try-catch block over and over.
+    :param arg: ID string (user's input)
+    :return:
+    """
+    try:
+        return "%04d" % int(arg)
+    except ValueError:  # Get this when arg contains non-numerical character(s)
+        print("Error: Invalid ID string")
+        sys.exit(1)
 
 
 def vault(com_list):
@@ -203,6 +214,7 @@ def vault(com_list):
                     if login_id is None:
                         del login_id
                         sys.exit(0)
+                    # On keyboard interrupt, revert all actions to avoid any mistake next time
                     if os.path.isfile("%s/%s.dat" % (k_var.vault_file_dir, login_id)):
                         os.remove("%s/%s.dat" % (k_var.vault_file_dir, login_id))
                     if os.path.isfile("%s/%s.kas" % (k_var.vault_file_dir, login_id)):
@@ -214,6 +226,13 @@ def vault(com_list):
                     sys.exit(0)
                 except Exception as e:
                     del master, login_id
+                    # On error, revert all actions to avoid any mistake next time
+                    if os.path.isfile("%s/%s.dat" % (k_var.vault_file_dir, login_id)):
+                        os.remove("%s/%s.dat" % (k_var.vault_file_dir, login_id))
+                    if os.path.isfile("%s/%s.kas" % (k_var.vault_file_dir, login_id)):
+                        os.remove("%s/%s.kas" % (k_var.vault_file_dir, login_id))
+                    if os.path.isfile("%s/%s.kiv" % (k_var.vault_file_dir, login_id)):
+                        os.remove("%s/%s.kiv" % (k_var.vault_file_dir, login_id))
                     write_to_log("Failed session: vault > new_login_ui() with exception: %s" % e)
                     print("Session encountered an error: new_login_ui()")
                     print("=====Traceback=====")
@@ -247,6 +266,7 @@ def vault(com_list):
                     if not os.path.isfile("%s/%s.dat" % (k_var.vault_file_dir, login_id)):
                         break
 
+                # Process collected results to make sure every variable is assigned to a valid value
                 if login_name is None or login_name == "":
                     print("Input for login name is empty, assigning login name to login's ID: %s" % login_id)
                     login_name = login_id
@@ -281,12 +301,12 @@ def vault(com_list):
                 del password, flag
                 f.close()
                 del f
-
-            print("New login created.")
             write_to_log("New login created")
+            print("New login created.")
             sys.exit(0)
         elif v_opt == "--list":
             pre_action()
+            # Check if there is any .dat file (file containing login credentials except password
             if len(fnmatch.filter(os.listdir(k_var.vault_file_dir), "*.dat")) == 0:
                 print("No login to list.")
             else:
@@ -303,7 +323,7 @@ def vault(com_list):
                 del login_name, login_id
         elif v_opt == "--get":
             pre_action()
-            get_id = "%04d" % int(v_arg)
+            get_id = get_id_from_arg(v_arg)
             if not os.path.isfile("%s/%s.dat" % (k_var.vault_file_dir, get_id)):
                 print("Login does not exist, quitting...")
                 del get_id
@@ -317,7 +337,7 @@ def vault(com_list):
                 del master
                 sys.exit(1)  # Login failed
 
-            get_id = "%04d" % int(v_arg)
+            get_id = get_id_from_arg(v_arg)
             if not os.path.isfile("%s/%s.dat" % (k_var.vault_file_dir, get_id)):
                 print("Login does not exist, quitting...")
                 del get_id
@@ -443,7 +463,7 @@ def vault(com_list):
             sys.exit(0)
         elif v_opt == "--del":
             pre_action()
-            get_id = "%04d" % int(v_arg)
+            get_id = get_id_from_arg(v_arg)
             if not os.path.isfile("%s/%s.dat" % (k_var.vault_file_dir, get_id)):  # If the login does not exist :/
                 write_to_log("User attempts to delete a login but Kaster couldn't find it")
                 print("Error: Couldn't find login associated with ID #%s, quitting..." % get_id)

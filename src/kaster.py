@@ -18,9 +18,9 @@ import LogWriter
 import Instructor
 import k_std
 sys.path.insert(0, "generator")
-import generator
+from generator import generator
 sys.path.insert(0, "vault")
-import vault
+from vault import vault
 
 # Check if the user has logged in as root
 if os.getenv("SUDO_USER") is None:
@@ -52,6 +52,17 @@ except getopt.GetoptError as e:
     print("Pass option '-h' or '--help' to see the available options and arguments")
     sys.exit(2)
 
+# Iterate over options among with their arguments to check for duplicate
+scanned_opt = []
+for opt, arg in opts:
+    if opt in scanned_opt:
+        del scanned_opt
+        print("Error: Found duplicate option '%s', quitting..." % opt)
+        sys.exit(1)
+    else:
+        scanned_opt.append(opt)
+del scanned_opt
+
 for opt, arg in opts:
     if opt in ("-h", "--help"):
         Instructor.main(None)
@@ -66,17 +77,18 @@ for opt, arg in opts:
         LogWriter.lw_main(opts[1:])
     elif opt == "--std":
         if k_std.check_std(arg) == 0:
+            print()
             k_std.read_std(arg)
     elif opt == "--gen":
         try:
-            generator.generator(opts[1:])
+            generator(opts[1:])
         except KeyboardInterrupt:
             print()
             print("Got keyboard interruption, quitting...")
     elif opt == "--vault":
         # Might remove this try except and handle keyboard interruption in vault.vault() instead
         try:
-            vault.vault(opts[1:])
+            vault(opts[1:])
         except KeyboardInterrupt:
             print()
             print("Got keyboard interruption, quitting...")

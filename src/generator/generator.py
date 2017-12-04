@@ -81,20 +81,20 @@ def generator(com_list):
             else:
                 print("File '%s' has already existed." % g_arg)
                 u_choice = input("Do you want to append or overwrite the file? Or abort operation? [A|O|C] ")
-                if u_choice.lower() == "o":
+                if u_choice.lower() == "o":  # Overwrite -> Remove the file and create a new one with the same name
                     os.remove(g_arg)
                     open(g_arg, "a").close()
                     output_file_name = g_arg
                     del u_choice
-                elif u_choice.lower() == "c":
+                elif u_choice.lower() == "c":  # Cancel
                     del u_choice
                     sys.exit(8)
-                elif u_choice.lower() != "a":
-                    output_file_name = None
+                elif u_choice.lower() != "a":  # Invalid option
+                    output_file_name = None  # Assigning to None means no record
                     print("Warning: Unrecognized option '%s'. Option is ignored." % u_choice)
                     del u_choice
                     continue
-                else:
+                else:  # Append
                     output_file_name = g_arg
         elif g_opt == "--upper":
             p_use_upper = True
@@ -126,5 +126,7 @@ def generator(com_list):
 
     if output_file_name is not None:
         f.close()
+
+    # Delete variables, save RAM!
     del p_length, p_duplicate, p_use_upper, p_use_lower, p_use_number, p_use_symbol
     del g_output, f, output_file_name

@@ -65,8 +65,11 @@ def random_string(*args):
     if args[4]:
         allowed_chars += special_chars
 
+    # If no length is specified (at args[0]) then make random
     pss_length = randint(12, 30) if args[0] is None else args[0]
 
+    # If our 4 booleans are set to None, pretend them to be set to True and allow all of them
+    # because what password on Earth does not contain any of uppercase, lowercase, numerical and special characters?
     if args[1] == args[2] == args[3] == args[4] == (False or None):
         allowed_chars = uppercase_chars + lowercase_chars + numbers + special_chars
 
@@ -75,9 +78,9 @@ def random_string(*args):
 
 def random_hex(length):
     """
-    Generate and return a random hexadecimal number
+    Generate and return a random hexadecimal number.
+    Example: random_hex(7) returns a hexadecimal number with 7 digits.
     :param length: Number of digits in the output hexadecimal
     :return: A randomly generated hexadecimal number with [length] digits
-    Example: random_hex(7) returns a hexadecimal number with 7 digits
     """
     return "".join([choice(numbers + lowercase_chars[:6]) for _ in range(length)])
