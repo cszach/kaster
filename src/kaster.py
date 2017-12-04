@@ -13,7 +13,6 @@ import sys
 import os
 import getopt
 sys.path.insert(0, "system")
-import global_var
 import pre_kaster
 import LogWriter
 import Instructor

@@ -8,8 +8,8 @@ from Crypto.Hash import SHA256
 from Crypto.Cipher import AES
 import pyperclip
 sys.path.insert(0, "../system")
-import global_var
-import LogWriter
+import global_var as k_var
+from LogWriter import write_to_log
 import pre_vault
 from k_random import random_string
 import Instructor
@@ -21,7 +21,7 @@ def clear_vault_dir():
     :return:
     """
     os.system("rm -rf /usr/share/kaster/vault")
-    os.mkdir(global_var.program_file_dir + "/vault")
+    os.mkdir(k_var.program_file_dir + "/vault")
 
 
 def mediate_check_account():
@@ -30,18 +30,18 @@ def mediate_check_account():
     Base on the returned value, the program can make further decisions.
     :return: pre_vault.check_user_account()
     """
-    LogWriter.write_to_log("Start session: pre_vault.check_user_account()")
+    write_to_log("Start session: pre_vault.check_user_account()")
     print("In session: pre_vault.check_user_account()...")
     try:
         result = pre_vault.check_user_account()
     except Exception as e:
-        LogWriter.write_to_log("Failed session: pre_vault.check_user_account() with exception: %s" % e)
+        write_to_log("Failed session: pre_vault.check_user_account() with exception: %s" % e)
         print("Session encountered an error: pre_vault.check_user_account()")
         print("Full traceback")
         traceback.print_exc()
         sys.exit(1)
     print("Finish session: pre_vault.check_user_account()...")
-    LogWriter.write_to_log("End session: pre_vault.check_user_account()")
+    write_to_log("End session: pre_vault.check_user_account()")
     return result
 
 
@@ -76,7 +76,7 @@ def key(inp_pass):
     :return: Key
     """
     # Get salt
-    f = open(global_var.program_file_dir + "/0000.salt", "r")
+    f = open(k_var.program_file_dir + "/0000.salt", "r")
     salt = f.read()
     f.close()
 
@@ -115,7 +115,7 @@ def new_login_ui(master_password, login_id):
     note = input("Note/Comment (leave blank if there's nothing): ")
 
     # Save login name, login, and comment
-    f = open("%s/%s.dat" % (global_var.vault_file_dir, login_id), "wb")
+    f = open("%s/%s.dat" % (k_var.vault_file_dir, login_id), "wb")
     f.write(bytes(login_name + "\n", "utf-8"))
     f.write(bytes(login + "\n", "utf-8"))
     f.write(bytes(note + "\n", "utf-8"))
@@ -123,14 +123,14 @@ def new_login_ui(master_password, login_id):
 
     # Create IV and save it
     iv = os.urandom(16)
-    f = open("%s/%s.kiv" % (global_var.vault_file_dir, login_id), "wb")
+    f = open("%s/%s.kiv" % (k_var.vault_file_dir, login_id), "wb")
     f.write(iv)
     f.close()
 
     # Save encrypted password
     flag = AES.new(key(master_password), AES.MODE_CFB, iv)
     del iv
-    f = open("%s/%s.kas" % (global_var.vault_file_dir, login_id), "wb")
+    f = open("%s/%s.kas" % (k_var.vault_file_dir, login_id), "wb")
     f.write(flag.encrypt(password))
     del flag
     f.close()
@@ -143,7 +143,7 @@ def get_login(login_id):
     :param login_id: Target login's ID
     :return:
     """
-    f = open("%s/%s.dat" % (global_var.vault_file_dir, login_id), "rb")
+    f = open("%s/%s.dat" % (k_var.vault_file_dir, login_id), "rb")
     print(f.readline().decode("utf-8")[:-1])  # Print login name
     print("====================")
     print("Login: %s" % f.readline().decode("utf-8")[:-1])
@@ -177,7 +177,7 @@ def vault(com_list):
                     sys.exit(0)
         elif v_opt == "--new":
             pre_action()
-            if len(fnmatch.filter(os.listdir(global_var.vault_file_dir), "*.dat")) == 9999:
+            if len(fnmatch.filter(os.listdir(k_var.vault_file_dir), "*.dat")) == 9999:
                 print("Warning: Cannot save a new login, try deleting an existed login")
                 sys.exit(1)
             master = pre_vault.sign_in()
@@ -185,7 +185,7 @@ def vault(com_list):
                 del master
                 sys.exit(1)  # Login failed
             if len(com_list[v_idx + 1:]) == 0:  # No further argument -> Login UI
-                LogWriter.write_to_log("Start session: vault > new_login_ui()")
+                write_to_log("Start session: vault > new_login_ui()")
                 print()
                 print("In session: new_login_ui()")
                 login_id = None
@@ -194,7 +194,7 @@ def vault(com_list):
                     # Make sure the ID login is not a duplicate
                     while True:
                         login_id = "%04d" % randint(1, 9999)
-                        if not os.path.isfile("%s/%s.dat" % (global_var.vault_file_dir, login_id)):
+                        if not os.path.isfile("%s/%s.dat" % (k_var.vault_file_dir, login_id)):
                             break
                     new_login_ui(master, login_id)
                     del master, login_id
@@ -203,23 +203,23 @@ def vault(com_list):
                     if login_id is None:
                         del login_id
                         sys.exit(0)
-                    if os.path.isfile("%s/%s.dat" % (global_var.vault_file_dir, login_id)):
-                        os.remove("%s/%s.dat" % (global_var.vault_file_dir, login_id))
-                    if os.path.isfile("%s/%s.kas" % (global_var.vault_file_dir, login_id)):
-                        os.remove("%s/%s.kas" % (global_var.vault_file_dir, login_id))
-                    if os.path.isfile("%s/%s.kiv" % (global_var.vault_file_dir, login_id)):
-                        os.remove("%s/%s.kiv" % (global_var.vault_file_dir, login_id))
+                    if os.path.isfile("%s/%s.dat" % (k_var.vault_file_dir, login_id)):
+                        os.remove("%s/%s.dat" % (k_var.vault_file_dir, login_id))
+                    if os.path.isfile("%s/%s.kas" % (k_var.vault_file_dir, login_id)):
+                        os.remove("%s/%s.kas" % (k_var.vault_file_dir, login_id))
+                    if os.path.isfile("%s/%s.kiv" % (k_var.vault_file_dir, login_id)):
+                        os.remove("%s/%s.kiv" % (k_var.vault_file_dir, login_id))
                     del login_id
                     print("Got keyboard interruption, quitting...")
                     sys.exit(0)
                 except Exception as e:
                     del master, login_id
-                    LogWriter.write_to_log("Failed session: vault > new_login_ui() with exception: %s" % e)
+                    write_to_log("Failed session: vault > new_login_ui() with exception: %s" % e)
                     print("Session encountered an error: new_login_ui()")
                     print("=====Traceback=====")
                     traceback.print_exc()
                     sys.exit(1)
-                LogWriter.write_to_log("End session: vault > new_login_ui()")
+                write_to_log("End session: vault > new_login_ui()")
                 print("Finish session: new_login_ui()")
             else:  # User specifies additional arguments, so process them
                 login_name = None
@@ -244,7 +244,7 @@ def vault(com_list):
                 # Create ID such that it is not a duplicate
                 while True:
                     login_id = "%04d" % randint(1, 9999)
-                    if not os.path.isfile("%s/%s.dat" % (global_var.vault_file_dir, login_id)):
+                    if not os.path.isfile("%s/%s.dat" % (k_var.vault_file_dir, login_id)):
                         break
 
                 if login_name is None or login_name == "":
@@ -260,7 +260,7 @@ def vault(com_list):
                     note = ""
 
                 # Save login name, login, and comment
-                f = open("%s/%s.dat" % (global_var.vault_file_dir, login_id), "wb")
+                f = open("%s/%s.dat" % (k_var.vault_file_dir, login_id), "wb")
                 f.write(bytes(login_name + "\n", "utf-8"))
                 f.write(bytes(login + "\n", "utf-8"))
                 f.write(bytes(note + "\n", "utf-8"))
@@ -269,33 +269,33 @@ def vault(com_list):
 
                 # Create IV and save it
                 iv = os.urandom(16)
-                f = open("%s/%s.kiv" % (global_var.vault_file_dir, login_id), "wb")
+                f = open("%s/%s.kiv" % (k_var.vault_file_dir, login_id), "wb")
                 f.write(iv)
                 f.close()
 
                 # Save encrypted password
                 flag = AES.new(key(master), AES.MODE_CFB, iv)
                 del master, iv
-                f = open("%s/%s.kas" % (global_var.vault_file_dir, login_id), "wb")
+                f = open("%s/%s.kas" % (k_var.vault_file_dir, login_id), "wb")
                 f.write(flag.encrypt(password))
                 del password, flag
                 f.close()
                 del f
 
             print("New login created.")
-            LogWriter.write_to_log("New login created")
+            write_to_log("New login created")
             sys.exit(0)
         elif v_opt == "--list":
             pre_action()
-            if len(fnmatch.filter(os.listdir(global_var.vault_file_dir), "*.dat")) == 0:
+            if len(fnmatch.filter(os.listdir(k_var.vault_file_dir), "*.dat")) == 0:
                 print("No login to list.")
             else:
                 login_name = None
                 login_id = None
                 print("ID   |Login name")
                 print("=====|==========")
-                for k_login_f in fnmatch.filter(os.listdir(global_var.vault_file_dir), "*.dat"):
-                    f = open("%s/%s" % (global_var.vault_file_dir, k_login_f), "rb")
+                for k_login_f in fnmatch.filter(os.listdir(k_var.vault_file_dir), "*.dat"):
+                    f = open("%s/%s" % (k_var.vault_file_dir, k_login_f), "rb")
                     login_name = f.readline()[:-1].decode("utf-8")
                     f.close()
                     login_id = k_login_f[:-4]
@@ -303,9 +303,8 @@ def vault(com_list):
                 del login_name, login_id
         elif v_opt == "--get":
             pre_action()
-            print()
             get_id = "%04d" % int(v_arg)
-            if not os.path.isfile("%s/%s.dat" % (global_var.vault_file_dir, get_id)):
+            if not os.path.isfile("%s/%s.dat" % (k_var.vault_file_dir, get_id)):
                 print("Login does not exist, quitting...")
                 del get_id
                 sys.exit(1)
@@ -319,17 +318,17 @@ def vault(com_list):
                 sys.exit(1)  # Login failed
 
             get_id = "%04d" % int(v_arg)
-            if not os.path.isfile("%s/%s.dat" % (global_var.vault_file_dir, get_id)):
+            if not os.path.isfile("%s/%s.dat" % (k_var.vault_file_dir, get_id)):
                 print("Login does not exist, quitting...")
                 del get_id
                 sys.exit(1)
 
             # Get IV
-            f = open("%s/%s.kiv" % (global_var.vault_file_dir, get_id), "rb")
+            f = open("%s/%s.kiv" % (k_var.vault_file_dir, get_id), "rb")
             iv = f.read()
             f.close()
             # Get encrypted password
-            f = open("%s/%s.kas" % (global_var.vault_file_dir, get_id), "rb")
+            f = open("%s/%s.kas" % (k_var.vault_file_dir, get_id), "rb")
             pss = f.read()
             f.close()
             del f
@@ -353,8 +352,8 @@ def vault(com_list):
                 print("Type './kaster.py --vault --help' for the manual page")
                 sys.exit(1)
             login_id = "%04d" % int(v_arg)
-            if not os.path.isfile("%s/%s.dat" % (global_var.vault_file_dir, login_id)):
-                LogWriter.write_to_log("User attempts to edit a login but Kaster couldn't find it")
+            if not os.path.isfile("%s/%s.dat" % (k_var.vault_file_dir, login_id)):
+                write_to_log("User attempts to edit a login but Kaster couldn't find it")
                 print("Error: Could not find login #%s" % login_id)
                 del login_id
                 sys.exit(1)
@@ -364,11 +363,11 @@ def vault(com_list):
                     if new_value == "":
                         print("Empty input for new login name, assigning it to login's ID: %s" % login_id)
                         flag = login_id
-                    f = open("%s/%s.dat" % (global_var.vault_file_dir, login_id), "rb")
+                    f = open("%s/%s.dat" % (k_var.vault_file_dir, login_id), "rb")
                     f.readline()
                     rest = f.read()
                     f.close()
-                    f = open("%s/%s.dat" % (global_var.vault_file_dir, login_id), "wb")
+                    f = open("%s/%s.dat" % (k_var.vault_file_dir, login_id), "wb")
                     f.write(bytes(flag + "\n", "utf-8"))
                     del flag
                     f.write(rest)
@@ -380,12 +379,12 @@ def vault(com_list):
                     if new_value == "":
                         print("Empty input for new login, assigning it to username %s" % os.environ["SUDO_USER"])
                         flag = os.environ["SUDO_USER"]
-                    f = open("%s/%s.dat" % (global_var.vault_file_dir, login_id), "rb")
+                    f = open("%s/%s.dat" % (k_var.vault_file_dir, login_id), "rb")
                     mediate_a = f.readline()
                     f.readline()
                     rest = f.read()
                     f.close()
-                    f = open("%s/%s.dat" % (global_var.vault_file_dir, login_id), "wb")
+                    f = open("%s/%s.dat" % (k_var.vault_file_dir, login_id), "wb")
                     f.write(mediate_a)
                     del mediate_a
                     f.write(bytes(flag + "\n", "utf-8"))
@@ -399,19 +398,19 @@ def vault(com_list):
                     if new_value == "":
                         print("Empty input for new password, assigning it to a random one...")
                         flag = random_string("ps")
-                    os.remove("%s/%s.kas" % (global_var.vault_file_dir, login_id))
-                    os.remove("%s/%s.kiv" % (global_var.vault_file_dir, login_id))
+                    os.remove("%s/%s.kas" % (k_var.vault_file_dir, login_id))
+                    os.remove("%s/%s.kiv" % (k_var.vault_file_dir, login_id))
 
                     # IV
                     iv = os.urandom(16)
-                    f = open("%s/%s.kiv" % (global_var.vault_file_dir, login_id), "wb")
+                    f = open("%s/%s.kiv" % (k_var.vault_file_dir, login_id), "wb")
                     f.write(iv)
                     f.close()
 
                     # Save (encrypted) password
                     enc_object = AES.new(key(master), AES.MODE_CFB, iv)
                     del iv
-                    f = open("%s/%s.kas" % (global_var.vault_file_dir, login_id), "wb")
+                    f = open("%s/%s.kas" % (k_var.vault_file_dir, login_id), "wb")
                     f.write(enc_object.encrypt(flag))
                     del enc_object, flag
                     f.close()
@@ -421,11 +420,11 @@ def vault(com_list):
                     if new_value == "":
                         print("Empty input for comment, ignoring...")
                         continue
-                    f = open("%s/%s.dat" % (global_var.vault_file_dir, login_id), "rb")
+                    f = open("%s/%s.dat" % (k_var.vault_file_dir, login_id), "rb")
                     flag_a = f.readline()
                     flag_b = f.readline()
                     f.close()
-                    f = open("%s/%s.dat" % (global_var.vault_file_dir, login_id), "wb")
+                    f = open("%s/%s.dat" % (k_var.vault_file_dir, login_id), "wb")
                     f.write(flag_a)
                     del flag_a
                     f.write(flag_b)
@@ -439,14 +438,14 @@ def vault(com_list):
                     sys.exit(1)
             del master
             print("Data updated")
-            LogWriter.write_to_log("Edited login #%s" % login_id)
+            write_to_log("Edited login #%s" % login_id)
             del login_id
             sys.exit(0)
         elif v_opt == "--del":
             pre_action()
             get_id = "%04d" % int(v_arg)
-            if not os.path.isfile("%s/%s.dat" % (global_var.vault_file_dir, get_id)):  # If the login does not exist :/
-                LogWriter.write_to_log("User attempts to delete a login but Kaster couldn't find it")
+            if not os.path.isfile("%s/%s.dat" % (k_var.vault_file_dir, get_id)):  # If the login does not exist :/
+                write_to_log("User attempts to delete a login but Kaster couldn't find it")
                 print("Error: Couldn't find login associated with ID #%s, quitting..." % get_id)
                 del get_id
                 sys.exit(1)
@@ -459,12 +458,12 @@ def vault(com_list):
             flag_exitcode = 0
             if input("Are you really sure you want to delete login #%s? [Y|N] " % get_id).lower() == "y":
                 try:
-                    os.remove("%s/%s.dat" % (global_var.vault_file_dir, get_id))
-                    os.remove("%s/%s.kas" % (global_var.vault_file_dir, get_id))
-                    os.remove("%s/%s.kiv" % (global_var.vault_file_dir, get_id))
-                    LogWriter.write_to_log("Removed login #%s" % get_id)
+                    os.remove("%s/%s.dat" % (k_var.vault_file_dir, get_id))
+                    os.remove("%s/%s.kas" % (k_var.vault_file_dir, get_id))
+                    os.remove("%s/%s.kiv" % (k_var.vault_file_dir, get_id))
+                    write_to_log("Removed login #%s" % get_id)
                 except OSError as e:
-                    LogWriter.write_to_log("An error occurred while deleting login #%s: %s" % (get_id, e))
+                    write_to_log("An error occurred while deleting login #%s: %s" % (get_id, e))
                     print("An error occurred while deleting login #%s." % get_id)
                     print("=====Traceback=====")
                     traceback.print_exc()
@@ -477,7 +476,7 @@ def vault(com_list):
         elif v_opt == "--delall":
             pre_action()
 
-            if len(fnmatch.filter(os.listdir(global_var.vault_file_dir), "*.dat")) == 0:
+            if len(fnmatch.filter(os.listdir(k_var.vault_file_dir), "*.dat")) == 0:
                 print("No saved login.")
                 sys.exit(0)
 
@@ -489,7 +488,7 @@ def vault(com_list):
 
             if input("Are you really sure you want to delete all saved logins? [Y|N] ").lower() == "y":
                 clear_vault_dir()
-                LogWriter.write_to_log("Removed all saved logins")
+                write_to_log("Removed all saved logins")
             else:
                 print("Aborting...")
         else:

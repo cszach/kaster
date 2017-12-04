@@ -116,6 +116,7 @@ def generator(com_list):
         f = open(output_file_name, "a")
 
     # Output
+    g_output = None
     for i in range(p_duplicate):
         g_output = k_random.random_string(p_length, p_use_upper, p_use_lower, p_use_number, p_use_symbol)
         print("Output [%d] %s" %
