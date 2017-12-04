@@ -22,14 +22,14 @@ def check_user_account():
     # If no account has not yet been created, exit
     # It doesn't matter because when a new account is created,
     # all files containing credentials, key, and IVs will be deleted
-    if not os.path.isfile(k_var.k_var.program_file_dir + "/0000.kas"):
+    if not os.path.isfile(k_var.program_file_dir + "/0000.kas"):
         print("No account created.")
         write_to_log("pre_vault.check_user_account() : 0000.kas not found -> No account created, session abort")
         return -1
 
     print("Username: %s" % os.environ["SUDO_USER"])
 
-    f_checker = open(k_var.k_var.program_file_dir + "/0000.kas", "rb")
+    f_checker = open(k_var.program_file_dir + "/0000.kas", "rb")
     # Check 0000.kas file content
     first_line = f_checker.readline()
     if first_line == b"":
@@ -49,7 +49,7 @@ def check_user_account():
     f_checker.close()
 
     # Check file containing salt
-    if not os.path.isfile(k_var.k_var.program_file_dir + "/0000.salt"):
+    if not os.path.isfile(k_var.program_file_dir + "/0000.salt"):
         flag = 1
         print("Warning: Couldn't find file containing master password salt.")
         write_to_log("pre_vault.check_user_account() : "
