@@ -141,7 +141,6 @@ def get_login(login_id):
     """
     Get login credentials based on login's ID
     :param login_id: Target login's ID
-    :param master_password: User's Kaster master password
     :return:
     """
     f = open("%s/%s.dat" % (global_var.vault_file_dir, login_id), "rb")
