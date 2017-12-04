@@ -1,19 +1,22 @@
 Generator
   Description:
 
-    The Kaster's Generator is a subprogram that is used to generate random passwords.
-    Characters used by this generator are ASCII's printable characters with decimal value ranging from 32 to 126.
-    Not to be confused with the generator that is used for password encryption and decryption in Kaster Password Vault.
+    The Kaster's Generator is a subprogram that is used
+    to generate random passwords.
+    Characters used by this generator are ASCII's printable characters
+    with decimal value ranging from 32 to 126.
 
 
   Options:
 
         --gen       : Call generator
     -h, --help      : Print this manual page and exit
-    -l, --length    : Specify length of the output password(s), must be in between 12 and 30
+    -l, --length    : Specify length of the output password(s),
+                      must be in between 12 and 30
     -d, --duplicate : Specify number of output passwords
     -o, --output    : Specify output file to write the output
-                      Create and write if the file does not exist, append to file in the opposite case
+                      Create and write if the file does not exist,
+                      append to file in the opposite case
         --upper  : Use uppercase characters
         --lower  : Use lowercase characters
         --number : Use numbers
@@ -22,8 +25,14 @@ Generator
 
   Examples:
 
-    Print this manual page and exit: ./kaster.py --gen -h
-    Generate a random password: ./kaster.py --gen
-    Generate 3 random passwords, all are 15 characters in length: ./kaster.py --gen -l 15 --duplicate="3"
-    Generate 5 random passwords that only contain uppercase characters: ./kaster.py --gen --duplicate="5" --upper
-    Generate 2 random passwords that only use lowercase characters and numbers: ./kaster.py --gen --duplicate="2" --lower --number
+    1. Print this manual page and exit:
+      ./kaster.py --gen -h
+    2. Generate a random password:
+      ./kaster.py --gen
+    3. Generate 3 random passwords, all are 15 characters in length:
+      ./kaster.py --gen -l 15 --duplicate="3"
+    4. Generate 5 random passwords that only contain uppercase characters:
+      ./kaster.py --gen --duplicate="5" --upper
+    5. Generate 2 random passwords that only use
+       lowercase characters and numbers:
+      ./kaster.py --gen --duplicate="2" --lower --number

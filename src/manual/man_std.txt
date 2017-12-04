@@ -12,23 +12,26 @@ Password Standard
       - Range for number of special characters
       - How much something can be off a range (the author calls that "EP")
 
-    Password standards are stored in .std files in /usr/share/kaster/std/.
+    By default, password standards are stored in .std files
+    in /usr/share/kaster/std/.
     They have the following structure:
 
     [Name of Standard]
     [EP]
     [Minimum length]:[Maximum length]
-    [Minimum number of uppercase characters]:[Maximum number of uppercase characters]
-    [Minimum number of lowercase characters]:[Maximum number of lowercase characters]
-    [Minimum number of numerical characters]:[Maximum number of numerical characters]
-    [Minimum number of special characters]:[Maximum number of special characters]
+    [Minimum number of uppercase chars]:[Maximum number of uppercase chars]
+    [Minimum number of lowercase chars]:[Maximum number of lowercase chars]
+    [Minimum number of numerical chars]:[Maximum number of numerical chars]
+    [Minimum number of special chars]:[Maximum number of special chars]
 
-    You can view the Kaster Password Standard (/usr/share/kaster/std/kaster.std)
-    for an example. Kaster Password Standard is a standard used to check if the master
-    password is strong enough, and it is created if you call the vault and throw the
-    option '--account' in. You can create your own or add your own standards, too.
+    You can view the Kaster Password Standard (kaster.std)
+    for an example. Kaster Password Standard is a standard used to check
+    if the master password is strong enough, and it is created
+    if you call the vault and throw the option '--account' in.
+    You can create your own or add your own standards, too.
 
   Options
 
-    --std=std : Check if std is a valid file containing password standard. If yes,
-                read out the content of the standard.
+    --std=std : Check if std's a valid file containing password standard.
+                If yes, read out the content of the standard.
+                Note: std is the file's name, not the full path.
