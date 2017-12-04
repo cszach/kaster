@@ -137,7 +137,7 @@ def new_login_ui(master_password, login_id):
     del f
 
 
-def get_login(login_id, master_password):
+def get_login(login_id):
     """
     Get login credentials based on login's ID
     :param login_id: Target login's ID
@@ -148,28 +148,10 @@ def get_login(login_id, master_password):
     print(f.readline().decode("utf-8")[:-1])  # Print login name
     print("====================")
     print("Login: %s" % f.readline().decode("utf-8")[:-1])
+    print("ID: %s" % login_id)
     comment = f.readline().decode("utf-8")[:-1]
     f.close()
-
-    # Get IV
-    f = open("%s/%s.kiv" % (global_var.vault_file_dir, login_id), "rb")
-    iv = f.read()
-    f.close()
-
-    # Get cipher password
-    f = open("%s/%s.kas" % (global_var.vault_file_dir, login_id), "rb")
-    pss = f.read()
-    f.close()
-
     del f
-
-    flag = AES.new(key(master_password), AES.MODE_CFB, iv)
-    pss = flag.decrypt(pss).decode("utf-8")
-    del flag
-    pss = "".join(["*" for _ in pss])
-    print("Password: %s" % pss)
-    del pss
-
     if comment != "":
         print("Comment: %s" % comment)
     del comment
@@ -322,14 +304,14 @@ def vault(com_list):
                 del login_name, login_id
         elif v_opt == "--get":
             pre_action()
-            master = pre_vault.sign_in()
-            if master == 1:
-                del master
-                sys.exit(1)  # Login failed
             print()
-            get_id = v_arg
-            get_login(get_id, master)
-            del master, get_id
+            get_id = "%04d" % int(v_arg)
+            if not os.path.isfile("%s/%s.dat" % (global_var.vault_file_dir, get_id)):
+                print("Login does not exist, quitting...")
+                del get_id
+                sys.exit(1)
+            get_login(get_id)
+            del get_id
         elif v_opt == "--getpass":
             pre_action()
             master = pre_vault.sign_in()
@@ -338,6 +320,10 @@ def vault(com_list):
                 sys.exit(1)  # Login failed
 
             get_id = "%04d" % int(v_arg)
+            if not os.path.isfile("%s/%s.dat" % (global_var.vault_file_dir, get_id)):
+                print("Login does not exist, quitting...")
+                del get_id
+                sys.exit(1)
 
             # Get IV
             f = open("%s/%s.kiv" % (global_var.vault_file_dir, get_id), "rb")
@@ -367,11 +353,12 @@ def vault(com_list):
                 print("Warning: Must specify more options")
                 print("Type './kaster.py --vault --help' for the manual page")
                 sys.exit(1)
-            if not os.path.isfile("%s/%s.dat" % (global_var.vault_file_dir, v_arg)):
+            login_id = "%04d" % int(v_arg)
+            if not os.path.isfile("%s/%s.dat" % (global_var.vault_file_dir, login_id)):
                 LogWriter.write_to_log("User attempts to edit a login but Kaster couldn't find it")
-                print("Error: Could not find login #%s" % v_arg)
+                print("Error: Could not find login #%s" % login_id)
+                del login_id
                 sys.exit(1)
-            login_id = v_arg
             for edit_opt, new_value in com_list[v_idx + 1:]:
                 if edit_opt == "--name":
                     flag = new_value
