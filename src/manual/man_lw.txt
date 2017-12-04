@@ -1,7 +1,9 @@
 Log Writer
   Description:
 
-  The log writer is a Kaster's component that has the full privilege to access the Kaster's log file (/usr/share/kaster/log.dat).
+    The log writer is a Kaster's component that has the full privilege
+    to access the Kaster's log file
+    (whose path is '/usr/share/kaster/log.dat' by default).
 
 
   Options:
@@ -10,17 +12,24 @@ Log Writer
     -h, --help   : Print this manual page and exit
         --create : Create a log file
         --append : Append a string to the log file
-        --log    : Just like --append, but append the string with the date and time in front
+        --log    : Just like --append, but append the string
+                   with the date and time in front
         --clear  : Clear content in the log file
         --delete : Delete the log file
 
 
   Examples:
 
-    Prints this manual page: ./kaster.py --lw
-    Create a log file: ./kaster.py --lw --create
-    Append a string to the log file: ./kaster.py --lw --append="foo"
-    Append a string to the log file with date and time in front: ./kaster.py --lw --log="bar"
-      (which prints something like "[15:03:50 10/09/2018] bar" to the log file)
-    Clear the content in the log file: ./kaster.py --lw --clear
-    Delete the log file: ./kaster.py --lw --delete
+    1. Prints this manual page:
+      ./kaster.py --lw
+    2. Create a log file:
+      ./kaster.py --lw --create
+    3. Append a string to the log file:
+      ./kaster.py --lw --append="foo"
+    4. Append a string to the log file with date and time in front:
+      ./kaster.py --lw --log="bar"
+     (which prints something like "[15:03:50 10/09/2018] bar" to the log file)
+    5. Clear the content in the log file:
+      ./kaster.py --lw --clear
+    6. Delete the log file:
+      ./kaster.py --lw --delete
