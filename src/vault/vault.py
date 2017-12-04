@@ -358,8 +358,14 @@ def vault(com_list):
             del iv, master
             pss = flag.decrypt(pss)
             del flag
-            pyperclip.copy(pss.decode("utf-8"))  # Copy password to clipboard
-            print("Password for login #%s copied." % get_id)
+            try:
+                pyperclip.copy(pss.decode("utf-8"))  # Copy password to clipboard
+                print("Password for login #%s copied." % get_id)
+            except UnicodeDecodeError as e:
+                del pss, get_id
+                write_to_log("An error occurred while decoding the password: %s" % e)
+                print("Error: Could not decode password: In format UTF-8")
+                sys.exit(1)
             del pss, get_id
         elif v_opt == "--edit":
             pre_action()
