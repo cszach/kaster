@@ -9,7 +9,7 @@ setup(name="Kaster",
       license="MIT",
       install_requires=[
           "pyperclip",
-          "PyCrypto"
+          "Crypto"
       ],
       classifiers=[
           "Development Status :: 1 - Production/Stable",
