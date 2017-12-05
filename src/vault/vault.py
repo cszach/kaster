@@ -468,7 +468,6 @@ def vault(com_list):
             del login_id
             sys.exit(0)
         elif v_opt == "--del":
-            pre_action()
             get_id = get_id_from_arg(v_arg)
             if not os.path.isfile("%s/%s.dat" % (k_var.vault_file_dir, get_id)):  # If the login does not exist :/
                 write_to_log("User attempts to delete a login but Kaster couldn't find it")
@@ -500,8 +499,6 @@ def vault(com_list):
             else:
                 print("Aborting...")
         elif v_opt == "--delall":
-            pre_action()
-
             if len(fnmatch.filter(os.listdir(k_var.vault_file_dir), "*.dat")) == 0:
                 print("No saved login.")
                 sys.exit(0)
