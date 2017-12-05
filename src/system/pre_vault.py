@@ -18,73 +18,99 @@ def check_user_account():
     Return 1 if something is wrong.
     :return: An integer indicates user's account state
     """
+    __process__ = "pre_vault.check_user_account()"
+
     flag = 0
     # If no account has not yet been created, exit
     # It doesn't matter because when a new account is created,
     # all files containing credentials, key, and IVs will be deleted
     if not os.path.isfile(k_var.program_file_dir + "/0000.kas"):
         print("No account created.")
-        write_to_log("pre_vault.check_user_account() : 0000.kas not found -> No account created, session abort")
+        write_to_log("%s : 0000.kas not found -> No account created, session abort" % __process__)
         return -1
 
     print("Username: %s" % os.environ["SUDO_USER"])
 
-    f_checker = open(k_var.program_file_dir + "/0000.kas", "rb")
+    c_f = open(k_var.program_file_dir + "/0000.kas", "rb")
     # Check 0000.kas file content
-    first_line = f_checker.readline()
+    first_line = c_f.readline()
     if first_line == b"":
         flag = 1
         print("Warning: 0000.kas is empty")
-        write_to_log("pre_vault.check_user_account() : Found file %s/0000.kas to be empty" % k_var.program_file_dir)
+        write_to_log("%s : Found file %s/0000.kas to be empty" % (__process__, k_var.program_file_dir))
     elif first_line != bytes(os.environ["SUDO_USER"] + "\n", "utf-8"):
         flag = 1
         print("Warning: Got wrong username '%s', expected '%s'." % (os.environ["SUDO_USER"], first_line))
-        write_to_log("pre_vault.check_user_account() : Username that is written in "
-                     "%s/0000.kas does not seem to match with current username" % k_var.program_file_dir)
+        write_to_log("%s : Username that is written in "
+                     "%s/0000.kas does not seem to match with current username" % (__process__, k_var.program_file_dir))
     del first_line
-    if f_checker.read() == b"":
+    if c_f.read() == b"":
         flag = 1
         print("Warning: Couldn't find master password hash.")
-        write_to_log("pre_vault.check_user_account() : Found no password hash, this is a danger")
-    f_checker.close()
+        write_to_log("%s : Found no password hash, this is a danger" % __process__)
+    c_f.close()
 
     # Check file containing salt
     if not os.path.isfile(k_var.program_file_dir + "/0000.salt"):
         flag = 1
         print("Warning: Couldn't find file containing master password salt.")
-        write_to_log("pre_vault.check_user_account() : "
-                     "Found no file containing the salt that is used for master password's hashing, this is a danger")
-        print("Should clear vault's files after this operation.")
+        write_to_log("%s : Found no file containing the salt that is used "
+                     "for master password's hashing, this is a danger" % __process__)
     else:
-        f_checker = open(k_var.program_file_dir + "/0000.salt")
-        if len(f_checker.read()) != 32:
+        c_f = open(k_var.program_file_dir + "/0000.salt")
+        if len(c_f.read()) != 32:
             flag = 1
             print("Warning: Unexpected file length: File containing salt.")
-            write_to_log("pre_vault.check_user_account() : "
-                         "Unexpected length: %s/0000.salt, the file might have been modified" % k_var.program_file_dir)
-    del f_checker
+            write_to_log("%s : Unexpected length: %s/0000.salt" % (__process__, k_var.program_file_dir))
 
     # Check the availability of vault's files
+    # If they do exist, check if they are okay
+    # (Like make sure IV's files are 16 in bytes length)
+    f_content = None
     for file in fnmatch.filter(os.listdir(k_var.vault_file_dir), "*.dat"):
-        if not os.path.isfile(k_var.vault_file_dir + "/" + file[:-4] + ".kas"):
+        file_name = file[:-4]
+        if not os.path.isfile("%s/%s.kas" % (k_var.vault_file_dir, file_name)):
+            flag = 1
+            write_to_log("%s : Found no file containing password for login #%s" % (__process__, file[:-4]))
             print("Warning: Couldn't find file containing password for login #%s" % file[:-4])
-            write_to_log("pre_vault.check_user_account() : Found no file containing password for login #%s" % file[:-4])
+        else:
+            c_f = open("%s/%s.kas" % (k_var.vault_file_dir, file_name), "rb")
+            f_content = c_f.read()
+            c_f.close()
+            try:
+                f_content = f_content.decode("utf-8")
+            except UnicodeDecodeError:
+                flag = 1
+                write_to_log("%s : File containing password for login #%s "
+                             "is not encoded in UTF-8" % (__process__, file[:-4]))
+                print("Warning: Wrong encoding: File containing password for login #%s" % file[:-4])
+            finally:
+                del f_content
+        if not os.path.isfile("%s/%s.kiv" % (k_var.vault_file_dir, file_name)):
             flag = 1
-        if not os.path.isfile(k_var.vault_file_dir + "/" + file[:-4] + ".kiv"):
+            write_to_log("%s : Found no file containing IV for login #%s" % (__process__, file[:-4]))
             print("Warning: Couldn't find file containing IV for login #%s" % file[:-4])
-            write_to_log("pre_vault.check_user_account() : Found no file containing IV for login #%s" % file[:-4])
-            flag = 1
+        else:
+            c_f = open("%s/%s.kiv" % (k_var.vault_file_dir, file_name), "rb")
+            f_content = c_f.read()
+            c_f.close()
+            if len(f_content) != 16:
+                flag = 1
+                print("Warning: Unexpected file length: File containing IV for login %s. " % file[:-4])
+                write_to_log("%s : Unexpected length: %s/%s.kiv" % (__process__, k_var.vault_file_dir, file[:-4]))
+
+    del c_f, f_content
 
     # Result
     if flag == 0:
         print("Account state: OK")
-        write_to_log("pre_vault.check_user_account() : Found no problem, session end")
-        del flag
+        write_to_log("%s : Found no problem, session end" % __process__)
+        del flag, __process__
         return 0
     else:
         print("Account state: NOT OK")
-        write_to_log("pre_vault.check_user_account() : Found problem(s), session end")
-        del flag
+        write_to_log("%s : Found problem(s), session end" % __process__)
+        del flag, __process__
         return 1
 
 
