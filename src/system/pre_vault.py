@@ -67,25 +67,13 @@ def check_user_account():
     # If they do exist, check if they are okay
     # (Like make sure IV's files are 16 in bytes length)
     f_content = None
+    file_name = None
     for file in fnmatch.filter(os.listdir(k_var.vault_file_dir), "*.dat"):
         file_name = file[:-4]
         if not os.path.isfile("%s/%s.kas" % (k_var.vault_file_dir, file_name)):
             flag = 1
             write_to_log("%s : Found no file containing password for login #%s" % (__process__, file[:-4]))
             print("Warning: Couldn't find file containing password for login #%s" % file[:-4])
-        else:
-            c_f = open("%s/%s.kas" % (k_var.vault_file_dir, file_name), "rb")
-            f_content = c_f.read()
-            c_f.close()
-            try:
-                f_content = f_content.decode("utf-8")
-            except UnicodeDecodeError:
-                flag = 1
-                write_to_log("%s : File containing password for login #%s "
-                             "is not encoded in UTF-8" % (__process__, file[:-4]))
-                print("Warning: Wrong encoding: File containing password for login #%s" % file[:-4])
-            finally:
-                del f_content
         if not os.path.isfile("%s/%s.kiv" % (k_var.vault_file_dir, file_name)):
             flag = 1
             write_to_log("%s : Found no file containing IV for login #%s" % (__process__, file[:-4]))
@@ -99,7 +87,7 @@ def check_user_account():
                 print("Warning: Unexpected file length: File containing IV for login %s. " % file[:-4])
                 write_to_log("%s : Unexpected length: %s/%s.kiv" % (__process__, k_var.vault_file_dir, file[:-4]))
 
-    del c_f, f_content
+    del c_f, f_content, file_name
 
     # Result
     if flag == 0:
