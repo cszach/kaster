@@ -112,10 +112,10 @@ def new_login_ui(master_password, login_id):
     note = input("Note/Comment (leave blank if there's nothing): ")
 
     # Save login name, login, and comment
-    f = open("%s/%s.dat" % (k_var.vault_file_dir, login_id), "wb")
-    f.write(bytes(login_name + "\n", "utf-8"))
-    f.write(bytes(login + "\n", "utf-8"))
-    f.write(bytes(note + "\n", "utf-8"))
+    f = open("%s/%s.dat" % (k_var.vault_file_dir, login_id), "w")
+    f.write(login_name + "\n")
+    f.write(login + "\n")
+    f.write(note + "\n")
     f.close()
 
     # Create IV and save it
@@ -140,12 +140,12 @@ def get_login(login_id):
     :param login_id: Target login's ID
     :return:
     """
-    f = open("%s/%s.dat" % (k_var.vault_file_dir, login_id), "rb")
-    print(f.readline().decode("utf-8")[:-1])  # Print login name
+    f = open("%s/%s.dat" % (k_var.vault_file_dir, login_id), "r")
+    print(f.readline()[:-1])  # Print login name
     print("====================")
-    print("Login: %s" % f.readline().decode("utf-8")[:-1])
+    print("Login: %s" % f.readline()[:-1])
     print("ID: %s" % login_id)
-    comment = f.readline().decode("utf-8")[:-1]
+    comment = f.readline()[:-1]
     f.close()
     del f
     if comment != "":
@@ -487,6 +487,8 @@ def vault(com_list):
                     os.remove("%s/%s.kas" % (k_var.vault_file_dir, get_id))
                     os.remove("%s/%s.kiv" % (k_var.vault_file_dir, get_id))
                     write_to_log("Removed login #%s" % get_id)
+                except FileNotFoundError:
+                    pass
                 except OSError as e:
                     write_to_log("An error occurred while deleting login #%s: %s" % (get_id, e))
                     print("An error occurred while deleting login #%s." % get_id)
