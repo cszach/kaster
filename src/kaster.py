@@ -57,7 +57,7 @@ scanned_opt = []
 for opt, arg in opts:
     if opt in scanned_opt:
         del scanned_opt
-        print("Error: Found duplicate option '%s', quitting..." % opt)
+        print("Fatal: Found duplicate option '%s'" % opt)
         sys.exit(1)
     else:
         scanned_opt.append(opt)
@@ -85,6 +85,7 @@ for opt, arg in opts:
         except KeyboardInterrupt:
             print()
             print("Got keyboard interruption, quitting...")
+            sys.exit(0)
     elif opt == "--vault":
         # Might remove this try except and handle keyboard interruption in vault.vault() instead
         try:
@@ -93,9 +94,9 @@ for opt, arg in opts:
             print()
             print("Got keyboard interruption, quitting...")
     else:
-        print("Error: Wrong use of option '%s'. Quitting..." % opt)
+        print("Fatal: Wrong usage of option '%s'." % opt)
         sys.exit(1)
     sys.exit(0)
 
-print("Error: Invalid argument '%s'. Quitting..." % args[0])
+print("Fatal: Invalid argument '%s'." % args[0])
 sys.exit(1)

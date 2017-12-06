@@ -88,5 +88,5 @@ def lw_main(com_list):
         elif l_opt == "--delete":
             delete_log_file()
         else:
-            print("Error: Not recognized option '%s'. Quitting..." % l_opt)
+            print("Fatal: Not recognized option '%s'." % l_opt)
             sys.exit(1)

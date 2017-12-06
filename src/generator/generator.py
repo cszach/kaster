@@ -63,7 +63,7 @@ def generator(com_list):
                     print("Assigning p_length to None...")
                     p_length = None
             except ValueError:
-                print("Error: Invalid value for password's length '%s'. Quitting..." % g_arg)
+                print("Error: Invalid value for password's length '%s'." % g_arg)
                 sys.exit(1)
         elif g_opt in ("-d", "--duplicate"):
             try:
@@ -73,7 +73,7 @@ def generator(com_list):
                     print("Assigning p_duplicate to 1...")
                     p_duplicate = 1
             except ValueError:
-                print("Error: Invalid value for number of passwords '%s'. Quitting..." % g_arg)
+                print("Error: Invalid value for number of passwords '%s'." % g_arg)
                 sys.exit(1)
         elif g_opt in ("-o", "--output"):
             if not os.path.isfile(g_arg):  # If the file does not exist
@@ -105,7 +105,7 @@ def generator(com_list):
         elif g_opt == "--symbol":
             p_use_symbol = True
         else:
-            print("Error: Not recognized option '%s'. Quitting..." % g_opt)
+            print("Fatal: Not recognized option '%s'." % g_opt)
             sys.exit(1)
 
     # Generate password session

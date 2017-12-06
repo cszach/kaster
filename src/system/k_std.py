@@ -54,7 +54,7 @@ def check_std(std_file_name):
     print("In session: k_std.check_std()")
     if not isfile(std_file_dir + "/" + std_file_name):
         write_to_log("k_std.check_std() : File does not exist: %s" % (std_file_dir + "/" + std_file_name))
-        print("File does not exist, quitting...")
+        print("File does not exist")
         write_to_log("End session: k_std.check_std()")
         print("Finish session: k_std.check_std()")
         return -1
