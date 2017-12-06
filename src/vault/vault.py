@@ -255,7 +255,7 @@ def vault(com_list):
                     elif login_opt == "--comment":
                         note = login_arg
                     else:
-                        print("Error: Invalid option %s, quitting..." % login_opt)
+                        print("Fatal: Invalid option %s" % login_opt)
                         del master
                         del login_name, login, password, note
                         sys.exit(1)
@@ -325,7 +325,7 @@ def vault(com_list):
             pre_action()
             get_id = get_id_from_arg(v_arg)
             if not os.path.isfile("%s/%s.dat" % (k_var.vault_file_dir, get_id)):
-                print("Login does not exist, quitting...")
+                print("Login does not exist.")
                 del get_id
                 sys.exit(1)
             get_login(get_id)
@@ -339,7 +339,7 @@ def vault(com_list):
 
             get_id = get_id_from_arg(v_arg)
             if not os.path.isfile("%s/%s.dat" % (k_var.vault_file_dir, get_id)):
-                print("Login does not exist, quitting...")
+                print("Login does not exist.")
                 del get_id
                 sys.exit(1)
 
@@ -471,7 +471,7 @@ def vault(com_list):
             get_id = get_id_from_arg(v_arg)
             if not os.path.isfile("%s/%s.dat" % (k_var.vault_file_dir, get_id)):  # If the login does not exist :/
                 write_to_log("User attempts to delete a login but Kaster couldn't find it")
-                print("Error: Couldn't find login associated with ID #%s, quitting..." % get_id)
+                print("Couldn't find login associated with ID #%s" % get_id)
                 del get_id
                 sys.exit(1)
             master = pre_vault.sign_in()
@@ -517,5 +517,5 @@ def vault(com_list):
             else:
                 print("Aborting...")
         else:
-            print("Not recognized option '%s'. Quitting..." % v_opt)
+            print("Fatal: Not recognized option '%s'." % v_opt)
             sys.exit(1)
