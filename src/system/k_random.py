@@ -87,7 +87,8 @@ def random_pass(std_filename):
     f = open("%s/%s" % (std_file_dir, std_filename))
     f.readline()  # Bitch the first line
     get_relative_score = eval(f.readline())
-    minimum_score = 5 if get_relative_score == 0 else 10
+    minimum_score = 8 if get_relative_score == 0 else 10
+    del get_relative_score
     std_length = f.readline()
     std_upper = f.readline()
     std_lower = f.readline()
