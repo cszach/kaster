@@ -37,11 +37,12 @@ def generator_std(input_std_filename, input_options):
             except ValueError:
                 print("Error: Invalid value for number of passwords '%s'." % gstder_arg)
                 sys.exit(1)
+    f = None
     if save_output is not None:
-        f = open(output, "w")
+        f = open(save_output, "w")
 
     for i in range(duplication):
-        g_password = k_random.random_pass("%s/%s" % (std_file_dir, input_std_filename))
+        g_password = k_random.random_pass(input_std_filename)
         print("Output [%d] %s" % (i + 1, g_password))
         if save_output is not None:
             f.write(g_password + "\n")
@@ -60,6 +61,9 @@ def generator(com_list):
     if len(com_list) == 0:
         generator([("--duplicate", "1")])
         return
+
+    if not os.path.isdir(std_file_dir):
+        os.mkdir(std_file_dir)
 
     """
     Setup variable
@@ -112,6 +116,7 @@ def generator(com_list):
                 sys.exit(0)
         elif g_opt == "--std":
             generator_std(g_arg, com_list)
+            sys.exit(0)
         elif g_opt in ("-l", "--length"):
             try:
                 p_length = int(g_arg)

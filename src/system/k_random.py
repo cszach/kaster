@@ -1,7 +1,8 @@
+from sys import exit
 from global_var import *
 from random import choice, randint
-from math import inf
 from k_check_pss import k_check_pss
+from LogWriter import write_to_log
 
 
 def random_string(*args):
@@ -84,7 +85,15 @@ def random_pass(std_filename):
     :param std_filename: Name of file defining the standard
     :return: Randomly generated password
     """
-    f = open("%s/%s" % (std_file_dir, std_filename))
+    f = None
+    try:
+        f = open("%s/%s" % (std_file_dir, std_filename))
+    except FileNotFoundError:
+        write_to_log("k_random.random_pass(): File %s/%s not found." % (std_file_dir, std_filename))
+        print("Error: Could not find %s in %s" % (std_filename, std_file_dir))
+        del f
+        exit(1)
+
     f.readline()  # Bitch the first line
     get_relative_score = eval(f.readline())
     minimum_score = 8 if get_relative_score == 0 else 10
@@ -114,15 +123,15 @@ def random_pass(std_filename):
 
     while True:
         flag_return_password = random_string("ps", randint(std_len_min, std_len_max),
-                                             False if int(std_upper.split(":")[0]) == 0
-                                                      and int(std_upper.split(":")[1]) == 0 else True,
-                                             False if int(std_lower.split(":")[0]) == 0
-                                                      and int(std_lower.split(":")[1]) == 0 else True,
-                                             False if int(std_number.split(":")[0]) == 0
-                                                      and int(std_number.split(":")[1]) == 0 else True,
-                                             False if int(std_symbolmbol.split(":")[0]) == 0
-                                                      and int(std_symbol.split(":")[1]) == 0 else True,)
-        if k_check_pss(flag_return_password, std_filename) == minimum_score:
+                                             False if std_upper.split(":")[0] == "0"
+                                                      and std_upper.split(":")[1] == "0" else True,
+                                             False if std_lower.split(":")[0] == "0"
+                                                      and std_lower.split(":")[1] == "0" else True,
+                                             False if std_number.split(":")[0] == "0"
+                                                      and std_number.split(":")[1] == "0" else True,
+                                             False if std_symbol.split(":")[0] == "0"
+                                                      and std_symbol.split(":")[1] == "0" else True,)
+        if k_check_pss(flag_return_password, std_file_dir + "/" + std_filename) == minimum_score:
             del std_len_min, std_len_max, std_upper, std_lower, std_number, std_symbol, minimum_score
             return flag_return_password
 
