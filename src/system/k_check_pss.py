@@ -103,13 +103,5 @@ def k_check_pss(pss, k_std_file_path):
     flag += close_score(std_p_ep, k_count_occur(pss, lowercase_chars), std_p_lower)
     flag += close_score(std_p_ep, k_count_occur(pss, numbers), std_p_num)
     flag += close_score(std_p_ep, k_count_occur(pss, special_chars), std_p_sym)
-    if int(std_p_upper.split(":")[0]) + int(std_p_lower.split(":")[0]) > 2:
-        # Define variables to check how extended the alphabetical characters in the password are
-        top_row = "QWERTYUIOPqwertyuiop"
-        middle_row = "ASDFGHJKLasdfghjkl"
-        bottom_row = "ZXCVBNMzxcvbnm"
-        if k_count_occur(pss, top_row) < 1 or k_count_occur(pss, middle_row) < 1 or k_count_occur(pss, bottom_row) < 1:
-            flag -= 1
-        del top_row, middle_row, bottom_row
     del std_p_ep, std_p_length, std_p_upper, std_p_lower, std_p_num, std_p_sym
     return flag
