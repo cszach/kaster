@@ -113,7 +113,11 @@ def generator(com_list):
     # Prepare file if an output file name is specified
     f = None
     if output_file_name is not None:
-        f = open(output_file_name, "a")
+        try:
+            f = open(output_file_name, "a")
+        except FileNotFoundError:
+            print("Warning: Parent folder of %s does not exist, will not write output to any file" % output_file_name)
+            output_file_name = None
 
     # Output
     g_output = None
