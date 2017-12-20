@@ -16,7 +16,6 @@ sys.path.insert(0, "system")
 import pre_kaster
 import LogWriter
 import Instructor
-import k_std
 sys.path.insert(0, "generator")
 from generator import generator
 sys.path.insert(0, "vault")
