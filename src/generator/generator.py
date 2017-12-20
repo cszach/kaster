@@ -9,46 +9,8 @@ This generator generates passwords mainly by calling k_random (found in the 'sys
 import sys
 import os
 sys.path.insert(0, "../system")
-from global_var import std_file_dir
 import k_random
 import Instructor
-
-
-def generator_std(input_std_filename, input_options):
-    """
-    Session for generating passwords under a standard
-    :param input_std_filename: Filename of file containing the rules of a password standard
-    :param input_options: Options & Values
-    :return:
-    """
-    save_output = None
-    duplication = 1
-
-    for gstder_opt, gstder_arg in input_options:
-        if gstder_opt in ("-o", "--output"):
-            save_output = gstder_arg
-        elif gstder_opt in ("-d", "--duplicate"):
-            try:
-                duplication = int(gstder_arg)
-                if duplication < 1:
-                    print("Warning: Invalid value for duplication (%d). Must be greater than 0." % gstder_arg)
-                    print("Assigning p_duplicate to 1...")
-                    duplication = 1
-            except ValueError:
-                print("Error: Invalid value for number of passwords '%s'." % gstder_arg)
-                sys.exit(1)
-    f = None
-    if save_output is not None:
-        f = open(save_output, "w")
-
-    for i in range(duplication):
-        g_password = k_random.random_pass(input_std_filename)
-        print("Output [%d] %s" % (i + 1, g_password))
-        if save_output is not None:
-            f.write(g_password + "\n")
-    if save_output is not None:
-        f.close()
-    del i, f, g_password
 
 
 def generator(com_list):
@@ -61,9 +23,6 @@ def generator(com_list):
     if len(com_list) == 0:
         generator([("--duplicate", "1")])
         return
-
-    if not os.path.isdir(std_file_dir):
-        os.mkdir(std_file_dir)
 
     """
     Setup variable
@@ -90,33 +49,12 @@ def generator(com_list):
     p_use_symbol = None
     output_file_name = None
 
-    # Quick check
-    got_std = False
-    got_c_arg = False
-    for g_opt, g_arg in com_list:
-        if g_opt == "--std":
-            if got_c_arg:
-                print("Error: --std is specified incorrectly")
-                del got_std, got_c_arg
-                sys.exit(1)
-            got_std = True
-        elif got_std:
-            print("Error: --std is specified incorrectly")
-            del got_std, got_c_arg
-            sys.exit(1)
-        elif g_opt in ["-l", "--length", "-d", "--duplicate", "-o", "--output"]:
-            got_c_arg = True
-    del got_std, got_c_arg
-
     for g_opt, g_arg in com_list:
         if g_opt in ("-h", "--help"):
             Instructor.main("man_gen.txt")
             # If that is the only option, exit right away to avoid creating a password
             if len(com_list) == 1:
                 sys.exit(0)
-        elif g_opt == "--std":
-            generator_std(g_arg, com_list)
-            sys.exit(0)
         elif g_opt in ("-l", "--length"):
             try:
                 p_length = int(g_arg)
