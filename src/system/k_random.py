@@ -1,4 +1,4 @@
-from global_var import *
+from string import ascii_uppercase, ascii_lowercase, digits, punctuation, hexdigits
 from random import choice, randint
 
 
@@ -57,13 +57,13 @@ def random_string(*args):
     allowed_chars = ""  # A string that holds the characters that can be presented in the output string
 
     if args[1]:
-        allowed_chars += uppercase_chars
+        allowed_chars += ascii_uppercase
     if args[2]:
-        allowed_chars += lowercase_chars
+        allowed_chars += ascii_lowercase
     if args[3]:
-        allowed_chars += numbers
+        allowed_chars += digits
     if args[4]:
-        allowed_chars += special_chars
+        allowed_chars += punctuation
 
     # If no length is specified (at args[0]) then make random
     pss_length = randint(12, 30) if args[0] is None else args[0]
@@ -71,7 +71,7 @@ def random_string(*args):
     # If our 4 booleans are set to None, pretend them to be set to True and allow all of them
     # because what password on Earth does not contain any of uppercase, lowercase, numerical and special characters?
     if args[1] == args[2] == args[3] == args[4] is None:
-        allowed_chars = uppercase_chars + lowercase_chars + numbers + special_chars
+        allowed_chars = ascii_uppercase + ascii_lowercase + digits + punctuation
 
     return "".join([choice(allowed_chars) for _ in range(pss_length)])
 
@@ -83,4 +83,4 @@ def random_hex(length):
     :param length: Number of digits in the output hexadecimal
     :return: A randomly generated hexadecimal number with [length] digits
     """
-    return "".join([choice(numbers + lowercase_chars[:6]) for _ in range(length)])
+    return "".join([choice(hexdigits) for _ in range(length)])
