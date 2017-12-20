@@ -1,12 +1,12 @@
 import sys
 import os
+from string import ascii_uppercase, ascii_lowercase, digits, punctuation
 import traceback
 from getpass import getpass
 import fnmatch
 import global_var as k_var
 from LogWriter import write_to_log
 import k_random
-from k_check_pss import k_check_pss
 from Crypto.Hash import SHA512
 
 
@@ -102,25 +102,6 @@ def check_user_account():
         return 1
 
 
-def create_default_std():
-    """
-    Create the default file that defines Kaster's password standards
-    :return:
-    """
-    if not os.path.isdir(k_var.std_file_dir):
-        os.mkdir(k_var.std_file_dir)
-    f = open(k_var.std_file_dir + "/kaster.std", "w")
-    f.write("Kaster Password Standard\n")
-    f.write("2 / 9 * 100\n")
-    f.write("12:30\n")
-    f.write("3:\n")
-    f.write("3:\n")
-    f.write("3:\n")
-    f.write("3:\n")
-    f.close()
-    del f
-
-
 def sign_up():
     """
     Sign up session
@@ -138,34 +119,34 @@ def sign_up():
         f = open(k_var.program_file_dir + "/0000.kas", "wb")
         f.write(bytes(os.environ["SUDO_USER"] + "\n", "utf-8"))
         mst_pass = getpass("Password: ")
+
         if len(mst_pass) == 0:
             # If input is nothing then generate a random password as said
             # Usually k_random.random_string("ps") would return a strong-enough password
-            # Just having a while loop to make sure it does return a strong password
-            while True:
-                mst_pass = k_random.random_string("ps")
-                if k_check_pss(mst_pass, k_var.std_file_dir + "/kaster.std") == 10:
-                    print("Your password is: '%s'" % mst_pass)
-                    print("(Exclude the single quotes around it)")
-                    print("Please REMEMBER this password.")
-                    input("Hit Enter to continue")
-                    break
-        elif getpass("Confirm password: ") == mst_pass:
-            pss_score = k_check_pss(mst_pass, k_var.std_file_dir + "/kaster.std")
-            if pss_score != 9:  # Compare password to Kaster's standard
-                os.system("clear")
-                print("Warning: Your password is not strong enough based on Kaster Password Standard (%d/9)."
-                      % pss_score)
-                print("You can enter nothing to get a randomly-generated password")
-                del pss_score, mst_pass
-                sign_up()
-                return
+            mst_pass = k_random.random_string("ps")
         else:
-            print("Warning: Passwords do not match. Aborting...")
-            f.close()
-            os.remove(k_var.program_file_dir + "/0000.kas")
-            del f, mst_pass
-            sys.exit(12)
+            pass_score_flag = sum(1 for char in mst_pass if char.isalpha()) \
+                              + sum(1 for char in mst_pass if char.isdigit())
+
+            register_failed = False
+            confirm_password = None
+            if pass_score_flag % 9 < 9 and len(mst_pass) < 12:
+                print("Warning: Your password is not strong enough.")
+                register_failed = True
+            else:
+                confirm_password = getpass("Confirm password: ")
+                if mst_pass != confirm_password:
+                    print("Warning: Passwords do not match.")
+                    register_failed = True
+
+            try:
+                if register_failed:
+                    f.close()
+                    os.remove(k_var.program_file_dir + "/0000.kas")
+                    sys.exit(1)
+            finally:
+                del f, mst_pass, pass_score_flag, confirm_password, register_failed
+
         salt = k_random.random_hex(32)  # Create salt
         p_hash.update((mst_pass + salt).encode("utf-8"))  # Create hash
         f.write(p_hash.digest())  # Save hash
@@ -241,7 +222,6 @@ def main(create_acc):
     """
     if not os.path.isdir(k_var.vault_file_dir):
         os.mkdir(k_var.vault_file_dir)
-    create_default_std()
 
     if not create_acc:
         return
