@@ -6,7 +6,7 @@ from getpass import getpass
 import fnmatch
 from Crypto.Hash import SHA256
 from Crypto.Cipher import AES
-import pyperclip
+from pyperclip import copy as p_copy
 sys.path.insert(0, "../system")
 import global_var as k_var
 from LogWriter import write_to_log
@@ -359,13 +359,18 @@ def vault(com_list):
             pss = flag.decrypt(pss)
             del flag
             try:
-                pyperclip.copy(pss.decode("utf-8"))  # Copy password to clipboard
+                p_copy(pss.decode("utf-8"))
                 print("Password for login #%s copied." % get_id)
             except UnicodeDecodeError as e:
                 del pss, get_id
                 write_to_log("An error occurred while decoding the password: %s" % e)
                 print("Error: Could not decode password: In format UTF-8")
                 sys.exit(1)
+            except Exception as e:
+                write_to_log("An error occurred while attempting to copy password to clipboard: %s" % e)
+                print("Error: Could not copy password to clipboard")
+                print("=====Traceback=====")
+                traceback.print_exc()
             del pss, get_id
         elif v_opt == "--edit":
             pre_action()
