@@ -33,17 +33,18 @@ def check_user_account():
 
     c_f = open(k_var.program_file_dir + "/0000.kas", "rb")
     # Check 0000.kas file content
-    first_line = c_f.readline()
-    if first_line == b"":
+    grep_username = c_f.readline().decode("utf-8")[:-1]
+    if grep_username == b"":
         flag = 1
         print("Warning: 0000.kas is empty")
         write_to_log("%s : Found file %s/0000.kas to be empty" % (__process__, k_var.program_file_dir))
-    elif first_line != bytes(os.environ["SUDO_USER"] + "\n", "utf-8"):
+    elif grep_username != os.environ["SUDO_USER"] and os.environ["SUDO_USER"] != "root":
         flag = 1
-        print("Warning: Got wrong username '%s', expected '%s'." % (os.environ["SUDO_USER"], first_line))
+        print("Warning: Got wrong username '%s', expected '%s'." %
+              (os.environ["SUDO_USER"], grep_username))
         write_to_log("%s : Username that is written in "
                      "%s/0000.kas does not seem to match with current username" % (__process__, k_var.program_file_dir))
-    del first_line
+    del grep_username
     if c_f.read() == b"":
         flag = 1
         print("Warning: Couldn't find master password hash.")
@@ -124,6 +125,9 @@ def sign_up():
             # If input is nothing then generate a random password as said
             # Usually k_random.random_string("ps") would return a strong-enough password
             mst_pass = k_random.random_string("ps")
+            print("Your master password is: '%s'" % mst_pass)
+            print("(Exclude the single quotes around it)")
+            print("Remember it.")
         else:
             pass_score_flag = sum(1 for char in mst_pass if char.isalpha()) \
                               + sum(1 for char in mst_pass if char.isdigit())
