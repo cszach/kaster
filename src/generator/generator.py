@@ -10,7 +10,7 @@ import sys
 import os
 sys.path.insert(0, "../system")
 import Instructor
-sys.path.insert(0, "../utils")
+sys.path.insert(0, "utils")
 import k_random
 
 
