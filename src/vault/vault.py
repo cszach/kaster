@@ -12,7 +12,7 @@ import global_var as k_var
 from LogWriter import write_to_log
 import Instructor
 import pre_vault
-sys.path.insert(0, "../utils")
+sys.path.insert(0, "utils")
 from k_random import random_string
 
 

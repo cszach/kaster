@@ -1,8 +1,8 @@
 import sys
 import os
 import global_var as k_var
-from . import Instructor
-sys.path.insert(0, "../utils")
+import Instructor
+sys.path.insert(0, "utils")
 from k_date import k_now
 
 
