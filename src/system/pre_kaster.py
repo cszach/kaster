@@ -2,7 +2,7 @@
 import os
 from global_var import *
 from datetime import datetime
-import LogWriter
+from . import LogWriter
 import traceback
 
 

@@ -10,9 +10,10 @@ from pyperclip import copy as p_copy
 sys.path.insert(0, "../system")
 import global_var as k_var
 from LogWriter import write_to_log
-import pre_vault
-from k_random import random_string
 import Instructor
+import pre_vault
+sys.path.insert(0, "../utils")
+from k_random import random_string
 
 
 def clear_vault_dir():
