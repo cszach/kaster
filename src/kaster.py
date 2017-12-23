@@ -2,7 +2,7 @@
 """Kaster Password Vault"""
 
 __program__ = "Kaster Password Vault"
-__version__ = "1.0"
+__version__ = "Beta"
 __author__ = "Nguyen Hoang Duong"
 __license__ = "MIT"
 __maintainter__ = "Nguyen Hoang Duong"
