@@ -1,8 +1,9 @@
 import sys
 import os
 import global_var as k_var
-from k_date import k_now
 import Instructor
+sys.path.insert(0, "utils")
+from k_date import k_now
 
 
 # Kaster's log file manipulator, deals everything that involves the log file
