@@ -1,13 +1,13 @@
 import sys
 import os
-from string import ascii_uppercase, ascii_lowercase, digits, punctuation
 import traceback
 from getpass import getpass
 import fnmatch
 import global_var as k_var
 from LogWriter import write_to_log
-import k_random
 from Crypto.Hash import SHA512
+sys.path.insert(0, "../utils")
+import k_random
 
 
 def check_user_account():
