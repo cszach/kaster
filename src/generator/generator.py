@@ -9,8 +9,9 @@ This generator generates passwords mainly by calling k_random (found in the 'sys
 import sys
 import os
 sys.path.insert(0, "../system")
-import k_random
 import Instructor
+sys.path.insert(0, "utils")
+import k_random
 
 
 def generator(com_list):
