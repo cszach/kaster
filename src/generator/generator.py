@@ -1,11 +1,3 @@
-"""
-Password generator
-Not to be confused with the generator in the password vault,
-this generator only generates passwords.
-It does not generate IV, key, pseudorandom number or anything else.
-This generator generates passwords mainly by calling k_random (found in the 'system' folder)
-"""
-
 import sys
 import os
 sys.path.insert(0, "../system")
