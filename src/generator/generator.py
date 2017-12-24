@@ -1,5 +1,6 @@
 import sys
 import os
+import logging
 sys.path.insert(0, "../system")
 import Instructor
 sys.path.insert(0, "utils")
@@ -12,6 +13,13 @@ def generator(com_list):
     :param com_list: Arguments to be passed to the generator
     :return:
     """
+    __process__ = "generator.py (VOID generator())"
+
+    logging.basicConfig(filename="%s" % program_file_dir + "/log.dat",
+                        format="[%(asctime)s] %(message)s",
+                        datefmt="%s %s" % (time_format, date_format),
+                        level=logging.INFO)
+
     # If no option is specified for the generator, generate a random password
     if len(com_list) == 0:
         generator([("--duplicate", "1")])
@@ -41,6 +49,9 @@ def generator(com_list):
     p_use_number = None
     p_use_symbol = None
     output_file_name = None
+    logging.debug("%s: All variables required for password generation are set to None" % __process__)
+
+    number_of_warnings = 0
 
     for g_opt, g_arg in com_list:
         if g_opt in ("-h", "--help"):
@@ -52,43 +63,55 @@ def generator(com_list):
             try:
                 p_length = int(g_arg)
                 if p_length > 30 or p_length < 12:
-                    print("Warning: Invalid password's length (%d). Must be in between 12 and 30." % p_length)
-                    print("Assigning p_length to None...")
+                    logging.warning("WARNING:%s: Invalid password's length (%d): Must be between 12 and 30"
+                                    % (__process__, p_length))
+                    number_of_warnings += 1
+                    logging.info("INFO:%s: Assigning p_length to None" % __process__)
                     p_length = None
             except ValueError:
-                print("Error: Invalid value for password's length '%s'." % g_arg)
-                sys.exit(1)
+                logging.warning("WARNING:%s: Invalid value for password's length (%s)"
+                                % (__process__, g_arg))
+                number_of_warnings += 1
+                logging.info("INFO:%s: Assigning p_length to None")
+                p_length = None
         elif g_opt in ("-d", "--duplicate"):
             try:
                 p_duplicate = int(g_arg)
                 if p_duplicate < 1:
-                    print("Warning: Invalid value for duplication (%d). Must be greater than 0." % p_duplicate)
-                    print("Assigning p_duplicate to 1...")
+                    logging.warning("WARNING:%s: Invalid value for duplication (%d): Must be greater than 0"
+                                    % (__process__, p_duplicate))
+                    number_of_warnings += 1
+                    logging.info("INFO:%s: Assigning p_duplicate to 1" % __process__)
                     p_duplicate = 1
             except ValueError:
-                print("Error: Invalid value for number of passwords '%s'." % g_arg)
-                sys.exit(1)
+                logging.warning("WARNING:%s: Invalid value for duplication (%s)"
+                                % (__process__, g_arg))
+                number_of_warnings += 1
+                logging.info("INFO:%s: Assigning p_duplicate to 1" % __process__)
+                p_duplicate = 1
         elif g_opt in ("-o", "--output"):
             if not os.path.isfile(g_arg):  # If the file does not exist
                 output_file_name = g_arg
             else:
                 print("File '%s' has already existed." % g_arg)
                 u_choice = input("Do you want to append or overwrite the file? Or abort operation? [A|O|C] ")
-                if u_choice.lower() == "o":  # Overwrite -> Remove the file and create a new one with the same name
-                    os.remove(g_arg)
-                    open(g_arg, "a").close()
-                    output_file_name = g_arg
+                try:
+                    if u_choice.lower() == "o":  # Overwrite -> Remove the file and create a new one with the same name
+                        os.remove(g_arg)
+                        open(g_arg, "a").close()
+                        output_file_name = g_arg
+                    elif u_choice.lower() == "c":  # Cancel
+                        sys.exit(8)
+                    elif u_choice.lower() != "a":  # Invalid option
+                        output_file_name = None  # Assigning to None means no record
+                        logging.warning("WARNING:%s: Unrecognized option (%s)" % (__process__, u_choice))
+                        number_of_warnings += 1
+                        logging.info("INFO:%s: There will be no output to file" % __process__)
+                        continue
+                    else:  # That means user chooses "a" -> Append
+                        output_file_name = g_arg
+                finally:
                     del u_choice
-                elif u_choice.lower() == "c":  # Cancel
-                    del u_choice
-                    sys.exit(8)
-                elif u_choice.lower() != "a":  # Invalid option
-                    output_file_name = None  # Assigning to None means no record
-                    print("Warning: Unrecognized option '%s'. Option is ignored." % u_choice)
-                    del u_choice
-                    continue
-                else:  # Append
-                    output_file_name = g_arg
         elif g_opt == "--upper":
             p_use_upper = True
         elif g_opt == "--lower":
@@ -98,7 +121,7 @@ def generator(com_list):
         elif g_opt == "--symbol":
             p_use_symbol = True
         else:
-            print("Fatal: Not recognized option '%s'." % g_opt)
+            logging.error("FATAL:%s: Not recognized option (%s)" % (__process__, g_opt))
             sys.exit(1)
 
     # Generate password session
@@ -109,7 +132,9 @@ def generator(com_list):
         try:
             f = open(output_file_name, "a")
         except FileNotFoundError:
-            print("Warning: Parent folder of %s does not exist, will not write output to any file" % output_file_name)
+            logging.warning("WARNING:%s: Parent folder of %s does not exist" % (__process__, output_file_name))
+            number_of_warnings += 1
+            logging.info("INFO:%s: There will be no output to file" % __process__)
             output_file_name = None
 
     # Output
@@ -121,9 +146,17 @@ def generator(com_list):
         if output_file_name is not None:
             f.write(g_output + "\n")
 
+    del p_length, p_duplicate, p_use_upper, p_use_lower, p_use_number, p_use_symbol
+    del g_output
+
     if output_file_name is not None:
         f.close()
 
-    # Delete variables, save RAM!
-    del p_length, p_duplicate, p_use_upper, p_use_lower, p_use_number, p_use_symbol
-    del g_output, f, output_file_name
+    del f, output_file_name
+
+    if number_of_warnings > 0:
+        print()
+        logging.info("INFO:%s: Total number of warnings: %d"
+                     % (__process__, number_of_warnings))
+
+    del number_of_warnings
