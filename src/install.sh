@@ -8,27 +8,30 @@ fi
 
 version="Beta"  # Must change for every Kaster's update
 echo "Installing Kaster password manager $version"
+unset version
 
 # Get editor
 editor=""
-if [ command -v nano ]
+if [ -x "$(command -v nano)" ]
 then
     editor="nano"
-elif [ command -v vim ]
+elif [ -x "$(command -v vim)" ]
 then
     editor="vim"
-elif [ command -v vi ]
+elif [ -x "$(command -v vi)" ]
 then
     editor="vi"
 else
-    echo "What text editor are you using? (enter the command that you can use to start the editor) "
+    echo "What text editor are you using? (enter the command that you can use to start the editor)"
     read editor
-    if ! (( command -v "$editor" ))
+    if ! (( -x "$(command -v $editor)" ))
     then
         echo "FATAL: Command '$editor' does not available"
         exit 407
     fi
 fi
+
+userhome=$(eval echo ~$USER)
 
 if [ -e system/.kasterrc ]
 then
@@ -36,9 +39,9 @@ then
     sleep 3
     eval "$editor system/.kasterrc"
 
-    echo "INFO: Moving system/.kasterrc to $HOME"
-    mv system/.kasterrc $HOME
-elif ! [ -e $HOME/.kasterrc ]
+    echo "INFO: Moving system/.kasterrc to $userhome"
+    mv system/.kasterrc $userhome
+elif ! [ -e $userhome/.kasterrc ]
 then
     echo "FATAL: Couldn't find .kasterrc in both current directory and home directory, file missing or has been moved"
     exit 408
@@ -57,4 +60,6 @@ else
 fi
 
 echo "Done."
+unset userhome
+unset editor
 exit 0
