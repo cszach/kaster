@@ -1,5 +1,7 @@
-from sys import exit
+import sys
 import logging
+sys.path.insert(0, "../utils")
+from path import *
 
 
 def main(man_page_name):
@@ -9,8 +11,8 @@ def main(man_page_name):
     """
     __process__ = "Instructor.py (main())"
 
-    exec(open("~/.kasterrc").read())
-    logging.basicConfig(filename="%s" % program_file_dir + "/log.dat",
+    exec(open(config_path).read())
+    logging.basicConfig(filename="%s" % log_path,
                         format="[%(asctime)s] %(message)s",
                         datefmt="%s %s" % (time_format, date_format),
                         level=logging.INFO)
@@ -31,7 +33,7 @@ def main(man_page_name):
                 f = open("manual/" + man_page_name, "r")
             except FileNotFoundError:
                 logging.error("FATAL:%s: Couldn't find manual page (%s)" % (__process__, man_page_name))
-                exit(1)
+                sys.exit(1)
             f_content = f.read()
             f.close()
             print(f_content)

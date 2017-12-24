@@ -4,6 +4,7 @@ import logging
 sys.path.insert(0, "../system")
 import Instructor
 sys.path.insert(0, "utils")
+from path import *
 import k_random
 
 
@@ -15,8 +16,8 @@ def generator(com_list):
     """
     __process__ = "generator.py (VOID generator())"
 
-    exec(open("~/.kasterrc").read())
-    logging.basicConfig(filename="%s" % program_file_dir + "/log.dat",
+    exec(open("config_path").read())
+    logging.basicConfig(filename="%s" % log_path,
                         format="[%(asctime)s] %(message)s",
                         datefmt="%s %s" % (time_format, date_format),
                         level=logging.INFO)
