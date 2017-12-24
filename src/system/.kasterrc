@@ -1,6 +1,14 @@
-# System
+# Configure file for Kaster password manager
+# EDITABLE UNDER RESTRICTION
+# Edit the values to match your preferences.
+# DO NOT change the variables' names. DO NOT delete the hash symbol ("#") at the start of the lines in this file.
+# You can exit the editor now if you want to leave everything as default.
+
+# The directory in which Kaster stores its files
 program_file_dir = "/usr/share/kaster"
-generator_file_dir = program_file_dir + "/gen"
-vault_file_dir = program_file_dir + "/vault"
+
+# Date string format and time string format for use in logging
+# %d = day, %m = month, %Y = year, %H = hour, %M = minute, %S = second
+# If date_format is %d/%m/%Y then the date string will look something like 1/1/2018
 date_format = "%d/%m/%Y"
 time_format = "%H:%M:%S"
