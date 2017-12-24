@@ -2,6 +2,7 @@
 # grephome.sh
 # Get the user's home directory (when sudo it's not /root) and write it to a file,
 # to help Kaster determines .kasterrc, which is placed in the user's home directory
+# NOT FOR MANUALLY EXECUTION
 
 getuserhome=$(eval echo ~$USER)
 
