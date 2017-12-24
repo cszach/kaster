@@ -9,6 +9,7 @@ def main(man_page_name):
     """
     __process__ = "Instructor.py (main())"
 
+    exec(open("~/.kasterrc").read())
     logging.basicConfig(filename="%s" % program_file_dir + "/log.dat",
                         format="[%(asctime)s] %(message)s",
                         datefmt="%s %s" % (time_format, date_format),

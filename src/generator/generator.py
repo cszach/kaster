@@ -15,6 +15,7 @@ def generator(com_list):
     """
     __process__ = "generator.py (VOID generator())"
 
+    exec(open("~/.kasterrc").read())
     logging.basicConfig(filename="%s" % program_file_dir + "/log.dat",
                         format="[%(asctime)s] %(message)s",
                         datefmt="%s %s" % (time_format, date_format),
