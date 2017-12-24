@@ -16,6 +16,8 @@ def userhome():
 
 
 exec(open("%s/.kasterrc" % userhome()).read())
+kaster_dir = program_file_dir
+config_path = "%s/%s" % (userhome(), ".kasterrc")
 log_path = "%s/%s" % (program_file_dir, "log.dat")
 man_f_dir = "%s/%s" % (program_file_dir, "man")
 vault_f_dir = "%s/%s" % (program_file_dir, "vault")
