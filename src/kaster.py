@@ -78,8 +78,6 @@ for opt, arg in opts:
         print(__program__ + " " + __version__)
         print("Kaster Password Vault is a CLI offline password manager.")
         print("Brought to you by " + __author__)
-    elif opt == "--lw":
-        LogWriter.lw_main(opts[1:])
     elif opt == "--gen":
         try:
             generator(opts[1:])
