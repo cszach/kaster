@@ -1,4 +1,5 @@
 *.pyc
+global_var.py
 lib/
 .idea/
 __pycache__/
