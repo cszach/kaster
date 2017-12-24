@@ -9,6 +9,6 @@ program_file_dir = "/usr/share/kaster"
 
 # Date string format and time string format for use in logging
 # %d = day, %m = month, %Y = year, %H = hour, %M = minute, %S = second
-# If date_format is %d/%m/%Y then the date string will look something like 1/1/2018
+# %d/%m/%Y = DD/MM/YYYY
 date_format = "%d/%m/%Y"
 time_format = "%H:%M:%S"
