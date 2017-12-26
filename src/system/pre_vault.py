@@ -6,7 +6,7 @@ import fnmatch
 import logging
 from Crypto.Hash import SHA512
 sys.path.insert(0, "../utils")
-from k_path import *
+from global_vars import *
 import k_random
 
 
@@ -20,10 +20,9 @@ def check_user_account(console_output=False):
     :return: An integer indicates user's account state
     """
     __process__ = "pre_vault.py (check_user_account())"
-    exec(open(config_path).read())
     logging.basicConfig(filename="%s" % log_path,
                         format="[%(asctime)s] %(message)s",
-                        datefmt="%s %s" % (time_format, date_format),
+                        datefmt="%s %s" % (time_fm, date_fm),
                         level=logging.INFO)
 
     # If no account has not yet been created, exit
@@ -105,10 +104,9 @@ def sign_up():
     :return:
     """
     __process__ = "pre_vault.py (sign_up())"
-    exec(open(config_path).read())
     logging.basicConfig(filename="%s" % log_path,
                         format="[%(asctime)s] %(message)s",
-                        datefmt="%s %s" % (time_format, date_format),
+                        datefmt="%s %s" % (time_fm, date_fm),
                         level=logging.INFO)
 
     # Clear vault path
