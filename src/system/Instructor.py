@@ -1,7 +1,7 @@
 import sys
 import logging
 sys.path.insert(0, "../utils")
-from path import *
+from k_path import *
 
 
 def main(man_page_name):
