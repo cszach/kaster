@@ -19,3 +19,5 @@ config_path = "%s/%s" % (userhome, ".kasterrc")
 log_path = "%s/%s" % (program_file_dir, "log.dat")
 man_dir = "%s/%s" % (program_file_dir, "man")
 vault_dir = "%s/%s" % (program_file_dir, "vault")
+time_fm = time_format
+date_fm = date_format
