@@ -3,7 +3,7 @@ import sys
 import os
 import logging
 sys.path.insert(0, "../utils")
-from k_path import *
+from global_vars import *
 
 
 def main():
@@ -22,10 +22,9 @@ def main():
     if not os.path.isdir(kaster_dir):
         os.mkdir(kaster_dir)
 
-    exec(open(config_path).read())
     logging.basicConfig(filename="%s" % log_path,
                         format="[%(asctime)s] %(message)s",
-                        datefmt="%s %s" % (time_format, date_format),
+                        datefmt="%s %s" % (time_fm, date_fm),
                         level=logging.INFO)
 
     if os.path.getsize(log_path) > 50000000:  # Check if log file's size is larger than 50MB
