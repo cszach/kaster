@@ -2,7 +2,7 @@
 import sys
 import os
 import logging
-sys.path.insert(0, "utils")
+sys.path.insert(0, "../utils")
 from k_path import *
 
 
