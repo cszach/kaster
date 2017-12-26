@@ -16,6 +16,7 @@ def check_user_account(console_output=False):
     Return 0 if everything is okay.
     Return -1 if no account is created.
     Return 1 if something is wrong.
+    :param console_output: Tell the function whether to write console output or not
     :return: An integer indicates user's account state
     """
     __process__ = "pre_vault.py (check_user_account())"
@@ -74,18 +75,18 @@ def check_user_account(console_output=False):
             flag = 1
             write_to_log("%s : Found no file containing password for login #%s" % (__process__, file[:-4]))
             print("Warning: Couldn't find file containing password for login #%s" % file[:-4])
-        if not os.path.isfile("%s/%s.kiv" % (k_var.vault_file_dir, file_name)):
+        if not os.path.isfile("%s/%s.kiv" % (vault_dir, file_name)):
             flag = 1
             write_to_log("%s : Found no file containing IV for login #%s" % (__process__, file[:-4]))
             print("Warning: Couldn't find file containing IV for login #%s" % file[:-4])
         else:
-            c_f = open("%s/%s.kiv" % (k_var.vault_file_dir, file_name), "rb")
+            c_f = open("%s/%s.kiv" % (vault_dir, file_name), "rb")
             f_content = c_f.read()
             c_f.close()
             if len(f_content) != 16:
                 flag = 1
                 print("Warning: Unexpected file length: File containing IV for login %s. " % file[:-4])
-                write_to_log("%s : Unexpected length: %s/%s.kiv" % (__process__, k_var.vault_file_dir, file[:-4]))
+                write_to_log("%s : Unexpected length: %s/%s.kiv" % (__process__, vault_dir, file[:-4]))
     """
 
     del c_f  #, f_content, file_name
@@ -149,7 +150,7 @@ def sign_up():
             try:
                 if register_failed:
                     f.close()
-                    os.remove(k_var.program_file_dir + "/0000.kas")
+                    os.remove(kaster_dir + "/0000.kas")
                     logging.warning("WARNING:%s: Registeration failed: %s" % (__process__, r_reason))
                     sys.exit(1)
             finally:
@@ -227,8 +228,8 @@ def main(create_acc):
     :param create_acc: Boolean to tell if creating an account is required
     :return:
     """
-    if not os.path.isdir(k_var.vault_file_dir):
-        os.mkdir(k_var.vault_file_dir)
+    if not os.path.isdir(vault_dir):
+        os.mkdir(vault_dir)
 
     if not create_acc:
         return
