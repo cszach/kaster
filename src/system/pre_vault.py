@@ -3,104 +3,94 @@ import os
 import traceback
 from getpass import getpass
 import fnmatch
-import global_var as k_var
-from LogWriter import write_to_log
+import logging
 from Crypto.Hash import SHA512
 sys.path.insert(0, "../utils")
+from global_vars import *
 import k_random
 
 
-def check_user_account():
+def check_user_account(console_output=False):
     """
     Check if a Kaster account is created, and if yes, check the state of the account
     Return 0 if everything is okay.
     Return -1 if no account is created.
     Return 1 if something is wrong.
+    :param console_output: Tell the function whether to write console output or not
     :return: An integer indicates user's account state
     """
-    __process__ = "pre_vault.check_user_account()"
+    __process__ = "pre_vault.py (check_user_account())"
 
-    flag = 0
     # If no account has not yet been created, exit
     # It doesn't matter because when a new account is created,
     # all files containing credentials, key, and IVs will be deleted
-    if not os.path.isfile(k_var.program_file_dir + "/0000.kas"):
-        print("No account created.")
-        write_to_log("%s : 0000.kas not found -> No account created, session abort" % __process__)
+    if not os.path.isfile(kaster_dir + "/0000.kas"):
+        logging.info("INFO:%s: %s/0000.kas not found, assuming that no account is created" % (__process__, kaster_dir))
         return -1
 
-    print("Username: %s" % os.environ["SUDO_USER"])
+    flag = 0
 
-    c_f = open(k_var.program_file_dir + "/0000.kas", "rb")
+    c_f = open(kaster_dir + "/0000.kas", "rb")
     # Check 0000.kas file content
     grep_username = c_f.readline().decode("utf-8")[:-1]
     if grep_username == b"":
         flag = 1
-        print("Warning: 0000.kas is empty")
-        write_to_log("%s : Found file %s/0000.kas to be empty" % (__process__, k_var.program_file_dir))
+        logging.warning("WARNING:%s: Fetched nothing for username, username empty?" % (__process__, kaster_dir))
     elif grep_username != os.environ["SUDO_USER"] and os.environ["SUDO_USER"] != "root":
         flag = 1
-        print("Warning: Got wrong username '%s', expected '%s'." %
-              (os.environ["SUDO_USER"], grep_username))
-        write_to_log("%s : Username that is written in "
-                     "%s/0000.kas does not seem to match with current username" % (__process__, k_var.program_file_dir))
+        logging.info("INFO:%s: Fetched username is '%s', user running Kaster as '%s' with sudo/root permission" % (__process__, grep_username, os.environ["SUDO_USER"]))
+        logging.warning("WARNING:%s: Fetched wrong username, wrong username is written to file, or user is using a different username (%s)"
+                    % (__process__, grep_username))
     del grep_username
     if c_f.read() == b"":
         flag = 1
-        print("Warning: Couldn't find master password hash.")
-        write_to_log("%s : Found no password hash, this is a danger" % __process__)
+        logging.log(35, "CRITICAL WARNING:%s: Could not find master password hash" % __process__)
     c_f.close()
 
     # Check file containing salt
-    if not os.path.isfile(k_var.program_file_dir + "/0000.salt"):
+    if not os.path.isfile(kaster_dir + "/0000.salt"):
         flag = 1
-        print("Warning: Couldn't find file containing master password salt.")
-        write_to_log("%s : Found no file containing the salt that is used "
-                     "for master password's hashing, this is a danger" % __process__)
+        logging.log(35, "CRITICAL WARNING:%s: Could not find salt for password's hashing process" % __process__)
     else:
-        c_f = open(k_var.program_file_dir + "/0000.salt")
+        c_f = open(kaster_dir + "/0000.salt")
         if len(c_f.read()) != 32:
             flag = 1
-            print("Warning: Unexpected file length: File containing salt.")
-            write_to_log("%s : Unexpected length: %s/0000.salt" % (__process__, k_var.program_file_dir))
+            logging.log(35, "CRITICAL WARNING:%s: Unexpected salt length (%s)" % (__process__, kaster_dir + "/0000.salt"))
 
     # Check the availability of vault's files
     # If they do exist, check if they are okay
     # (Like make sure IV's files are 16 in bytes length)
+    """Will modify this
     f_content = None
     file_name = None
-    for file in fnmatch.filter(os.listdir(k_var.vault_file_dir), "*.dat"):
+    for file in fnmatch.filter(os.listdir(vault_dir), "*.dat"):
         file_name = file[:-4]
-        if not os.path.isfile("%s/%s.kas" % (k_var.vault_file_dir, file_name)):
+        if not os.path.isfile("%s/%s.kas" % (vault_dir, file_name)):
             flag = 1
             write_to_log("%s : Found no file containing password for login #%s" % (__process__, file[:-4]))
             print("Warning: Couldn't find file containing password for login #%s" % file[:-4])
-        if not os.path.isfile("%s/%s.kiv" % (k_var.vault_file_dir, file_name)):
+        if not os.path.isfile("%s/%s.kiv" % (vault_dir, file_name)):
             flag = 1
             write_to_log("%s : Found no file containing IV for login #%s" % (__process__, file[:-4]))
             print("Warning: Couldn't find file containing IV for login #%s" % file[:-4])
         else:
-            c_f = open("%s/%s.kiv" % (k_var.vault_file_dir, file_name), "rb")
+            c_f = open("%s/%s.kiv" % (vault_dir, file_name), "rb")
             f_content = c_f.read()
             c_f.close()
             if len(f_content) != 16:
                 flag = 1
                 print("Warning: Unexpected file length: File containing IV for login %s. " % file[:-4])
-                write_to_log("%s : Unexpected length: %s/%s.kiv" % (__process__, k_var.vault_file_dir, file[:-4]))
+                write_to_log("%s : Unexpected length: %s/%s.kiv" % (__process__, vault_dir, file[:-4]))
+    """
 
-    del c_f, f_content, file_name
+    del c_f  #, f_content, file_name
 
-    # Result
-    if flag == 0:
-        print("Account state: OK")
-        write_to_log("%s : Found no problem, session end" % __process__)
-        del flag, __process__
-        return 0
-    else:
-        print("Account state: NOT OK")
-        write_to_log("%s : Found problem(s), session end" % __process__)
-        del flag, __process__
-        return 1
+    flag = "OK" if flag == 0 else "NOT OK"
+    return_value = 0 if flag == "OK" else 1
+
+    logging.info("INFO:%s: Account status: %s" % (__process__, flag))
+    del flag, __process__
+    return return_value
 
 
 def sign_up():
@@ -108,16 +98,22 @@ def sign_up():
     Sign up session
     :return:
     """
+    __process__ = "pre_vault.py (sign_up())"
+    logging.basicConfig(filename="%s" % log_path,
+                        format="[%(asctime)s] %(message)s",
+                        datefmt="%s %s" % (time_fm, date_fm),
+                        level=logging.INFO)
+
     # Clear vault path
-    if os.path.isdir(k_var.vault_file_dir):
-        os.system("rm -rf %s" % k_var.vault_file_dir)
-    os.mkdir(k_var.vault_file_dir)
+    if os.path.isdir(vault_dir):
+        os.system("rm -rf %s" % vault_dir)
+    os.mkdir(vault_dir)
     p_hash = SHA512.new()
     try:
         print("Sign Up")
         print("==============================")
         print("Username: %s" % os.environ["SUDO_USER"])
-        f = open(k_var.program_file_dir + "/0000.kas", "wb")
+        f = open(kaster_dir + "/0000.kas", "wb")
         f.write(bytes(os.environ["SUDO_USER"] + "\n", "utf-8"))
         mst_pass = getpass("Password: ")
 
@@ -133,50 +129,49 @@ def sign_up():
                               + sum(1 for char in mst_pass if char.isdigit())
 
             register_failed = False
+            r_reason = None
             confirm_password = None
             if pass_score_flag % 9 < 9 and len(mst_pass) < 12:
-                print("Warning: Your password is not strong enough.")
+                r_reason = "Password is not strong enough"
                 register_failed = True
             else:
                 confirm_password = getpass("Confirm password: ")
                 if mst_pass != confirm_password:
-                    print("Warning: Passwords do not match.")
+                    r_reason = "Passwords do not match"
                     register_failed = True
 
             try:
                 if register_failed:
                     f.close()
-                    os.remove(k_var.program_file_dir + "/0000.kas")
+                    os.remove(kaster_dir + "/0000.kas")
+                    logging.warning("WARNING:%s: Registeration failed: %s" % (__process__, r_reason))
                     sys.exit(1)
             finally:
-                del f, mst_pass, pass_score_flag, confirm_password, register_failed
+                del f, mst_pass, pass_score_flag, confirm_password, register_failed, r_reason
 
         salt = k_random.random_hex(32)  # Create salt
         p_hash.update((mst_pass + salt).encode("utf-8"))  # Create hash
         f.write(p_hash.digest())  # Save hash
         f.close()
-        os.system("chmod o-r %s" % (k_var.program_file_dir + "/0000.kas"))  # Make file unreadable to non-sudo privilege
-        f = open(k_var.program_file_dir + "/0000.salt", "w")
+        os.system("chmod o-r %s" % (kaster_dir + "/0000.kas"))  # Make file unreadable to non-sudo privilege
+        f = open(kaster_dir + "/0000.salt", "w")
         f.write(salt)  # Save salt
         del salt
         f.close()
-        os.system("chmod o-r %s" % (k_var.program_file_dir + "/0000.salt"))
+        os.system("chmod o-r %s" % (kaster_dir + "/0000.salt"))
         del f, mst_pass
-        print("New account for user %s created." % os.environ["SUDO_USER"])
-        write_to_log("Created an account for %s." % os.environ["SUDO_USER"])
+        logging.info("INFO:%s: New account created for user %s" % (__process__, os.environ["SUDO_USER"]))
     except KeyboardInterrupt:
-        os.remove(k_var.program_file_dir + "/0000.kas")
-        if os.path.isfile(k_var.program_file_dir + "/0000.salt"):
-            os.remove(k_var.program_file_dir + "/0000.salt")
-        write_to_log("Quit sign up session due to keyboard interruption.")
-        print("Got keyboard interruption, quitting...")
+        os.remove(kaster_dir + "/0000.kas")
+        if os.path.isfile(kaster_dir + "/0000.salt"):
+            os.remove(kaster_dir + "/0000.salt")
+        logging.info("INFO:%s: Quit sign up session: Keyboard interrupted" % __process__)
         return
     except Exception as e:
-        os.remove(k_var.program_file_dir + "/0000.kas")
-        if os.path.isfile(k_var.program_file_dir + "/0000.salt"):
-            os.remove(k_var.program_file_dir + "/0000.salt")
-        write_to_log("An error occurred during a sign up session: %s" % e)
-        print("An error occurred during sign up session.")
+        os.remove(kaster_dir + "/0000.kas")
+        if os.path.isfile(kaster_dir + "/0000.salt"):
+            os.remove(kaster_dir + "/0000.salt")
+        logging.error("ERROR:%s: An error occurred during sign up session: %s" % (__process__, e))
         print("=====Traceback=====")
         traceback.print_exc()
         return
@@ -187,19 +182,21 @@ def sign_in():
     Sign in session
     :return:
     """
+    __process__ = "pre_vault.py (sign_in())"
+
     print("Sign In")
     print("==============================")
     print("Username: %s" % os.environ["SUDO_USER"])
 
     # Get password hash right away
     # No get password then get hash 'cuz that's more dangerous, perhaps?
-    f = open(k_var.program_file_dir + "/0000.kas", "rb")
+    f = open(kaster_dir + "/0000.kas", "rb")
     f.readline()
     p_hash = f.read()
     f.close()
 
     # Get salt
-    f = open(k_var.program_file_dir + "/0000.salt", "r")
+    f = open(kaster_dir + "/0000.salt", "r")
     p_salt = f.read()
     f.close()
     del f
@@ -210,7 +207,7 @@ def sign_in():
     del p_salt
     # Check if the input password hash is the same as the saved hash
     if hash_factor.digest() != p_hash:
-        print("Authentication failed: Wrong password.")
+        logging.warning("WARNING:%s: Authentication failed: Wrong password" % __process__)
         del p_hash, hash_factor
         return 1
 
@@ -224,8 +221,8 @@ def main(create_acc):
     :param create_acc: Boolean to tell if creating an account is required
     :return:
     """
-    if not os.path.isdir(k_var.vault_file_dir):
-        os.mkdir(k_var.vault_file_dir)
+    if not os.path.isdir(vault_dir):
+        os.mkdir(vault_dir)
 
     if not create_acc:
         return
