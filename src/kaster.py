@@ -16,6 +16,8 @@ import logging
 sys.path.insert(0, "system")
 import pre_kaster
 import Instructor
+sys.path.insert(0, "utils")
+from k_path import *
 sys.path.insert(0, "generator")
 from generator import generator
 sys.path.insert(0, "vault")
@@ -35,8 +37,7 @@ if len(sys.argv[1:]) == 0:
     Instructor.main(None)
     sys.exit(0)
 
-exec(open("~/.kasterrc").read())
-logging.basicConfig(filename="%s" % program_file_dir + "/log.dat",
+logging.basicConfig(filename="%s" % log_path,
                     format="[%(asctime)s] %(message)s",
                     datefmt="%s %s" % (time_format, date_format),
                     level=logging.INFO)
@@ -93,10 +94,10 @@ for opt, arg in opts:
             print()
             print("Got keyboard interruption, quitting...")
     else:
-        print("FATAL:%s: Wrong usage of option '%s'." % (__process__, opt))
+        logging.error("FATAL:%s: Wrong usage of option '%s'." % (__process__, opt))
         sys.exit(1)
     del opts, args
     sys.exit(0)
 
-print("FATAL:%s: Invalid argument '%s'." % (__process__, args[0]))
+logging.error("FATAL:%s: Invalid argument '%s'." % (__process__, args[0]))
 sys.exit(1)
