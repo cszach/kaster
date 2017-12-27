@@ -20,15 +20,12 @@ def check_user_account(console_output=False):
     :return: An integer indicates user's account state
     """
     __process__ = "pre_vault.py (check_user_account())"
-    if not console_output:
-        logging.getLogger().removeHandler(logging.StreamHandler())
 
     # If no account has not yet been created, exit
     # It doesn't matter because when a new account is created,
     # all files containing credentials, key, and IVs will be deleted
     if not os.path.isfile(kaster_dir + "/0000.kas"):
-        logging.info("INFO:%s: No account created" % __process__)
-        logging.info("INFO:%s: %s/0000.kas not found, assuming that no account is created, exiting program..." % (__process__, kaster_dir))
+        logging.info("INFO:%s: %s/0000.kas not found, assuming that no account is created" % (__process__, kaster_dir))
         return -1
 
     flag = 0
@@ -93,9 +90,6 @@ def check_user_account(console_output=False):
 
     logging.info("INFO:%s: Account status: %s" % (__process__, flag))
     del flag, __process__
-    if not console_output:
-        logging.getLogger().addHandler(logging.StreamHandler())  # Add stream handler again, exit function
-
     return return_value
 
 
@@ -109,7 +103,6 @@ def sign_up():
                         format="[%(asctime)s] %(message)s",
                         datefmt="%s %s" % (time_fm, date_fm),
                         level=logging.INFO)
-    logging.getLogger().addHandler(logging.StreamHandler())
 
     # Clear vault path
     if os.path.isdir(vault_dir):
