@@ -15,13 +15,39 @@ Password Manager
         --new        : Create a new login if the user has an account
                        If there is no account or account's state
                        is not okay, alert user and exit
+                       Additional options are allowed,
+                       see the section "Creating a new login"
         --list       : List all logins with their names and IDs
         --get=ID     : Get the login name, name and comment of login #ID
         --getpass=ID : Copy the password of login #ID to clipboard
         --edit=ID    : Edit information
                        (login name, login, password, comment) of login #ID
+                       Must specify additional options,
+                       see the section "Editing a login" below
+                       see 
         --del=ID     : Delete login #ID
         --delall     : Delete all saved logins
+
+
+  Creating a new login
+
+    If you throw the --new option with no further option or argument,
+    the program will start an interface that will prompt you for inputs.
+    Alternatively, you can input the information with additional options.
+    They are: --name, --login, --password, and --comment.
+    --new
+      --name=LOGIN_NAME
+      --login=LOGIN
+      --password=LOGIN_PASSWORD
+      --comment=LOGIN_COMMENT
+    If you have additional options but you don't throw all four of them,
+    the missing ones will be automatically assigned (e.g. if you specify
+    --name, --login, --comment but you don't specify --password,
+    the new login's password will be assigned to a random password).
+
+    Example:
+    ./kaster.py --vault --new  # Start prompt interface
+    ./kaster.py --vault --new --name="System" --login="root"
 
 
   Editing a login

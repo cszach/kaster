@@ -1,41 +1,9 @@
 # File for handling stuffs before the program actually start
+import sys
 import os
-from global_var import *
-from datetime import datetime
-import LogWriter
-import traceback
-
-
-def renew_log_file():
-    """
-    Delete the log file if either 30 days (or more) have passed or it is larger than 10MB in size,
-    and create the log file again.
-    :return:
-    """
-    # Get the date when the log file was created
-    if os.path.isfile(program_file_dir + "/log.dat"):
-        f = open(program_file_dir + "/log.dat", "r")
-    else:
-        return  # If no log file found then just return
-
-    if os.path.getsize(program_file_dir + "/log.dat") > 50000000:  # Check if log file's size is larger than 50MB
-        LogWriter.delete_log_file()  # Remove the log file
-        LogWriter.create_log_file()  # Create new, empty log file
-        return
-
-    the_date = f.readline()  # Get the first line of the log file, which gives the time when the log file was created
-    f.close()
-    del f
-    the_date = the_date[29:-1].split("/")  # Get the date from the first line of log file ("Log file created on...")
-    the_date = [int(i) for i in the_date]  # Convert string components to int
-
-    # Compare and delete
-    now = datetime.now()
-    today = datetime(year=now.year, month=now.month, day=now.day)
-    the_date = datetime(year=the_date[2], month=the_date[1], day=the_date[0])
-    if (today - the_date).days >= 30:  # Check if 30 days or more have passed since last time created log file
-        LogWriter.delete_log_file()  # Remove the log file
-        LogWriter.create_log_file()  # Create new, empty log file
+import logging
+sys.path.insert(0, "utils")
+from global_vars import *
 
 
 def main():
@@ -43,13 +11,21 @@ def main():
     All processes to be ran on program's startup
     :return:
     """
-    # Create program's files path (/usr/share/kaster) if there isn't one
-    if not os.path.isdir(program_file_dir):
-        os.mkdir(program_file_dir)
-    try:
-        renew_log_file()
-    except ValueError:
-        print("An error occurred while the program was refreshing the log file.")
-        print("It's likely that the log file was somehow modified.")
-        print("=====Traceback=====")
-        traceback.print_exc()
+    __process__ = "pre_kaster.py (main())"
+
+    if not os.path.isfile(config_path):
+        print("FATAL:%s: Could not find Kaster's configuration file (.kasterrc) in home directory" % __process__)
+        print("Make sure that you've ran install.sh")
+        sys.exit(1)
+
+    # Create program's files path if there isn't one
+    if not os.path.isdir(kaster_dir):
+        os.mkdir(kaster_dir)
+    
+    if not os.path.isfile(log_path):
+        open(log_path, "a").close()
+
+    if os.path.getsize(log_path) > 50000000:  # Check if log file's size is larger than 50MB
+        os.remove(log_path)
+        open(log_path, "a").close()  # Create a new, empty log file
+        logging.info("INFO:%s: Renewed log file" % __process__)
