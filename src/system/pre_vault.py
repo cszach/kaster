@@ -20,6 +20,8 @@ def check_user_account(console_output=False):
     :return: An integer indicates user's account state
     """
     __process__ = "pre_vault.py (check_user_account())"
+    if not console_output:
+        logging.getLogger().removeHandler(logging.StreamHandler())
 
     # If no account has not yet been created, exit
     # It doesn't matter because when a new account is created,
@@ -91,6 +93,9 @@ def check_user_account(console_output=False):
 
     logging.log(20 if console_output else 0, "INFO:%s: Account status: %s" % (__process__, flag))
     del flag, __process__
+    if not console_output:
+        logging.getLogger().addHandler(logging.StreamHandler())  # Add stream handler again, exit function
+
     return return_value
 
 
