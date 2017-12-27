@@ -20,10 +20,6 @@ def check_user_account(console_output=False):
     :return: An integer indicates user's account state
     """
     __process__ = "pre_vault.py (check_user_account())"
-    logging.basicConfig(filename="%s" % log_path,
-                        format="[%(asctime)s] %(message)s",
-                        datefmt="%s %s" % (time_fm, date_fm),
-                        level=logging.INFO)
 
     # If no account has not yet been created, exit
     # It doesn't matter because when a new account is created,
@@ -108,6 +104,7 @@ def sign_up():
                         format="[%(asctime)s] %(message)s",
                         datefmt="%s %s" % (time_fm, date_fm),
                         level=logging.INFO)
+    logging.getLogger().addHandler(logging.StreamHandler())
 
     # Clear vault path
     if os.path.isdir(vault_dir):
