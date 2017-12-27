@@ -21,6 +21,9 @@ def main():
     # Create program's files path if there isn't one
     if not os.path.isdir(kaster_dir):
         os.mkdir(kaster_dir)
+    
+    if not os.path.isfile(log_path):
+        open(log_path, "a").close()
 
     if os.path.getsize(log_path) > 50000000:  # Check if log file's size is larger than 50MB
         os.remove(log_path)
