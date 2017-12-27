@@ -9,18 +9,19 @@ Generator
 
   Options:
 
-        --gen       : Call generator
-    -h, --help      : Print this manual page and exit
-    -l, --length    : Specify length of the output password(s),
-                      must be in between 12 and 30
-    -d, --duplicate : Specify number of output passwords
-    -o, --output    : Specify output file to write the output
-                      Create and write if the file does not exist,
-                      append to file in the opposite case
-        --upper  : Use uppercase characters
-        --lower  : Use lowercase characters
-        --number : Use numbers
-        --symbol : Use symbols
+        --gen               : Call generator
+    -h, --help              : Print this manual page and exit
+    -l LEN, --length=LEN    : Set output passwords' length to LEN
+                              (LEN is an integer, 12 <= LEN <= 30)
+    -d NUM, --duplicate=NUM : Set number of output passwords to NUM,
+                              (NUM is an integer, NUM >= 1)
+    -o PATH, --output=PATH  : Save output to file whose path is PATH
+                              Create and write if the file does not exist,
+                              append to the file in the opposite case
+        --upper             : Use uppercase characters
+        --lower             : Use lowercase characters
+        --number            : Use numbers
+        --symbol            : Use symbols
 
 
   Examples:
@@ -32,7 +33,7 @@ Generator
     3. Generate 3 random passwords, all are 15 characters in length:
       ./kaster.py --gen -l 15 --duplicate="3"
     4. Generate 5 random passwords that only contain uppercase characters:
-      ./kaster.py --gen --duplicate="5" --upper
+      ./kaster.py --gen -d 5 --upper
     5. Generate 2 random passwords that only use
        lowercase characters and numbers:
       ./kaster.py --gen --duplicate="2" --lower --number
