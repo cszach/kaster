@@ -18,7 +18,7 @@ def main():
         print("Make sure that you've ran install.sh")
         sys.exit(1)
 
-    # Create program's files path (/usr/share/kaster) if there isn't one
+    # Create program's files path if there isn't one
     if not os.path.isdir(kaster_dir):
         os.mkdir(kaster_dir)
 
