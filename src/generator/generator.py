@@ -132,6 +132,10 @@ def generator(com_list):
             number_of_warnings += 1
             logging.info("INFO:%s: There will be no output to file" % __process__)
             output_file_name = None
+    
+    if number_of_warnings > 0:
+        print()
+        print("===== * =====")
 
     # Output
     g_output = None
@@ -154,5 +158,6 @@ def generator(com_list):
         print()
         logging.info("INFO:%s: Total number of warnings: %d"
                      % (__process__, number_of_warnings))
+        print("Scroll up to see them.")
 
     del number_of_warnings
