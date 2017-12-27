@@ -39,7 +39,7 @@ if len(sys.argv[1:]) == 0:
 
 logging.basicConfig(filename="%s" % log_path,
                     format="[%(asctime)s] %(message)s",
-                    datefmt="%s %s" % (time_format, date_format),
+                    datefmt="%s %s" % (time_fm, date_fm),
                     level=logging.INFO)
 logging.getLogger().addHandler(logging.StreamHandler())
 
