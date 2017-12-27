@@ -17,7 +17,7 @@ sys.path.insert(0, "system")
 import pre_kaster
 import Instructor
 sys.path.insert(0, "utils")
-from k_path import *
+from global_vars import *
 sys.path.insert(0, "generator")
 from generator import generator
 sys.path.insert(0, "vault")
