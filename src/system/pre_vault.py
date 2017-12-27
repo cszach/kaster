@@ -27,8 +27,8 @@ def check_user_account(console_output=False):
     # It doesn't matter because when a new account is created,
     # all files containing credentials, key, and IVs will be deleted
     if not os.path.isfile(kaster_dir + "/0000.kas"):
-        logging.log(10 if console_output else 0, "INFO:%s: No account created" % __process__)
-        logging.log(10 if console_output else 0, "INFO:%s: %s/0000.kas not found, assuming that no account is created, exiting program..." % (__process__, kaster_dir))
+        logging.info("INFO:%s: No account created" % __process__)
+        logging.info("INFO:%s: %s/0000.kas not found, assuming that no account is created, exiting program..." % (__process__, kaster_dir))
         return -1
 
     flag = 0
@@ -38,27 +38,27 @@ def check_user_account(console_output=False):
     grep_username = c_f.readline().decode("utf-8")[:-1]
     if grep_username == b"":
         flag = 1
-        logging.log(30 if console_output else 0, "WARNING:%s: Fetched nothing for username, username empty?" % (__process__, kaster_dir))
+        logging.warning("WARNING:%s: Fetched nothing for username, username empty?" % (__process__, kaster_dir))
     elif grep_username != os.environ["SUDO_USER"] and os.environ["SUDO_USER"] != "root":
         flag = 1
-        logging.log(20 if console_output else 0, "INFO:%s: Fetched username is '%s', user running Kaster as '%s' with sudo/root permission" % (__process__, grep_username, os.environ["SUDO_USER"]))
-        logging.log(30 if console_output else 0, "WARNING:%s: Fetched wrong username, wrong username is written to file, or user is using a different username (%s)"
+        logging.info("INFO:%s: Fetched username is '%s', user running Kaster as '%s' with sudo/root permission" % (__process__, grep_username, os.environ["SUDO_USER"]))
+        logging.warning("WARNING:%s: Fetched wrong username, wrong username is written to file, or user is using a different username (%s)"
                     % (__process__, grep_username))
     del grep_username
     if c_f.read() == b"":
         flag = 1
-        logging.log(35 if console_output else 0, "CRITICAL WARNING:%s: Could not find master password hash" % __process__)
+        logging.log(35, "CRITICAL WARNING:%s: Could not find master password hash" % __process__)
     c_f.close()
 
     # Check file containing salt
     if not os.path.isfile(kaster_dir + "/0000.salt"):
         flag = 1
-        logging.log(35 if console_output else 0, "CRITICAL WARNING:%s: Could not find salt for password's hashing process" % __process__)
+        logging.log(35, "CRITICAL WARNING:%s: Could not find salt for password's hashing process" % __process__)
     else:
         c_f = open(kaster_dir + "/0000.salt")
         if len(c_f.read()) != 32:
             flag = 1
-            logging.log(35 if console_output else 0, "CRITICAL WARNING:%s: Unexpected salt length (%s)" % (__process__, kaster_dir + "/0000.salt"))
+            logging.log(35, "CRITICAL WARNING:%s: Unexpected salt length (%s)" % (__process__, kaster_dir + "/0000.salt"))
 
     # Check the availability of vault's files
     # If they do exist, check if they are okay
@@ -91,7 +91,7 @@ def check_user_account(console_output=False):
     flag = "OK" if flag == 0 else "NOT OK"
     return_value = 0 if flag == "OK" else 1
 
-    logging.log(20 if console_output else 0, "INFO:%s: Account status: %s" % (__process__, flag))
+    logging.info("INFO:%s: Account status: %s" % (__process__, flag))
     del flag, __process__
     if not console_output:
         logging.getLogger().addHandler(logging.StreamHandler())  # Add stream handler again, exit function
