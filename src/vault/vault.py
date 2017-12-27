@@ -60,8 +60,8 @@ def pre_action():
         if check_result == -1:
             print("No account created. Use './kaster.py --vault --account' to create one.")
         if check_result == 1:
-            print("WARNING: Found problem(s) during pre_vault.check_user_account() session, resolve them and try again")
-            print("See log file (%s) for more details" % log_path)
+            logging.warning("WARNING:%s: Found problem(s) with user's account and/or Kaster's files" % __process__)
+            print("Resolve them and try again.")
         if check_result != 0:
             sys.exit(0)
     finally:
