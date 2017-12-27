@@ -41,6 +41,7 @@ logging.basicConfig(filename="%s" % log_path,
                     format="[%(asctime)s] %(message)s",
                     datefmt="%s %s" % (time_format, date_format),
                     level=logging.INFO)
+logging.getLogger().addHandler(logging.StreamHandler())
 
 # Get all the arguments specified
 try:

@@ -36,11 +36,6 @@ def mediate_check_account(passer_stdout_option):
     """
     __process__ = "vault.py (mediate_check_account())"
 
-    logging.basicConfig(filename="%s" % log_path,
-                        format="[%(asctime)s] %(message)s",
-                        datefmt="%s %s" % (time_fm, date_fm),
-                        level=logging.INFO)
-
     try:
         result = pre_vault.check_user_account(console_output=passer_stdout_option)
     except Exception as e:
@@ -107,11 +102,6 @@ def new_login(master_password, login_name, login, password, note):
     :return:
     """
     __process__ = "vault.py (new_login())"
-
-    logging.basicConfig(filename="%s" % log_path,
-                        format="[%(asctime)s] %(message)s",
-                        datefmt="%s %s" % (time_fm, date_fm),
-                        level=logging.INFO)
 
     login_id = None
     try:
@@ -196,11 +186,6 @@ def get_id_from_arg(arg, program_terminate=True):
     """
     __process__ = "vault.py (get_id_from_arg())"
 
-    logging.basicConfig(filename="%s" % log_path,
-                        format="[%(asctime)s] %(message)s",
-                        datefmt="%s %s" % (time_fm, date_fm),
-                        level=logging.INFO)
-
     try:
         return "%04d" % int(arg)
     except ValueError:  # Get this when arg contains non-numerical character(s)
@@ -217,10 +202,6 @@ def vault(com_list):
     :return:
     """
     __process__ = "vault.py (vault())"
-    logging.basicConfig(filename="%s" % log_path,
-                        format="[%(asctime)s] %(message)s",
-                        datefmt="%s %s" % (time_fm, date_fm),
-                        level=logging.INFO)
 
     if len(com_list) == 0:
         Instructor.main("man_vault.txt")

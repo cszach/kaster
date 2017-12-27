@@ -16,11 +16,6 @@ def generator(com_list):
     """
     __process__ = "generator.py (VOID generator())"
 
-    logging.basicConfig(filename="%s" % log_path,
-                        format="[%(asctime)s] %(message)s",
-                        datefmt="%s %s" % (time_fm, date_fm),
-                        level=logging.INFO)
-
     # If no option is specified for the generator, generate a random password
     if len(com_list) == 0:
         generator([("--duplicate", "1")])

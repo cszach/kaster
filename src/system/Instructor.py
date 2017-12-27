@@ -11,11 +11,6 @@ def main(man_page_name):
     """
     __process__ = "Instructor.py (main())"
 
-    logging.basicConfig(filename="%s" % log_path,
-                        format="[%(asctime)s] %(message)s",
-                        datefmt="%s %s" % (time_fm, date_fm),
-                        level=logging.INFO)
-
     try:
         if man_page_name is None:
             # Read all the manual pages
