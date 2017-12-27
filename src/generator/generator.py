@@ -14,7 +14,7 @@ def generator(com_list):
     :param com_list: Arguments to be passed to the generator
     :return:
     """
-    __process__ = "generator.py (VOID generator())"
+    __process__ = "generator.py (generator())"
 
     # If no option is specified for the generator, generate a random password
     if len(com_list) == 0:
