@@ -146,9 +146,9 @@ def sign_up():
                     os.remove(kaster_dir + "/0000.kas")
                     logging.warning("WARNING:%s: Registeration failed: %s" % (__process__, r_reason))
                     sys.exit(1)
-                    del mst_pass
+                    del f, mst_pass
             finally:
-                del f, pass_score_flag, confirm_password, register_failed, r_reason
+                del pass_score_flag, confirm_password, register_failed, r_reason
 
         salt = k_random.random_hex(32)  # Create salt
         p_hash.update((mst_pass + salt).encode("utf-8"))  # Create hash
