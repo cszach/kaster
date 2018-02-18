@@ -22,7 +22,7 @@ else
 fi
 
 userhome=$(eval echo ~$USER)
-if [ -e $userhome/.kasterrc && -d system ]
+if [ -e $userhome/.kasterrc ] && [ -d system ]
 then
     echo "INFO: Moving .kasterrc in home directory back to system folder."
     mv $userhome/.kasterrc system
