@@ -24,7 +24,6 @@ Password Manager
                        (login name, login, password, comment) of login #ID
                        Must specify additional options,
                        see the section "Editing a login" below
-                       see 
         --del=ID     : Delete login #ID
         --delall     : Delete all saved logins
 
