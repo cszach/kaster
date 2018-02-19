@@ -16,17 +16,6 @@ from global_vars import *
 from k_random import random_string
 
 
-def clear_vault_dir():
-    """
-    Clear vault's folder.
-    :return:
-    """
-    __process__ = "vault.py (clear_vault_dir())"
-
-    os.system("rm -rf %s" % vault_dir)
-    os.mkdir(vault_dir)
-
-
 def mediate_check_account(passer_stdout_option):
     """
     A function to mediate process pre_vault.check_user_account().
@@ -463,7 +452,8 @@ def vault(com_list):
             del master
 
             if input("Are you really sure you want to delete all saved logins? [Y|N] ").lower() == "y":
-                clear_vault_dir()
+                os.system("rm -rf %s" % vault_dir)
+                os.mkdir(vault_dir)
                 logging.info("INFO:%s: Removed all saved logins" % __process__)
             else:
                 print("Aborting...")
