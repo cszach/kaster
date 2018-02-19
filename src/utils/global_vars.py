@@ -10,13 +10,18 @@ if os.getenv("SUDO_USER") is None:
     exit(1)
 
 if not os.path.isfile("minion/grephome.sh"):
-    print("CRITICAL: Could not find grephome.sh: File missing")
+    print("CRITICAL: Could not find grephome.sh (minion/grephome.sh): File missing")
     exit(1)
 
 os.system("chmod +x minion/grephome.sh")
 os.system("bash minion/grephome.sh")
 
-userhome = open("/tmp/grephome.minion.product").read()[:-1]  # [:-1] to ignore the escape "\n"
+try:
+    userhome = open("/tmp/grephome.minion.product").read()[:-1]  # [:-1] to ignore the escape "\n"
+except FileNotFoundError as e:
+    print("FATAL: Could not fetch /tmp/grephome.minion.product: %s" % e)
+    print("Check file integrity of minion.grephome.sh")
+    exit(1)
 
 try:
     exec(open("%s/.kasterrc" % userhome).read())
