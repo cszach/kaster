@@ -16,10 +16,15 @@ def check_user_account(console_output=False):
     Return 0 if everything is okay.
     Return -1 if no account is created.
     Return 1 if something is wrong.
+    Return 100 if the user does not enable master password.
     :param console_output: Tell the function whether to write console output or not
     :return: An integer indicates user's account state
     """
     __process__ = "pre_vault.py (check_user_account())"
+
+    if not enable_mst_pw:
+        logging.info("INFO:%s: User does not enable master password (~/.kasterrc -> master_password = False)" % __process__)
+        return 100
 
     # If no account has not yet been created, exit
     # It doesn't matter because when a new account is created,
