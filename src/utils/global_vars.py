@@ -32,3 +32,4 @@ man_dir = "%s/%s" % (program_file_dir, "man")
 vault_dir = "%s/%s" % (program_file_dir, "vault")
 time_fm = time_format
 date_fm = date_format
+enable_mst_pw = master_password
