@@ -1,7 +1,6 @@
 # File for handling stuffs before the program actually start
 import sys
 import os
-import logging
 sys.path.insert(0, "utils")
 from global_vars import *
 
@@ -21,11 +20,11 @@ def main():
     # Create program's files path if there isn't one
     if not os.path.isdir(kaster_dir):
         os.mkdir(kaster_dir)
-    
+
     if not os.path.isfile(log_path):
         open(log_path, "a").close()
 
     if os.path.getsize(log_path) > 50000000:  # Check if log file's size is larger than 50MB
         os.remove(log_path)
         open(log_path, "a").close()  # Create a new, empty log file
-        logging.info("INFO:%s: Renewed log file" % __process__)
+        kaster_logger.info("INFO:%s: Renewed log file" % __process__)

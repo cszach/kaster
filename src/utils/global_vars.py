@@ -1,5 +1,6 @@
 from sys import exit
 import os.path
+import logging
 
 
 # Get user's home directory
@@ -38,3 +39,22 @@ vault_dir = "%s/%s" % (program_file_dir, "vault")
 time_fm = time_format
 date_fm = date_format
 enable_mst_pw = master_password
+
+# Logger setup
+kaster_logger = logging.getLogger("Kaster global logger")
+kaster_logger.setLevel(logging.INFO)
+# Setup stream handler
+handler = logging.StreamHandler()
+handler.setLevel(logging.INFO)
+# Set formatter and add stream handler
+fmter = logging.Formatter("%(levelname)s: %(message)s", time_fm + " " + date_fm)
+handler.setFormatter(fmter)
+kaster_logger.addHandler(handler)
+# Setup and add file handler
+handler = logging.FileHandler(log_path)
+handler.setLevel(logging.INFO)
+fmter = logging.Formatter("[%(asctime)s] %(levelname)s: %(message)s", time_fm + " " + date_fm)
+handler.setFormatter(fmter)
+kaster_logger.addHandler(handler)
+
+del handler, fmter

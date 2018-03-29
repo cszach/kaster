@@ -1,5 +1,4 @@
 import sys
-import logging
 sys.path.insert(0, "../utils")
 from global_vars import *
 
@@ -26,12 +25,12 @@ def main(man_page_name):
             try:
                 f = open("manual/" + man_page_name, "r")
             except FileNotFoundError:
-                logging.error("FATAL:%s: Couldn't find manual page (%s)" % (__process__, man_page_name))
+                kaster_logger.error("FATAL:%s: Couldn't find manual page (%s)" % (__process__, man_page_name))
                 sys.exit(1)
             f_content = f.read()
             f.close()
             print(f_content)
             del f, f_content
     except KeyboardInterrupt:
-        logging.info("INFO:%s: Keyboard interrupted" % __process__)
+        kaster_logger.info("INFO:%s: Keyboard interrupted" % __process__)
         exit(0)

@@ -1,6 +1,5 @@
 import sys
 import os
-import logging
 sys.path.insert(0, "../system")
 import Instructor
 sys.path.insert(0, "../utils")
@@ -45,7 +44,7 @@ def generator(com_list):
     p_use_number = None
     p_use_symbol = None
     output_file_name = None
-    logging.debug("%s: All variables required for password generation are set to None" % __process__)
+    kaster_logger.debug("%s: All variables required for password generation are set to None" % __process__)
 
     number_of_warnings = 0
 
@@ -59,31 +58,31 @@ def generator(com_list):
             try:
                 p_length = int(g_arg)
                 if p_length > 30 or p_length < 12:
-                    logging.warning("WARNING:%s: Invalid password's length (%d): Must be between 12 and 30"
+                    kaster_logger.warning("WARNING:%s: Invalid password's length (%d): Must be between 12 and 30"
                                     % (__process__, p_length))
                     number_of_warnings += 1
-                    logging.info("INFO:%s: Assigning p_length to None" % __process__)
+                    kaster_logger.info("INFO:%s: Assigning p_length to None" % __process__)
                     p_length = None
             except ValueError:
-                logging.warning("WARNING:%s: Invalid value for password's length (%s)"
+                kaster_logger.warning("WARNING:%s: Invalid value for password's length (%s)"
                                 % (__process__, g_arg))
                 number_of_warnings += 1
-                logging.info("INFO:%s: Assigning p_length to None")
+                kaster_logger.info("INFO:%s: Assigning p_length to None")
                 p_length = None
         elif g_opt in ("-d", "--duplicate"):
             try:
                 p_duplicate = int(g_arg)
                 if p_duplicate < 1:
-                    logging.warning("WARNING:%s: Invalid value for duplication (%d): Must be greater than 0"
+                    kaster_logger.warning("WARNING:%s: Invalid value for duplication (%d): Must be greater than 0"
                                     % (__process__, p_duplicate))
                     number_of_warnings += 1
-                    logging.info("INFO:%s: Assigning p_duplicate to 1" % __process__)
+                    kaster_logger.info("INFO:%s: Assigning p_duplicate to 1" % __process__)
                     p_duplicate = 1
             except ValueError:
-                logging.warning("WARNING:%s: Invalid value for duplication (%s)"
+                kaster_logger.warning("WARNING:%s: Invalid value for duplication (%s)"
                                 % (__process__, g_arg))
                 number_of_warnings += 1
-                logging.info("INFO:%s: Assigning p_duplicate to 1" % __process__)
+                kaster_logger.info("INFO:%s: Assigning p_duplicate to 1" % __process__)
                 p_duplicate = 1
         elif g_opt in ("-o", "--output"):
             if not os.path.isfile(g_arg):  # If the file does not exist
@@ -100,9 +99,9 @@ def generator(com_list):
                         sys.exit(8)
                     elif u_choice.lower() != "a":  # Invalid option
                         output_file_name = None  # Assigning to None means no record
-                        logging.warning("WARNING:%s: Unrecognized option (%s)" % (__process__, u_choice))
+                        kaster_logger.warning("WARNING:%s: Unrecognized option (%s)" % (__process__, u_choice))
                         number_of_warnings += 1
-                        logging.info("INFO:%s: There will be no output to file" % __process__)
+                        kaster_logger.info("INFO:%s: There will be no output to file" % __process__)
                         continue
                     else:  # That means user chooses "a" -> Append
                         output_file_name = g_arg
@@ -117,7 +116,7 @@ def generator(com_list):
         elif g_opt == "--symbol":
             p_use_symbol = True
         else:
-            logging.error("FATAL:%s: Not recognized option (%s)" % (__process__, g_opt))
+            kaster_logger.error("FATAL:%s: Not recognized option (%s)" % (__process__, g_opt))
             sys.exit(1)
 
     # Generate password session
@@ -128,11 +127,11 @@ def generator(com_list):
         try:
             f = open(output_file_name, "a")
         except FileNotFoundError:
-            logging.warning("WARNING:%s: Parent folder of %s does not exist" % (__process__, output_file_name))
+            kaster_logger.warning("WARNING:%s: Parent folder of %s does not exist" % (__process__, output_file_name))
             number_of_warnings += 1
-            logging.info("INFO:%s: There will be no output to file" % __process__)
+            kaster_logger.info("INFO:%s: There will be no output to file" % __process__)
             output_file_name = None
-    
+
     if number_of_warnings > 0:
         print()
         print("===== * =====")
@@ -156,7 +155,7 @@ def generator(com_list):
 
     if number_of_warnings > 0:
         print()
-        logging.info("INFO:%s: Total number of warnings: %d"
+        kaster_logger.info("INFO:%s: Total number of warnings: %d"
                      % (__process__, number_of_warnings))
         print("Scroll up to see them.")
 
