@@ -12,7 +12,6 @@ __status__ = "Production"
 import sys
 import os
 import getopt
-import logging
 sys.path.insert(0, "system")
 import pre_kaster
 import Instructor
@@ -37,12 +36,6 @@ if len(sys.argv[1:]) == 0:
     Instructor.main(None)
     sys.exit(0)
 
-logging.basicConfig(filename="%s" % log_path,
-                    format="[%(asctime)s] %(message)s",
-                    datefmt="%s %s" % (time_fm, date_fm),
-                    level=logging.INFO)
-logging.getLogger().addHandler(logging.StreamHandler())
-
 # Get all the arguments specified
 try:
     opts, args = getopt.getopt(sys.argv[1:],
@@ -54,7 +47,7 @@ try:
                                 "account", "new", "list", "get=", "getpass=", "edit=", "del=", "delall",
                                 "name=", "login=", "password=", "comment="])
 except getopt.GetoptError as e:
-    logging.error("FATAL:%s: %s" % (__process__, e))
+    kaster_logger.error("FATAL:%s: %s" % (__process__, e))
     print("Pass option '-h' or '--help' to see the available options and arguments")
     sys.exit(2)
 
@@ -63,7 +56,7 @@ scanned_opt = []
 try:
     for opt, arg in opts:
         if opt in scanned_opt:
-            logging.error("FATAL:%s: Found duplicate option %s" % (__process__, opt))
+            kaster_logger.error("FATAL:%s: Found duplicate option %s" % (__process__, opt))
             sys.exit(1)
         else:
             scanned_opt.append(opt)
@@ -95,10 +88,10 @@ for opt, arg in opts:
             print()
             print("Got keyboard interruption, quitting...")
     else:
-        logging.error("FATAL:%s: Wrong usage of option '%s'." % (__process__, opt))
+        kaster_logger.error("FATAL:%s: Wrong usage of option '%s'." % (__process__, opt))
         sys.exit(1)
     del opts, args
     sys.exit(0)
 
-logging.error("FATAL:%s: Invalid argument '%s'." % (__process__, args[0]))
+kaster_logger.error("FATAL:%s: Invalid argument '%s'." % (__process__, args[0]))
 sys.exit(1)
