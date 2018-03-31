@@ -4,7 +4,7 @@ sys.path.insert(0, "../system")
 import Instructor
 sys.path.insert(0, "../utils")
 from global_vars import *
-import k_random
+from k_random import random_string
 
 
 def generator(com_list):
@@ -148,7 +148,7 @@ def generator(com_list):
     # TODO: Generate password(s) and write output
     g_output = None
     for i in range(p_duplicate):
-        g_output = k_random.random_string(p_length, p_use_upper, p_use_lower, p_use_number, p_use_symbol)
+        g_output = random_string(p_length, p_use_upper, p_use_lower, p_use_number, p_use_symbol)
         print(g_output)
         if output_file_name is not None:
             f.write(g_output + "\n")
