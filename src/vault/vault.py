@@ -84,21 +84,16 @@ def new_login(master_password, login_name, login, password, note):
         del login_id
         sys.exit(1)
 
-    # print("New login")
-    # login_name = input("Login name: ")
     if login_name == "":
         kaster_logger.info("INFO:%s: Input for login name is empty, assigning login name to login's ID: %s" % (__process__, login_id))
         login_name = login_id
 
-    # login = input("Login: ")
     if login == "":
         kaster_logger.info("INFO:%s: Input for login is empty, assigning login to username: %s" % (__process__, os.environ["SUDO_USER"]))
         login = os.environ["SUDO_USER"]
 
-    # password = getpass("Password (leave blank to generate one): ")
     if password == "":
         password = random_string("ps")
-    # note = input("Note/Comment (leave blank if there's nothing): ")
 
     # Save login name, login, and comment
     f = open("%s/%s.dat" % (kaster_dir, login_id), "w")
