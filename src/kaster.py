@@ -11,6 +11,7 @@ __status__ = "Production"
 
 import sys
 import os
+import logging
 import getopt
 sys.path.insert(0, "system")
 import pre_kaster
@@ -21,7 +22,6 @@ sys.path.insert(0, "generator")
 from generator import generator
 sys.path.insert(0, "vault")
 from vault import vault
-
 
 # Check if the user has logged in as root
 if os.getenv("SUDO_USER") is None:
@@ -40,7 +40,7 @@ if len(sys.argv[1:]) == 0:
 try:
     opts, args = getopt.getopt(sys.argv[1:],
                                "ha:l:d:o:",
-                               ["help", "version", "info",
+                               ["help", "version", "info", "verbose",
                                 "gen", "vault",
                                 "length=", "duplicate=", "upper", "lower", "number", "symbol",
                                 "output=",
@@ -73,6 +73,10 @@ for opt, arg in opts:
         print(__program__ + " " + __version__)
         print("Kaster Password Vault is a CLI offline password manager.")
         print("Brought to you by " + __author__)
+    elif opt == "--verbose":
+        kaster_logger.removeHandler(o_handler)
+        o_handler.setLevel(logging.INFO)
+        kaster_logger.addHandler(o_handler)
     elif opt == "--gen":
         try:
             generator(opts[1:])
