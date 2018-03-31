@@ -38,7 +38,7 @@ man_dir = "%s/%s" % (program_file_dir, "man")
 vault_dir = "%s/%s" % (program_file_dir, "vault")
 time_fm = time_format
 date_fm = date_format
-enable_mst_pw = master_password
+enable_mst_pw = enable_mst_pw
 
 # Logger setup
 kaster_logger = logging.getLogger("Kaster global logger")
