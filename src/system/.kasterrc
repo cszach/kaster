@@ -1,0 +1,29 @@
+# Configure file for Kaster password manager
+# EDITABLE UNDER RESTRICTION
+# Edit the values to match your preferences.
+# DO NOT change the variables' names.
+# DO NOT delete the hash symbol ("#") at the start of the lines in this file.
+# You can exit the editor now if you want to leave everything as default.
+
+# The directory in which Kaster stores its files
+# Default value: /usr/share/kaster {string}
+program_file_dir = "/usr/share/kaster"
+
+# Date string format and time string format for use in logging
+# %d = day, %m = month, %Y = year, %H = hour, %M = minute, %S = second
+# %d/%m/%Y = DD/MM/YYYY
+# Date string format's default value: %d/%m/%Y {string}
+# Time string format's default value: %H:%M:%S {string}
+date_format = "%d/%m/%Y"
+time_format = "%H:%M:%S"
+
+# Do you want Kaster to ask you for a master password?
+# Normally, password managers ask their users to create
+# and remember something called "master password". It's
+# a password that is used to login to the password manager.
+# Kaster is an offline password manager, and it asks you
+# to run it as sudo/root anyway, so we set this to False.
+# However, you have to becareful when, say, letting someone
+# else borrow your computer and use your GNU/Linux account.
+# Default value: False {boolean}
+master_password = False
