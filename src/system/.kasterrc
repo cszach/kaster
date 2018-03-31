@@ -26,4 +26,4 @@ time_format = "%H:%M:%S"
 # However, you have to becareful when, say, letting someone
 # else borrow your computer and use your GNU/Linux account.
 # Default value: False {boolean}
-master_password = False
+enable_mst_pass = False
