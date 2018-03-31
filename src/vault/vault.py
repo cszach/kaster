@@ -199,7 +199,7 @@ def vault(com_list):
             print("===============")
             if len(com_list[v_idx + 1:]) == 0:
                 login_name = input("Login name: ")
-                login = input("Login")
+                login = input("Login: ")
                 password = getpass("Password (leave blank to generate one): ")
                 note = input("Note/Comment (leave blank if there's nothing): ")
             else:  # User specifies additional arguments, so process them
