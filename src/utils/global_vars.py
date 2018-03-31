@@ -46,7 +46,7 @@ enable_mst_pw = enable_mst_pw
 # TODO: Setup logger
 
 kaster_logger = logging.getLogger("Kaster global logger")
-kaster_logger.setLevel(logging.INFO)
+kaster_logger.setLevel(logging.DEBUG)
 fmter = logging.Formatter("%(levelname)s: %(message)s", time_fm + " " + date_fm)
 handler.setFormatter(fmter)
 
