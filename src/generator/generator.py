@@ -124,7 +124,7 @@ def generator(com_list):
 
         else:
             # ???: Should we just ignore unrecognized option?
-            kaster_logger.error("FATAL::%s: Not recognized option (%s)" % (__process__, g_opt))
+            kaster_logger.error("ERROR::%s: Not recognized option (%s)" % (__process__, g_opt))
             return 1
 
     # TODO: Prepare file if an output file name is specified
