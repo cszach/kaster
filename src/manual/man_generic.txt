@@ -7,3 +7,4 @@ Generic Options
                    (with the program's name in front) and exit
       -- info    : Show program's information
                    (program name, version, short introduction, and developers)
+      --verbose  : Provide details of what Kaster (or its subprogram) is doing
