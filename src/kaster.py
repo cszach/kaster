@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""Kaster Password Vault"""
+"""
+Kaster Password Vault - Simple password manager for GNU/Linux platform
+
+Copyright (C) 2017-2018 Nguyen Hoang Duong <novakglow@gmail.com>
+Licensed under MIT License (see LICENSE).
+"""
 
 __program__ = "Kaster Password Vault"
 __version__ = "Beta"

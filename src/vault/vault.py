@@ -1,3 +1,10 @@
+"""
+vault/vault.py - Password managing subprogram for Kaster
+
+Copyright (C) 2017-2018 Nguyen Hoang Duong <novakglow@gmail.com>
+Licensed under MIT License (see LICENSE).
+"""
+
 import sys
 import os
 import traceback

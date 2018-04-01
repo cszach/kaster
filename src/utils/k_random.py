@@ -1,3 +1,10 @@
+"""
+utils/k_random.py - Random string generating facility for Kaster
+
+Copyright (C) 2017-2018 Nguyen Hoang Duong <novakglow@gmail.com>
+Licensed under MIT License (see LICENSE).
+"""
+
 from string import ascii_uppercase, ascii_lowercase, digits, punctuation, hexdigits
 from random import choice, randint
 
