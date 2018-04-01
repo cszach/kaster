@@ -1,3 +1,10 @@
+"""
+system/pre_kaster.py - Tasks to be done when the program is initialized
+
+Copyright (C) 2017-2018 Nguyen Hoang Duong <novakglow@gmail.com>
+Licensed under MIT License (see LICENSE).
+"""
+
 import sys
 import os
 sys.path.insert(0, "utils")
