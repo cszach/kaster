@@ -72,35 +72,42 @@ finally:
 for opt, arg in opts:
     if opt in ("-h", "--help"):
         Instructor.main(None)
+
     elif opt == "--version":
         print(__program__)
         print("Version " + __version__)
+
     elif opt == "--info":
         print(__program__ + " " + __version__)
         print("Kaster Password Vault is a CLI offline password manager.")
         print("Brought to you by " + __author__)
+
     elif opt == "--verbose":
         kaster_logger.removeHandler(o_handler)
         o_handler.setLevel(logging.INFO)
         kaster_logger.addHandler(o_handler)
+
     elif opt == "--gen":
         try:
             generator(opts[1:])
         except KeyboardInterrupt:
             print()
-            print("Got keyboard interruption, quitting...")
+            kaster_logger.info("INFO::Generator: Got keyboard interruption, quitting...")
             sys.exit(0)
+
     elif opt == "--vault":
         # Might remove this try except and handle keyboard interruption in vault.vault() instead
         try:
             vault(opts[1:])
         except KeyboardInterrupt:
             print()
-            print("Got keyboard interruption, quitting...")
-            kaster_logger.info("INFO::%s: Got keyboard interruption, quitting" % __process__)
+            kaster_logger.info("INFO::Vault: Got keyboard interruption, quitting...")
+            sys.exit(0)
+
     else:
         kaster_logger.error("FATAL::%s: Wrong usage of option '%s'." % (__process__, opt))
         sys.exit(1)
+
     del opts, args
     sys.exit(0)
 
