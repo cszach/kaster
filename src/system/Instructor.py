@@ -33,8 +33,10 @@ def main(man_page_name):
             f = open("manual/" + man_page_name, "r")
         except FileNotFoundError:
             kaster_logger.error("ERROR::%s: Couldn't find manual page: %s" % (__process__, man_page_name))
-            return 1
+            return 201
         f_content = f.read()
         f.close()
         print(f_content)
         del f, f_content
+
+    return 200
