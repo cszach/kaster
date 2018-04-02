@@ -19,28 +19,22 @@ import k_random
 def check_user_account(console_output=False):
     """
     Check if a Kaster account is created, and if yes, check the state of the account
-    Return 0 if everything is okay.
-    Return -1 if no account is created.
-    Return 1 if something is wrong.
-    Return 100 if the user does not enable master password.
     :param console_output: Tell the function whether to write console output or not
-    :return: An integer indicates user's account state
+    :return: 330 if nothing is wrong with the account
+              331 if something is wrong with the account
+              334 if no account is created
     """
     __process__ = "pre_vault.py -> check_user_account()"
 
     if not console_output:
         kaster_logger.removeHandler(o_handler)
 
-    if not enable_mst_pw:
-        kaster_logger.info("INFO::%s: User does not enable master password (~/.kasterrc -> master_password = False)" % __process__)
-        return 100
-
     # If no account has not yet been created, exit
     # It doesn't matter because when a new account is created,
     # all files containing credentials, key, and IVs will be deleted
     if not os.path.isfile(kaster_dir + "/0000.kas"):
         kaster_logger.info("INFO::%s: %s/0000.kas not found, assuming that no account is created" % (__process__, kaster_dir))
-        return -1
+        return 334
 
     flag = 0
 
@@ -102,7 +96,7 @@ def check_user_account(console_output=False):
     del c_f #, f_content, file_name
 
     flag = "OK" if flag == 0 else "NOT OK"
-    return_value = 0 if flag == "OK" else 1
+    return_value = 330 if flag == "OK" else 331
 
     kaster_logger.info("INFO::%s: Account status: %s" % (__process__, flag))
     del flag, __process__
@@ -116,7 +110,10 @@ def check_user_account(console_output=False):
 def sign_up():
     """
     Sign up session
-    :return:
+    :return: 310 if operation success
+              311 if registration failed due to Exception
+              312 if registration failed due to register_failed = True
+              313 if a keyboard interrupt signal is received
     """
     __process__ = "pre_vault.py -> sign_up()"
 
@@ -164,9 +161,9 @@ def sign_up():
                 if register_failed:
                     f.close()
                     os.remove(kaster_dir + "/0000.kas")
-                    kaster_logger.warning("WARNING::%s: Registeration failed: %s" % (__process__, r_reason))
+                    kaster_logger.warning("WARNING::%s: Registration failed: %s" % (__process__, r_reason))
                     del f, mst_pass
-                    return 1
+                    return 312
             finally:
                 del pass_score_flag, confirm_password, register_failed, r_reason
 
@@ -189,12 +186,14 @@ def sign_up():
         del f, mst_pass
         kaster_logger.info("INFO::%s: New account created for user %s" % (__process__, os.environ["SUDO_USER"]))
 
+        return 310
+
     except KeyboardInterrupt:
         os.remove(kaster_dir + "/0000.kas")
         if os.path.isfile(kaster_dir + "/0000.salt"):
             os.remove(kaster_dir + "/0000.salt")
         kaster_logger.info("INFO::%s: Quit sign up session: Keyboard interrupted" % __process__)
-        return
+        return 313
 
     except Exception as e:
         os.remove(kaster_dir + "/0000.kas")
@@ -203,13 +202,14 @@ def sign_up():
         kaster_logger.error("ERROR::%s: An error occurred during sign up session: %s" % (__process__, e))
         print("=====Traceback=====")
         traceback.print_exc()
-        return
+        return 311
 
 
 def sign_in():
     """
     Sign in session
-    :return:
+    :return: User's master password if authentication success
+              321 if authentication failed due to wrong password
     """
     __process__ = "pre_vault.py -> sign_in()"
 
@@ -238,7 +238,7 @@ def sign_in():
     if hash_factor.digest() != p_hash:
         kaster_logger.warning("WARNING::%s: Authentication failed: Wrong password" % __process__)
         del p_hash, hash_factor
-        return 1
+        return 321
 
     del p_hash, hash_factor
     return input_mst_pass
