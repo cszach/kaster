@@ -16,14 +16,3 @@ program_file_dir = "/usr/share/kaster"
 # Time string format's default value: %H:%M:%S {string}
 date_format = "%d/%m/%Y"
 time_format = "%H:%M:%S"
-
-# Do you want Kaster to ask you for a master password?
-# Normally, password managers ask their users to create
-# and remember something called "master password". It's
-# a password that is used to login to the password manager.
-# Kaster is an offline password manager, and it asks you
-# to run it as sudo/root anyway, so we set this to False.
-# However, you have to becareful when, say, letting someone
-# else borrow your computer and use your GNU/Linux account.
-# Default value: False {boolean}
-enable_mst_pass = False
