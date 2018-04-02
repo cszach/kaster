@@ -26,25 +26,26 @@ def pre_action():
     """
     An operation which alert the user if there's no Kaster account
     or there's a problem with their account (files missing, invalid files,...).
-    Typically put before performing a password manager action (like --new, --get, ...)
+    Typically put before performing a password manager action (like --new, --get, ...).
+    If there's something wrong with the user's account, call sys.exit() and pass 521 to that function
     :return:
     """
     __process__ = "vault.py -> pre_action()"
 
     check_result = pre_vault.check_user_account()
     try:
-        if check_result == -1:
+        if check_result == 334:
             kaster_logger.warning("LIGHT WARNING::%s: No account created. "
                                   "Use './kaster.py --vault --account' to create one."
                                   % __process__)
-        if check_result == 1:
+        if check_result == 331:
             kaster_logger.warning("WARNING::%s: Found problem(s) with user's account and/or Kaster's files\n"
                                   "  Resolve them and try again. See %s for more details."
                                   % (__process__, log_path))
-        if check_result != 0:
+        if check_result != 330:
             # We don't return but exit so that the
-            # vault won't perform any further operation (because we received errror)
-            sys.exit(0)
+            # vault won't perform any further operation (because we received error, 334 or 331)
+            sys.exit(521)
     finally:
         del check_result
     print()
@@ -159,6 +160,7 @@ def get_id_from_arg(arg, program_terminate=True):
     """
     Turn argument arg to integer if possible, else terminate the program if told to.
     Created to get ID without rewriting a try-catch block over and over.
+    If the input ID is invalid, and program_terminate is True, then call sys.exit() and pass 531 to it
     :param arg: ID string (user's input)
     :param program_terminate: Specify whether to terminate the whole program after operation
     :return:
@@ -171,7 +173,7 @@ def get_id_from_arg(arg, program_terminate=True):
         kaster_logger.log(35, "WARNING::%s: Invalid login ID (%s)" % (__process__, arg))
 
     if program_terminate:
-        sys.exit(1)
+        sys.exit(531)
 
 
 def vault(com_list):
@@ -184,7 +186,7 @@ def vault(com_list):
 
     if len(com_list) == 0:
         Instructor.main("man_vault.txt")
-        return 0
+        return 502
 
     pre_vault.main(False)
 
@@ -193,11 +195,11 @@ def vault(com_list):
             Instructor.main("man_vault.txt")
 
         elif v_opt == "--account":
-            if pre_vault.check_user_account() == -1:
+            if pre_vault.check_user_account() == 334:
                 if input("No account created, create one now? [Y|N] ").lower() == "y":
                     pre_vault.main(True)
                 else:
-                    return 0
+                    return 503
 
         elif v_opt == "--new":
             pre_action()
@@ -205,12 +207,12 @@ def vault(com_list):
             if len(fnmatch.filter(os.listdir(vault_dir), "*.dat")) == 9999:
                 kaster_logger.warning("WARNING::%s: Cannot save a new login: Limit of 9999 logins reached\n"
                                       "  Try deleting an existed login" % __process__)
-                return 1
+                return 505
 
             master = pre_vault.sign_in()
-            if master == 1:  # Login failed
+            if master == 321:  # Login failed
                 del master
-                return 1
+                return 504
 
             print("New login\n"
                   "===============")
@@ -237,10 +239,10 @@ def vault(com_list):
                         kaster_logger.error("FATAL::%s: Invalid option: %s" % (__process__, login_opt))
                         del master
                         del login_name, login, password, note
-                        return 1
+                        return 506
 
             new_login(master, login_name, login, password, note)
-            return 0
+            return 500
 
         elif v_opt == "--list":
             pre_action()
@@ -268,11 +270,11 @@ def vault(com_list):
         elif v_opt == "--get":
             pre_action()
 
-            get_id = get_id_from_arg(v_arg, program_terminate=True)
+            get_id = get_id_from_arg(v_arg)
             if not os.path.isfile("%s/%s.dat" % (vault_dir, get_id)):
                 kaster_logger.error("ERROR::%s: Login %s does not exist" % (__process__, get_id))
                 del get_id
-                return 1
+                return 507
 
             get_login(get_id)
             del get_id
@@ -281,15 +283,15 @@ def vault(com_list):
             pre_action()
             master = pre_vault.sign_in()
 
-            if master == 1:  # Login failed
+            if master == 321:  # Login failed
                 del master
-                return 1
+                return 504
 
-            get_id = get_id_from_arg(v_arg, program_terminate=True)
+            get_id = get_id_from_arg(v_arg)
             if not os.path.isfile("%s/%s.dat" % (vault_dir, get_id)):
                 kaster_logger.error("ERROR::%s: Login %s does not exist" % (__process__, get_id))
                 del get_id
-                return 1
+                return 507
 
             # Get IV
             f = open("%s/%s.kiv" % (vault_dir, get_id), "rb")
@@ -328,9 +330,9 @@ def vault(com_list):
             pre_action()
             master = pre_vault.sign_in()
 
-            if master == 1:  # Login failed
+            if master == 321:  # Login failed
                 del master
-                return 1
+                return 504
 
             if len(com_list[v_idx + 1:]) == 0:
                 kaster_logger.error("FATAL::%s: Must specify more options" % __process__)
@@ -341,7 +343,7 @@ def vault(com_list):
             if not os.path.isfile("%s/%s.dat" % (vault_dir, login_id)):
                 kaster_logger.error("ERROR::%s: Login %s does not exist" % (__process__, login_id))
                 del login_id
-                return 1
+                return 507
 
             for edit_opt, new_value in com_list[v_idx + 1:]:
                 if edit_opt == "--name":
@@ -423,7 +425,7 @@ def vault(com_list):
 
                 else:
                     kaster_logger.error("ERROR::%s: Invalid option: %s" % (__process__, edit_opt))
-                    return 1
+                    return 506
             del master
 
             kaster_logger.info("INFO::%s: Edited login %s" % (__process__, login_id))
@@ -431,19 +433,19 @@ def vault(com_list):
             return 0
 
         elif v_opt == "--del":
-            get_id = get_id_from_arg(v_arg, program_terminate=True)
+            get_id = get_id_from_arg(v_arg)
             if not os.path.isfile("%s/%s.dat" % (vault_dir, get_id)):  # If the login does not exist :/
                 kaster_logger.error("ERROR::%s: Login %s does not exist" % (__process__, get_id))
                 del get_id
-                return 0
+                return 507
 
             master = pre_vault.sign_in()
-            if master == 1:  # Login failed
+            if master == 321:  # Login failed
                 del master
-                return 1
+                return 504
             del master
 
-            flag_exitcode = 0
+            flag_exitcode = 500
             if input("Are you really sure you want to delete login #%s? [Y|N] " % get_id).lower() == "y":
                 try:
                     os.remove("%s/%s.dat" % (vault_dir, get_id))
@@ -456,7 +458,7 @@ def vault(com_list):
                     kaster_logger.error("FATAL::%s: An error occurred while deleting login %s: %s" % (__process__, get_id, e))
                     print("=====Traceback=====")
                     traceback.print_exc()
-                    flag_exitcode = 1
+                    flag_exitcode = 508
                 finally:
                     del get_id
                     return flag_exitcode
@@ -466,12 +468,12 @@ def vault(com_list):
         elif v_opt == "--delall":
             if len(fnmatch.filter(os.listdir(vault_dir), "*.dat")) == 0:
                 kaster_logger.info("INFO::%s: No saved login" % __process__)
-                return 0
+                return 500
 
             master = pre_vault.sign_in()
-            if master == 1:  # Login failed
+            if master == 321:  # Login failed
                 del master
-                return 1
+                return 504
             del master
 
             if input("Are you really sure you want to delete all saved logins? [Y|N] ").lower() == "y":
@@ -482,4 +484,4 @@ def vault(com_list):
                 print("Aborting...")
         else:
             kaster_logger.error("ERROR::%s: Not recognized option: %s" % (__process__, v_opt))
-            return 1
+            return 501
