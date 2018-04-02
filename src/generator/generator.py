@@ -19,8 +19,10 @@ def generator(com_list):
     """
     Session for generating string
     :param com_list: Arguments to be passed to the generator
-    :return: 700 if operation success, 701 if there's no option (len(com_list) == 0),
-              702 if only -h or --help is passed as argument, 703 if there's unrecognized option,
+    :return: 700 if operation success
+              701 if there's no option (len(com_list) == 0)
+              702 if only -h or --help is passed as argument
+              703 if there's unrecognized option
               704 if user abort file operation when prompted to overwrite or append output file
     """
     __process__ = "generator.py -> generator()"

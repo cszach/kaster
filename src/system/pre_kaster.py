@@ -14,7 +14,9 @@ from global_vars import *
 def main():
     """
     All processes to be ran on program's startup
-    :return:
+    :return: 100 if operation success
+              102 if there's no log file and Kaster has to create a new one
+              104 if there's no .kasterrc file in user's home directory (fatal)
     """
     __process__ = "pre_kaster.py -> main()"
 
