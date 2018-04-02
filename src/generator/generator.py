@@ -19,14 +19,16 @@ def generator(com_list):
     """
     Session for generating string
     :param com_list: Arguments to be passed to the generator
-    :return:
+    :return: 700 if operation success, 701 if there's no option (len(com_list) == 0),
+              702 if only -h or --help is passed as argument, 703 if there's unrecognized option,
+              704 if user abort file operation when prompted to overwrite or append output file
     """
     __process__ = "generator.py -> generator()"
 
     # If no option is specified for the generator, generate a random password
     if len(com_list) == 0:
         generator([("--duplicate", "1")])
-        return
+        return 701
 
     """
     Setup variable
@@ -62,7 +64,7 @@ def generator(com_list):
             # If that is the only option, exit right away so that the generator won't create a password
             if len(com_list) == 1:
                 del p_length, p_duplicate, p_use_upper, p_use_lower, p_use_number, p_use_symbol, output_file_name
-                return 0
+                return 702
 
         elif g_opt in ("-l", "--length"):
             try:
@@ -108,7 +110,7 @@ def generator(com_list):
                         open(g_arg, "a").close()
                         output_file_name = g_arg
                     elif u_choice.lower() == "c":  # Cancel
-                        return 8
+                        return 704
                     elif u_choice.lower() != "a":  # Invalid option
                         output_file_name = None  # Assigning to None means no record
                         kaster_logger.warning("WARNING::%s: Unrecognized option (%s)\n"
@@ -133,7 +135,7 @@ def generator(com_list):
         else:
             # ???: Should we just ignore unrecognized option?
             kaster_logger.error("ERROR::%s: Not recognized option (%s)" % (__process__, g_opt))
-            return 1
+            return 703
 
     # TODO: Prepare file if an output file name is specified
     f = None
@@ -172,3 +174,5 @@ def generator(com_list):
 
     del p_length, p_duplicate, p_use_upper, p_use_lower, p_use_number, p_use_symbol
     del g_output, f, output_file_name, number_of_warnings
+
+    return 700

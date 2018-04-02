@@ -31,7 +31,7 @@ from vault import vault
 # TODO: Check if the user has logged in as root
 if os.getenv("SUDO_USER") is None:
     print("Please run Kaster as root")
-    sys.exit(1)
+    sys.exit(9)
 
 pre_kaster.main()  # Processes to ran on startup
 __process__ = "kaster.py (MAIN)"
@@ -39,7 +39,7 @@ __process__ = "kaster.py (MAIN)"
 # TODO: Print help if no argument/option is specified
 if len(sys.argv[1:]) == 0:
     Instructor.main(None)
-    sys.exit(0)
+    sys.exit(3)
 
 # TODO: Get all the arguments specified
 try:
@@ -54,7 +54,7 @@ try:
 except getopt.GetoptError as e:
     kaster_logger.error("FATAL::%s: %s" % (__process__, e))
     print("Pass option '-h' or '--help' to see the available options and arguments")
-    sys.exit(2)
+    sys.exit(4)
 
 # TODO: Iterate over options among with their arguments to check for duplicate
 scanned_opt = []
@@ -62,7 +62,7 @@ try:
     for opt, arg in opts:
         if opt in scanned_opt:
             kaster_logger.error("FATAL::%s: Found duplicate option %s" % (__process__, opt))
-            sys.exit(1)
+            sys.exit(8)
         else:
             scanned_opt.append(opt)
 finally:
@@ -89,16 +89,16 @@ for opt, arg in opts:
 
     elif opt == "--gen":
         try:
-            generator(opts[1:])
+            sys.exit(generator(opts[1:]))
         except KeyboardInterrupt:
             print()
             kaster_logger.info("INFO::Generator: Got keyboard interruption, quitting...")
-            sys.exit(0)
+            sys.exit(707)
 
     elif opt == "--vault":
         # Might remove this try except and handle keyboard interruption in vault.vault() instead
         try:
-            vault(opts[1:])
+            sys.exit(vault(opts[1:]))
         except KeyboardInterrupt:
             print()
             kaster_logger.info("INFO::Vault: Got keyboard interruption, quitting...")
@@ -106,7 +106,7 @@ for opt, arg in opts:
 
     else:
         kaster_logger.error("FATAL::%s: Wrong usage of option '%s'." % (__process__, opt))
-        sys.exit(1)
+        sys.exit(6)
 
     del opts, args
     sys.exit(0)
