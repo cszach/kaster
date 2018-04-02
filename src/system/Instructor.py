@@ -14,7 +14,8 @@ def main(man_page_name):
     """
     Main process for Instructor
     :param man_page_name: File name of the manual. If it's None, print all manual pages.
-    :return:
+    :return: 200 if operation success
+              201 if a manual page doesn't exist (doesn't happen if the user doesn't do anything with the manual files)
     """
     __process__ = "Instructor.py -> main()"
 
