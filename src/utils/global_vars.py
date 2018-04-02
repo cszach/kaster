@@ -15,11 +15,11 @@ __process__ = "global_vars.py"
 # That's why the bash file is there to help
 if os.getenv("SUDO_USER") is None:
     print("Please run Kaster as root")
-    exit(1)
+    exit(409)
 
 if not os.path.isfile("minion/grephome.sh"):
     print("CRITICAL::%s: Could not find grephome.sh (minion/grephome.sh): File missing" % __process__)
-    exit(1)
+    exit(401)
 
 # TODO: Execute grephome.sh minion process, which leaves out a file containing the user's home directory path in it
 os.system("chmod +x minion/grephome.sh")
@@ -30,7 +30,7 @@ try:
 except FileNotFoundError as e:
     print("FATAL::%s: Could not fetch /tmp/grephome.minion.product: %s" % (__process__, e))
     print("Check file integrity of minion.grephome.sh")
-    exit(1)
+    exit(402)
 
 # TODO: Get settings in .kasterrc
 try:
@@ -38,7 +38,7 @@ try:
 except FileNotFoundError:
     print("FATAL::%s: Could not find Kaster's configuration file (.kasterrc) in home directory" % __process__)
     print("Make sure that you've ran install.sh.")
-    exit(1)
+    exit(403)
 
 # TODO: Assign variables for use
 kaster_dir = program_file_dir
