@@ -54,8 +54,6 @@ date_fm = date_format
 
 kaster_logger = logging.getLogger("Kaster global logger")
 kaster_logger.setLevel(logging.DEBUG)
-fmter = logging.Formatter("%(levelname)s: %(message)s", time_fm + " " + date_fm)
-handler.setFormatter(fmter)
 
 # File handler for logger
 f_handler = logging.FileHandler(log_path)
@@ -68,4 +66,6 @@ del f_handler, fmter
 # Output stream handler for logger
 o_handler = logging.StreamHandler()
 o_handler.setLevel(logging.WARNING)
+fmter = logging.Formatter("%(levelname)s: %(message)s", time_fm + " " + date_fm)
+o_handler.setFormatter(fmter)
 kaster_logger.addHandler(o_handler)
