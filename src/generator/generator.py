@@ -123,6 +123,7 @@ def generator(com_list):
                     else:  # That means user chooses "a" -> Append
                         output_file_name = g_arg
                 finally:
+                    print()
                     del u_choice
 
         elif g_opt == "--upper":
