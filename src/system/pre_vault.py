@@ -33,7 +33,7 @@ def check_user_account(console_output=False):
     # It doesn't matter because when a new account is created,
     # all files containing credentials, key, and IVs will be deleted
     if not os.path.isfile(kaster_dir + "/0000.kas"):
-        kaster_logger.info("INFO::%s: %s/0000.kas not found, assuming that no account is created" % (__process__, kaster_dir))
+        kaster_logger.info("%s: %s/0000.kas not found, assuming that no account is created" % (__process__, kaster_dir))
         return 334
 
     flag = 0
@@ -43,30 +43,30 @@ def check_user_account(console_output=False):
     grep_username = c_f.readline().decode("utf-8")[:-1]
     if grep_username == b"":
         flag = 1
-        kaster_logger.warning("WARNING::%s: Fetched nothing for username, username empty?" % (__process__, kaster_dir))
+        kaster_logger.warning("%s: Fetched nothing for username, username empty?" % (__process__, kaster_dir))
     elif grep_username != os.environ["SUDO_USER"] and os.environ["SUDO_USER"] != "root":
         flag = 1
-        kaster_logger.info("INFO::%s: Fetched username is '%s', user running Kaster as '%s' with sudo/root permission"
+        kaster_logger.info("%s: Fetched username is '%s', user running Kaster as '%s' with sudo/root permission"
                            % (__process__, grep_username, os.environ["SUDO_USER"]))
-        kaster_logger.warning("WARNING::%s: Fetched wrong username (%s), wrong username is written to file, "
+        kaster_logger.warning("%s: Fetched wrong username (%s), wrong username is written to file, "
                               "or user is using a different username"
                               % (__process__, grep_username))
     del grep_username
 
     if c_f.read() == b"":
         flag = 1
-        kaster_logger.log(35, "CRITICAL WARNING::%s: Could not find master password hash" % __process__)
+        kaster_logger.log(35, "%s: Could not find master password hash" % __process__)
     c_f.close()
 
     # TODO: Check file containing salt
     if not os.path.isfile(kaster_dir + "/0000.salt"):
         flag = 1
-        kaster_logger.log(35, "CRITICAL WARNING::%s: Could not find salt for password's hashing process" % __process__)
+        kaster_logger.log(35, "%s: Could not find salt for password's hashing process" % __process__)
     else:
         c_f = open(kaster_dir + "/0000.salt")
         if len(c_f.read()) != 32:
             flag = 1
-            kaster_logger.log(35, "CRITICAL WARNING::%s: Unexpected salt length: %s"
+            kaster_logger.log(35, "%s: Unexpected salt length: %s"
                               % (__process__, kaster_dir + "/0000.salt"))
 
     # Check the availability of vault's files
@@ -98,7 +98,7 @@ def check_user_account(console_output=False):
     flag = "OK" if flag == 0 else "NOT OK"
     return_value = 330 if flag == "OK" else 331
 
-    kaster_logger.info("INFO::%s: Account status: %s" % (__process__, flag))
+    kaster_logger.info("%s: Account status: %s" % (__process__, flag))
     del flag, __process__
 
     if not console_output:
@@ -161,7 +161,7 @@ def sign_up():
                 if register_failed:
                     f.close()
                     os.remove(kaster_dir + "/0000.kas")
-                    kaster_logger.warning("WARNING::%s: Registration failed: %s" % (__process__, r_reason))
+                    kaster_logger.warning("%s: Registration failed: %s" % (__process__, r_reason))
                     del f, mst_pass
                     return 312
             finally:
@@ -184,7 +184,7 @@ def sign_up():
         os.system("chmod o-r %s" % (kaster_dir + "/0000.salt"))
 
         del f, mst_pass
-        kaster_logger.info("INFO::%s: New account created for user %s" % (__process__, os.environ["SUDO_USER"]))
+        kaster_logger.info("%s: New account created for user %s" % (__process__, os.environ["SUDO_USER"]))
 
         return 310
 
@@ -192,14 +192,14 @@ def sign_up():
         os.remove(kaster_dir + "/0000.kas")
         if os.path.isfile(kaster_dir + "/0000.salt"):
             os.remove(kaster_dir + "/0000.salt")
-        kaster_logger.info("INFO::%s: Quit sign up session: Keyboard interrupted" % __process__)
+        kaster_logger.info("%s: Quit sign up session: Keyboard interrupted" % __process__)
         return 313
 
     except Exception as e:
         os.remove(kaster_dir + "/0000.kas")
         if os.path.isfile(kaster_dir + "/0000.salt"):
             os.remove(kaster_dir + "/0000.salt")
-        kaster_logger.error("ERROR::%s: An error occurred during sign up session: %s" % (__process__, e))
+        kaster_logger.error("%s: An error occurred during sign up session: %s" % (__process__, e))
         print("=====Traceback=====")
         traceback.print_exc()
         return 311
@@ -236,7 +236,7 @@ def sign_in():
 
     # TODO: Check if the input password hash is the same as the saved hash
     if hash_factor.digest() != p_hash:
-        kaster_logger.warning("WARNING::%s: Authentication failed: Wrong password" % __process__)
+        kaster_logger.warning("%s: Authentication failed: Wrong password" % __process__)
         del p_hash, hash_factor
         return 321
 

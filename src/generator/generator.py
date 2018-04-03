@@ -72,13 +72,13 @@ def generator(com_list):
             try:
                 p_length = int(g_arg)
                 if p_length > 30 or p_length < 8:
-                    kaster_logger.warning("WARNING::%s: Invalid password's length (%d): Must be between 8 and 30.\n"
+                    kaster_logger.warning("%s: Invalid password's length (%d): Must be between 8 and 30.\n"
                                           "  A random value in between 12 and 30 will be used instead."
                                           % (__process__, p_length))
                     number_of_warnings += 1
                     p_length = None
             except ValueError:
-                kaster_logger.warning("WARNING::%s: Invalid value for password's length (%s).\n"
+                kaster_logger.warning("%s: Invalid value for password's length (%s).\n"
                                       "  A random value in between 12 and 30 will be used instead."
                                       % (__process__, g_arg))
                 number_of_warnings += 1
@@ -88,13 +88,13 @@ def generator(com_list):
             try:
                 p_duplicate = int(g_arg)
                 if p_duplicate < 1:
-                    kaster_logger.warning("WARNING::%s: Invalid value for duplication (%d): Must be greater than 0.\n"
+                    kaster_logger.warning("%s: Invalid value for duplication (%d): Must be greater than 0.\n"
                                           "  1 is used instead."
                                           % (__process__, p_duplicate))
                     number_of_warnings += 1
                     p_duplicate = 1
             except ValueError:
-                kaster_logger.warning("WARNING::%s: Invalid value for duplication (%s).\n"
+                kaster_logger.warning("%s: Invalid value for duplication (%s).\n"
                                       "  1 is used instead."
                                       % (__process__, g_arg))
                 number_of_warnings += 1
@@ -104,7 +104,7 @@ def generator(com_list):
             if not os.path.isfile(g_arg):
                 output_file_name = g_arg
             else:
-                kaster_logging.warning("LIGHT WARNING::%s: File '%s' has already existed." % (__process__, g_arg))
+                kaster_logging.warning("LIGHT %s: File '%s' has already existed." % (__process__, g_arg))
                 u_choice = input("Do you want to append or overwrite the file? Or abort operation? [A|O|C] ")
                 try:
                     if u_choice.lower() == "o":  # Overwrite -> Remove the file and create a new one with the same name
@@ -115,7 +115,7 @@ def generator(com_list):
                         return 704
                     elif u_choice.lower() != "a":  # Invalid option
                         output_file_name = None  # Assigning to None means no record
-                        kaster_logger.warning("WARNING::%s: Unrecognized option (%s)\n"
+                        kaster_logger.warning("%s: Unrecognized option (%s)\n"
                                               "  There will be no output to file."
                                               % (__process__, u_choice))
                         number_of_warnings += 1
@@ -136,7 +136,7 @@ def generator(com_list):
 
         else:
             # ???: Should we just ignore unrecognized option?
-            kaster_logger.error("ERROR::%s: Not recognized option (%s)" % (__process__, g_opt))
+            kaster_logger.error("%s: Not recognized option (%s)" % (__process__, g_opt))
             return 703
 
     # TODO: Prepare file if an output file name is specified
@@ -148,7 +148,7 @@ def generator(com_list):
             # We say no parent folder because, the user might input a path with directories in it,
             # and while open() can create a file in case a file with specified file name does not exist,
             # it cannot create new directories.
-            kaster_logger.warning("WARNING::%s: Parent folder of %s does not exist"
+            kaster_logger.warning("%s: Parent folder of %s does not exist"
                                   "  There will be no output to file."
                                   % (__process__, output_file_name))
             number_of_warnings += 1

@@ -52,7 +52,7 @@ try:
                                 "account", "new", "list", "get=", "getpass=", "edit=", "del=", "delall",
                                 "name=", "login=", "password=", "comment="])
 except getopt.GetoptError as e:
-    kaster_logger.error("FATAL::%s: %s" % (__process__, e))
+    kaster_logger.critical("%s: %s" % (__process__, e))
     print("Pass option '-h' or '--help' to see the available options and arguments")
     sys.exit(4)
 
@@ -61,7 +61,7 @@ scanned_opt = []
 try:
     for opt, arg in opts:
         if opt in scanned_opt:
-            kaster_logger.error("FATAL::%s: Found duplicate option %s" % (__process__, opt))
+            kaster_logger.error("%s: Found duplicate option %s" % (__process__, opt))
             sys.exit(8)
         else:
             scanned_opt.append(opt)
@@ -92,7 +92,7 @@ for opt, arg in opts:
             sys.exit(generator(opts[1:]))
         except KeyboardInterrupt:
             print()
-            kaster_logger.info("INFO::Generator: Got keyboard interruption, quitting...")
+            kaster_logger.info("Generator: Got keyboard interruption, quitting...")
             sys.exit(707)
 
     elif opt == "--vault":
@@ -101,15 +101,15 @@ for opt, arg in opts:
             sys.exit(vault(opts[1:]))
         except KeyboardInterrupt:
             print()
-            kaster_logger.info("INFO::Vault: Got keyboard interruption, quitting...")
+            kaster_logger.info("Vault: Got keyboard interruption, quitting...")
             sys.exit(0)
 
     else:
-        kaster_logger.error("FATAL::%s: Wrong usage of option '%s'." % (__process__, opt))
+        kaster_logger.error("%s: Wrong usage of option '%s'." % (__process__, opt))
         sys.exit(6)
 
     del opts, args
     sys.exit(0)
 
-kaster_logger.error("FATAL::%s: Invalid argument '%s'." % (__process__, args[0]))
+kaster_logger.error("%s: Invalid argument '%s'." % (__process__, args[0]))
 sys.exit(1)

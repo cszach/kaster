@@ -21,7 +21,7 @@ def main():
     __process__ = "pre_kaster.py -> main()"
 
     if not os.path.isfile(config_path):
-        kaster_logger.error("FATAL::%s: Could not find Kaster's configuration file (.kasterrc) in home directory" % __process__)
+        kaster_logger.critical(":%s: Could not find Kaster's configuration file (.kasterrc) in home directory" % __process__)
         print("Make sure that you've ran install.sh")
         sys.exit(104)
 
@@ -36,6 +36,6 @@ def main():
     if os.path.getsize(log_path) > 50000000:  # Check if log file's size is larger than 50MB
         os.remove(log_path)
         open(log_path, "a").close()  # Create a new, empty log file
-        kaster_logger.info("INFO::%s: Renewed log file" % __process__)
+        kaster_logger.info("%s: Renewed log file" % __process__)
 
     return 100
