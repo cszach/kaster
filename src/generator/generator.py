@@ -111,6 +111,7 @@ def generator(com_list):
                         os.remove(g_arg)
                         open(g_arg, "a").close()
                         output_file_name = g_arg
+                        print()
                     elif u_choice.lower() == "c":  # Cancel
                         return 704
                     elif u_choice.lower() != "a":  # Invalid option
@@ -122,8 +123,8 @@ def generator(com_list):
                         continue
                     else:  # That means user chooses "a" -> Append
                         output_file_name = g_arg
+                        print()
                 finally:
-                    print()
                     del u_choice
 
         elif g_opt == "--upper":
