@@ -35,7 +35,7 @@ def pre_action():
     check_result = pre_vault.check_user_account()
     try:
         if check_result == 334:
-            kaster_logger.warning("LIGHT %s: No account created. "
+            kaster_logger.warning("%s: No account created. "
                                   "Use './kaster.py --vault --account' to create one."
                                   % __process__)
         if check_result == 331:

@@ -104,7 +104,7 @@ def generator(com_list):
             if not os.path.isfile(g_arg):
                 output_file_name = g_arg
             else:
-                kaster_logger.warning("LIGHT %s: File '%s' has already existed." % (__process__, g_arg))
+                kaster_logger.warning("%s: File '%s' has already existed." % (__process__, g_arg))
                 u_choice = input("Do you want to append or overwrite the file? Or abort operation? [A|O|C] ")
                 try:
                     if u_choice.lower() == "o":  # Overwrite -> Remove the file and create a new one with the same name
