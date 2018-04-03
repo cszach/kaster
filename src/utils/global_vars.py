@@ -7,6 +7,7 @@ Licensed under MIT License (see LICENSE).
 
 from sys import exit
 import os.path
+import logging
 
 __process__ = "global_vars.py"
 
