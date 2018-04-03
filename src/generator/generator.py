@@ -170,8 +170,7 @@ def generator(com_list):
 
     if number_of_warnings > 0:
         print("\n===== * =====")
-        kaster_logger.info("INFO::%s: Total number of warnings: %d"
-                           % (__process__, number_of_warnings))
+        print("Total number of warnings: %d")
         print("Scroll up to see them.")
 
     del p_length, p_duplicate, p_use_upper, p_use_lower, p_use_number, p_use_symbol
