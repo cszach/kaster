@@ -50,6 +50,10 @@ vault_dir = "%s/%s" % (program_file_dir, "vault")
 time_fm = time_format
 date_fm = date_format
 
+# Create Kaster program files directory and log file
+os.system("mkdir %s &>/dev/null" % kaster_dir)
+os.system("touch %s" % log_path)
+
 # TODO: Setup logger
 
 kaster_logger = logging.getLogger("Kaster global logger")
