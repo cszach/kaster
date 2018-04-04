@@ -195,7 +195,7 @@ def vault(com_list):
             Instructor.main("man_vault.txt")
 
         elif v_opt == "--account":
-            if pre_vault.check_user_account() == 334:
+            if pre_vault.check_user_account(True) == 334:
                 if input("No account created, create one now? [Y|N] ").lower() == "y":
                     pre_vault.main(True)
                 else:
