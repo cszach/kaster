@@ -33,7 +33,7 @@ def check_user_account(console_output=False):
     # It doesn't matter because when a new account is created,
     # all files containing credentials, key, and IVs will be deleted
     if not os.path.isfile(kaster_dir + "/0000.kas"):
-        kaster_logger.info("%s: %s/0000.kas not found, assuming that no account is created" % (__process__, kaster_dir))
+        kaster_logger.warning("%s: %s/0000.kas not found, assuming that no account is created" % (__process__, kaster_dir))
         return 334
 
     flag = 0
@@ -55,19 +55,19 @@ def check_user_account(console_output=False):
 
     if c_f.read() == b"":
         flag = 1
-        kaster_logger.log(35, "%s: Could not find master password hash" % __process__)
+        kaster_logger.warning("%s: Could not find master password hash" % __process__)
     c_f.close()
 
     # TODO: Check file containing salt
     if not os.path.isfile(kaster_dir + "/0000.salt"):
         flag = 1
-        kaster_logger.log(35, "%s: Could not find salt for password's hashing process" % __process__)
+        kaster_logger.warning("%s: Could not find salt for password's hashing process" % __process__)
     else:
         c_f = open(kaster_dir + "/0000.salt")
         if len(c_f.read()) != 32:
             flag = 1
-            kaster_logger.log(35, "%s: Unexpected salt length: %s"
-                              % (__process__, kaster_dir + "/0000.salt"))
+            kaster_logger.warning("%s: Unexpected salt length: %s"
+                                  % (__process__, kaster_dir + "/0000.salt"))
 
     # Check the availability of vault's files
     # If they do exist, check if they are okay
@@ -98,7 +98,7 @@ def check_user_account(console_output=False):
     flag = "OK" if flag == 0 else "NOT OK"
     return_value = 330 if flag == "OK" else 331
 
-    kaster_logger.info("%s: Account status: %s" % (__process__, flag))
+    print("Account status: %s" % flag)
     del flag, __process__
 
     if not console_output:
