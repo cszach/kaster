@@ -7,10 +7,7 @@
 getuserhome=$(eval echo ~$USER)
 
 # Create /tmp (temporary) directory to save products of minions
-if ! [ -d /tmp ]
-then
-    mkdir /tmp
-fi
+mkdir /tmp &>/dev/null
 
 f_target="/tmp/grephome.minion.product"  # Path of file to write to
 touch $f_target
