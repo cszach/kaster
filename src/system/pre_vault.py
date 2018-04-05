@@ -34,6 +34,8 @@ def check_user_account(console_output=False):
     # all files containing credentials, key, and IVs will be deleted
     if not os.path.isfile(kaster_dir + "/0000.kas"):
         kaster_logger.warning("%s: %s/0000.kas not found, assuming that no account is created" % (__process__, kaster_dir))
+        if not console_output:
+            kaster_logger.addHandler(o_handler)
         return 334
 
     flag = 0
