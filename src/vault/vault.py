@@ -48,7 +48,6 @@ def pre_action():
             sys.exit(521)
     finally:
         del check_result
-    print()
 
 
 def key(inp_pass):
@@ -113,7 +112,7 @@ def new_login(master_password, login_name, login, password, note):
     # TODO: Save login name, login, and comment
 
     # TODO: Create .DAT file saving the login name, login, and note
-    f = open("%s/%s.dat" % (kaster_dir, login_id), "w")
+    f = open("%s/%s.dat" % (vault_dir, login_id), "w")
     f.write(login_name + "\n")
     f.write(login + "\n")
     f.write(note + "\n")
