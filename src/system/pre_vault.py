@@ -100,7 +100,8 @@ def check_user_account(console_output=False):
     flag = "OK" if flag == 0 else "NOT OK"
     return_value = 330 if flag == "OK" else 331
 
-    print("Account status: %s" % flag)
+    if console_output:
+        print("Account status: %s" % flag)
     del flag, __process__
 
     if not console_output:
