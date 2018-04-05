@@ -81,7 +81,7 @@ Example usage
 
 Dependencies
 ------------
-1. `pyperclip <http://pypi.python.org/pypi/pyperclip>`_ (which itself also depended on a copy mechanism)
+1. `pyperclip <http://pypi.python.org/pypi/pyperclip>`_ (which itself is depended on a copy mechanism)
 2. `PyCrypto <https://pypi.python.org/pypi/pycrypto>`_
 
 License
