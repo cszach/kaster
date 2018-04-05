@@ -12,7 +12,7 @@ __author__ = "Nguyen Hoang Duong"
 __license__ = "MIT"
 __maintainter__ = "Nguyen Hoang Duong"
 __email__ = "novakglow@gmail.com"
-__status__ = "Production"
+__status__ = "Beta"
 
 import sys
 import os
