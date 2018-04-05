@@ -197,6 +197,7 @@ def vault(com_list):
         elif v_opt == "--account":
             if pre_vault.check_user_account(True) == 334:
                 if input("No account created, create one now? [Y|N] ").lower() == "y":
+                    print()
                     pre_vault.main(True)
                 else:
                     return 503
@@ -214,7 +215,7 @@ def vault(com_list):
                 del master
                 return 504
 
-            print("New login\n"
+            print("\nNew login\n"
                   "===============")
             if len(com_list[v_idx + 1:]) == 0:  # User does not specify additional arguments, so prompt
                 login_name = input("Login name: ")
