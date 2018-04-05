@@ -55,9 +55,16 @@ then
     echo "INFO: Making kaster.py executable"
     chmod +x kaster.py
 else
-    echo "FATAL: Couldn't find kaster.py, kaster.py missing or you've moved the files"
+    echo "FATAL: Couldn't find kaster.py"
     exit 400
 fi
+
+if [ -e undo_install.sh ]
+then
+    echo "INFO: Making undo_install.sh executable"
+    chmod +x undo_install.sh
+ else
+    echo "WARNING: Couldn't find undo_install.sh"
 
 echo "Done."
 unset userhome
