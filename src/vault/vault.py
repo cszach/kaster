@@ -214,9 +214,9 @@ def vault(com_list):
                 del master
                 return 504
 
-            print("\nNew login\n"
-                  "===============")
             if len(com_list[v_idx + 1:]) == 0:  # User does not specify additional arguments, so prompt
+                print("\nNew login\n"
+                      "===============")
                 login_name = input("Login name: ")
                 login = input("Login: ")
                 password = getpass("Password (leave blank to generate one): ")
@@ -254,8 +254,8 @@ def vault(com_list):
 
             login_name = None
             login_id = None
-            print("ID   |Login name")
-            print("=====|==========")
+            print("ID   | Login name")
+            print("==== | ==========")
 
             # Get data
             for k_login_f in fnmatch.filter(os.listdir(vault_dir), "*.dat"):
