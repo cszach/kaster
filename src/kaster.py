@@ -68,6 +68,7 @@ try:
 finally:
     del scanned_opt
 
+verbose = False
 # TODO: Iterate over options
 for opt, arg in opts:
     if opt in ("-h", "--help"):
@@ -86,10 +87,15 @@ for opt, arg in opts:
         kaster_logger.removeHandler(o_handler)
         o_handler.setLevel(logging.INFO)
         kaster_logger.addHandler(o_handler)
+        verbose = True
+        continue
 
     elif opt == "--gen":
         try:
-            sys.exit(generator(opts[1:]))
+            if not verbose:
+                sys.exit(generator(opts[1:]))
+            else:
+                sys.exit(generator(opts[2:]))
         except KeyboardInterrupt:
             print()
             kaster_logger.info("Generator: Got keyboard interruption, quitting...")
@@ -98,7 +104,10 @@ for opt, arg in opts:
     elif opt == "--vault":
         # Might remove this try except and handle keyboard interruption in vault.vault() instead
         try:
-            sys.exit(vault(opts[1:]))
+            if not verbose:
+                sys.exit(vault(opts[1:]))
+            else:
+                sys.exit(vault(opts[2:]))
         except KeyboardInterrupt:
             print()
             kaster_logger.info("Vault: Got keyboard interruption, quitting...")
@@ -111,5 +120,9 @@ for opt, arg in opts:
     del opts, args
     sys.exit(0)
 
-kaster_logger.error("%s: Invalid argument '%s'." % (__process__, args[0]))
+try:
+    kaster_logger.error("%s: Invalid argument '%s'." % (__process__, args[0]))
+except IndexError:
+    sys.exit(0)
+
 sys.exit(1)
