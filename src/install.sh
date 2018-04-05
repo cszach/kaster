@@ -63,8 +63,9 @@ if [ -e undo_install.sh ]
 then
     echo "INFO: Making undo_install.sh executable"
     chmod +x undo_install.sh
- else
+else
     echo "WARNING: Couldn't find undo_install.sh"
+fi
 
 echo "Done."
 unset userhome
