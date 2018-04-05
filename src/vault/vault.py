@@ -170,7 +170,7 @@ def get_id_from_arg(arg, program_terminate=True):
     try:
         return "%04d" % int(arg)
     except ValueError:  # Get this when arg contains non-numerical character(s)
-        kaster_logger.log(35, "%s: Invalid login ID (%s)" % (__process__, arg))
+        kaster_logger.warning("%s: Invalid login ID (%s)" % (__process__, arg))
 
     if program_terminate:
         sys.exit(531)
