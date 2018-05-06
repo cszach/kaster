@@ -84,6 +84,9 @@ Dependencies
 1. `pyperclip <http://pypi.python.org/pypi/pyperclip>`_ (which itself is depended on a copy mechanism)
 2. `PyCrypto <http://pypi.python.org/pypi/pycrypto>`_
 
+**Note**: Since Kaster requires SUDO, you may want to install the above dependencies as root if you are using ``pip3``.
+Although installing as root with ``pip3`` is not recommended, those Python modules are observed to be safe and not harmful.
+
 License
 -------
 `MIT License <LICENSE>`_
