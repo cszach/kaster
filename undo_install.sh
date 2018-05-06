@@ -12,22 +12,22 @@ then
     exit 100
 fi
 
-if [ -e kaster.py ]
+if [ -e src/kaster.py ]
 then
     echo "INFO: Making kaster.py NOT executable."
-    chmod -x kaster.py
+    chmod -x src/kaster.py
 else
     echo "FATAL: Could not find kaster.py."
     exit 400
 fi
 
 userhome=$(eval echo ~$USER)
-if [ -e $userhome/.kasterrc ] && [ -d system ]
+if [ -e $userhome/.kasterrc ] && [ -d src/system ]
 then
-    echo "INFO: Moving .kasterrc in home directory back to system folder."
-    mv $userhome/.kasterrc system
+    echo "INFO: Moving .kasterrc in home directory back to src/system/."
+    mv $userhome/.kasterrc src/system
 else
-    echo "FATAL: Couldn't find .kasterrc in $userhome or system/ does not exist."
+    echo "FATAL: Couldn't find .kasterrc in $userhome or src/system/ does not exist."
     exit 402
 fi
 

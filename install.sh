@@ -33,14 +33,14 @@ fi
 
 userhome=$(eval echo ~$USER)
 
-if [ -e system/.kasterrc ]
+if [ -e src/system/.kasterrc ]
 then
-    echo "INFO: Opening $editor editor to edit .kasterrc (Kaster's configuration file)"
+    echo "INFO: Opening $editor editor to edit src/system/.kasterrc (Kaster's configuration file)"
     sleep 3
-    eval "$editor system/.kasterrc"
+    eval "$editor src/system/.kasterrc"
 
-    echo "INFO: Moving system/.kasterrc to $userhome"
-    mv system/.kasterrc $userhome
+    echo "INFO: Moving src/system/.kasterrc to $userhome"
+    mv src/system/.kasterrc $userhome
 elif ! [ -e $userhome/.kasterrc ]
 then
     echo "FATAL: Couldn't find .kasterrc in both current directory and home directory, file missing or has been moved"
@@ -50,10 +50,10 @@ else
     echo "It's possible that the .kasterrc in the home directory is of the earlier version of Kaster"
 fi
 
-if [ -e kaster.py ]
+if [ -e src/kaster.py ]
 then
     echo "INFO: Making kaster.py executable"
-    chmod +x kaster.py
+    chmod +x src/kaster.py
 else
     echo "FATAL: Couldn't find kaster.py"
     exit 400
