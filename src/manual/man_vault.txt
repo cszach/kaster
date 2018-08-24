@@ -1,29 +1,27 @@
 Password Manager
   Description:
 
-    The Password Manager is a subprogram
-    (which is actually the core of Kaster) that manages logins' credentials.
+    The Password Manager is a subprogram (which is actually the core of Kaster)
+    that manages logins' credentials.
 
 
   Options:
 
         --vault      : Call password manager
     -h, --help       : Print this manual page and exit
-        --account    : Start session pre_vault.check_user_account()
-                       to check user's Kaster account's status
+        --account    : Start session pre_vault.check_user_account() to check
+                       user's Kaster account's status
                        If no account is created, prompt to create one
-        --new        : Create a new login if the user has an account
-                       If there is no account or account's state
-                       is not okay, alert user and exit
-                       Additional options are allowed,
-                       see the section "Creating a new login"
+        --new        : Create a new login if the user has an account.
+                       If there is no account or account's state is not okay,
+                       alert user and exit. Additional options are allowed,
+                       see section "Creating a new login".
         --list       : List all logins with their names and IDs
         --get=ID     : Get the login name, name and comment of login #ID
         --getpass=ID : Copy the password of login #ID to clipboard
-        --edit=ID    : Edit information
-                       (login name, login, password, comment) of login #ID
-                       Must specify additional options,
-                       see the section "Editing a login" below
+        --edit=ID    : Edit information (login name, login, password, comment)
+                       of login #ID. Must specify additional options, see
+                       section "Editing a login" below.
         --del=ID     : Delete login #ID
         --delall     : Delete all saved logins
 

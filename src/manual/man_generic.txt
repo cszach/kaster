@@ -1,10 +1,10 @@
 Generic Options
 
-  -h, --help     : Show all manual pages and exit
-                   If this option is specified after calling a subprogram,
-                   then the manual page for that subprogram will be printed.
-      --version  : Show version of the program
-                   (with the program's name in front) and exit
-      -- info    : Show program's information
-                   (program name, version, short introduction, and developers)
-      --verbose  : Provide details of what Kaster (or its subprogram) is doing
+  -h, --help    : Show all manual pages and exit
+                  If this option is specified after calling a subprogram,
+                  then the manual page for that subprogram will be printed.
+      --version : Show version of the program
+                  (with the program's name in front) and exit
+      -- info   : Show program's information
+                  (program name, version, short introduction, and developers)
+      --verbose : Provide details of what Kaster (or its subprogram) is doing

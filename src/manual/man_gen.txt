@@ -1,27 +1,26 @@
 Generator
   Description:
 
-    The Kaster's Generator is a subprogram that is used
-    to generate random passwords.
-    Characters used by this generator are ASCII's printable characters
-    with decimal value ranging from 32 to 126.
+    The Kaster's Generator is a subprogram that is used to generate random
+    passwords. Characters used by this generator are ASCII's printable
+    characters with decimal value ranging from 32 to 126.
 
 
   Options:
 
-        --gen               : Call generator
-    -h, --help              : Print this manual page and exit
-    -l LEN, --length=LEN    : Set output passwords' length to LEN
-                              (LEN is an integer, 8 <= LEN <= 30)
-    -d NUM, --duplicate=NUM : Set number of output passwords to NUM,
-                              (NUM is an integer, NUM >= 1)
-    -o PATH, --output=PATH  : Save output to file whose path is PATH
-                              Create and write if the file does not exist,
-                              append to the file in the opposite case
-        --upper             : Use uppercase characters
-        --lower             : Use lowercase characters
-        --number            : Use numbers
-        --symbol            : Use symbols
+             --gen           : Invoke generator
+    -h,      --help          : Print this manual page and exit
+    -l LEN,  --length=LEN    : Set output passwords' length to LEN
+                               (LEN is an integer, 8 <= LEN <= 30)
+    -d NUM,  --duplicate=NUM : Set number of output passwords to NUM,
+                               (NUM is an integer, NUM >= 1)
+    -o PATH, --output=PATH   : Save output to file whose path is PATH
+                               Create and write if the file does not exist,
+                               append to the file otherwise
+             --upper         : Use uppercase characters
+             --lower         : Use lowercase characters
+             --number        : Use numbers
+             --symbol        : Use symbols
 
 
   Examples:
@@ -34,6 +33,5 @@ Generator
       ./kaster.py --gen -l 15 --duplicate=3
     4. Generate 5 random passwords that only contain uppercase characters:
       ./kaster.py --gen -d 5 --upper
-    5. Generate 2 random passwords that only use
-       lowercase characters and numbers:
+    5. Generate 2 random passwords that only use lowercase letters and numbers:
       ./kaster.py --gen --duplicate=2 --lower --number
