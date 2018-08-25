@@ -2,7 +2,7 @@
 generator/generator.py - Password generator subprogram for Kaster
 This subprogram used k_random.random_string() as core (see utils/k_random.py)
 
-Copyright (C) 2017-2018 Nguyen Hoang Duong <novakglow@gmail.com>
+Copyright (C) 2017-2018 Nguyen Hoang Duong <you_create@protonmail.com>
 Licensed under MIT License (see LICENSE).
 """
 

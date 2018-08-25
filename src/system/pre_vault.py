@@ -1,7 +1,7 @@
 """
 system/pre_vault.py - Tasks to be done when the vault is initialized
 
-Copyright (C) 2017-2018 Nguyen Hoang Duong <novakglow@gmail.com>
+Copyright (C) 2017-2018 Nguyen Hoang Duong <you_create@protonmail.com>
 Licensed under MIT License (see LICENSE).
 """
 

@@ -1,7 +1,7 @@
 """
 utils/global_vars.py - Variables that are used by Kaster and Kaster subprograms
 
-Copyright (C) 2017-2018 Nguyen Hoang Duong <novakglow@gmail.com>
+Copyright (C) 2017-2018 Nguyen Hoang Duong <you_create@protonmail.com>
 Licensed under MIT License (see LICENSE).
 """
 

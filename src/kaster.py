@@ -2,7 +2,7 @@
 """
 Kaster Password Vault - Simple password manager for GNU/Linux platform
 
-Copyright (C) 2017-2018 Nguyen Hoang Duong <novakglow@gmail.com>
+Copyright (C) 2017-2018 Nguyen Hoang Duong <you_create@protonmail.com>
 Licensed under MIT License (see LICENSE).
 """
 
@@ -11,7 +11,7 @@ __version__ = "Beta"
 __author__ = "Nguyen Hoang Duong"
 __license__ = "MIT"
 __maintainter__ = "Nguyen Hoang Duong"
-__email__ = "novakglow@gmail.com"
+__email__ = "you_create@protonmail.com"
 __status__ = "Beta"
 
 import sys
@@ -28,20 +28,15 @@ from generator import generator
 sys.path.insert(0, "vault")
 from vault import vault
 
-# TODO: Check if the user has logged in as root
-if os.getenv("SUDO_USER") is None:
-    print("Please run Kaster as root")
-    sys.exit(9)
-
-pre_kaster.main()  # Processes to ran on startup
+pre_kaster.main()  # Processes to be ran on startup
 __process__ = "kaster.py (MAIN)"
 
-# TODO: Print help if no argument/option is specified
+# Print help if no argument/option is specified
 if len(sys.argv[1:]) == 0:
     Instructor.main(None)
     sys.exit(3)
 
-# TODO: Get all the arguments specified
+# Get options are arguments
 try:
     opts, args = getopt.getopt(sys.argv[1:],
                                "ha:l:d:o:",
@@ -56,7 +51,7 @@ except getopt.GetoptError as e:
     print("Pass option '-h' or '--help' to see the available options and arguments")
     sys.exit(4)
 
-# TODO: Iterate over options among with their arguments to check for duplicate
+# Iterate over options among with their arguments to check for duplicate
 scanned_opt = []
 try:
     for opt, arg in opts:
@@ -69,7 +64,7 @@ finally:
     del scanned_opt
 
 verbose = False
-# TODO: Iterate over options
+# Iterate over options
 for opt, arg in opts:
     if opt in ("-h", "--help"):
         Instructor.main(None)

@@ -1,7 +1,7 @@
 """
 system/Instructor.py - Facility for printing manual pages of Kaster and Kaster's subprograms
 
-Copyright (C) 2017-2018 Nguyen Hoang Duong <novakglow@gmail.com>
+Copyright (C) 2017-2018 Nguyen Hoang Duong <you_create@protonmail.com>
 Licensed under MIT License (see LICENSE).
 """
 
