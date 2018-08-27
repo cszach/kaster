@@ -2,6 +2,7 @@
 # Install script for Kaster Password Vault
 
 # ***** IMPORTANT VARIABLES *****
+
 # You may set these variables manually,
 # but it's usually best to leave them as default.
 
@@ -9,10 +10,21 @@ kpv_version="Beta"  # Kaster version, must change for every Kaster's new release
 editor=""           # Path to text editor used to edit Kaster configuration file
 src_path="src"      # Kaster's source path, relative to this install script
 
-rcp="$src_path/.kasterrc"         # Path to .kasterrc in source
-kasp="$src_path/kaster.py"        # Path to kaster.py
-kaster_home="/usr/lib/kaster"     # Directory containing Kaster's program files
-user_home="$(eval echo ~$USER)"   # Directory containing user's Kaster files
+kasp="$src_path/kaster.py"       # Path to kaster.py
+kaster_home="/usr/lib/kaster"    # Directory containing Kaster's program files
+user_home="$(eval echo ~$USER)"  # Directory containing user's Kaster files
+date_format = "%d/%m/%Y"         # Date format for use in Kaster
+time_format = "%H:%M:%S"         # Time format for use in Kaster
+
+export src_path
+export kaster_home
+
+# Default values. DO NOT CHANGE THESE UNLESS YOU KNOW WHAT YOU ARE DOING.
+
+export def_kaster_home="/usr/lib/kaster"    # Default value for $kaster_home
+export def_user_home="$(eval echo ~$USER)"  # Default value for $user_home
+export def_df="%d/%m/%Y"                    # Default value for $date_format
+export def_tf="%H:%M:%S"                    # Default value for $time_format
 
 # ********************************
 
@@ -28,72 +40,58 @@ echo -e "Installing Kaster Password Vault $kpv_version\n"
 
 exitcode="0"  # This script's exitcode
 
-# *************************************
-# * Get text editor to edit .kasterrc *
-# *************************************
-
-if [ -x $(command -v nano) ] && [ -z $editor ]
-then
-    editor="nano"
-else
-    if [ -z $editor ]
-    then
-        read -p "What text editor do you prefer? (specify full path to executable)" editor
-    fi
-
-    if ! [ -x $editor ]
-    then
-        >&2 echo -e "${red}ERROR${defc}: $editor is not available"
-        editor=""
-        exitcode="4"
-    fi
-fi
-
-# ******************
-# * Edit .kasterrc *
-# ******************
-
-if [ -e $rcp ]
-then
-    if [ -n $editor ]
-    then
-        echo "INFO: Opening $editor to configure Kaster"
-        sleep 3
-        eval "$editor $rcp"
-
-        echo "INFO: Moving $rcp to $kaster_home"
-        mv $rcp $kaster_home
-    fi
-elif ! [ -e $kaster_home/.kasterrc ]
-then
-    >&2 echo -e "${red}ERROR${defc}: Couldn't find .kasterrc, file missing or has been moved"
-    exitcode="5"
-else
-    echo -e "${yellow}WARNING${defc}: Couldn't find .kasterrc in $rcp but found one in Kaster home ($kaster_home)"
-    echo "It's possible that the .kasterrc in the home directory is of the earlier version of Kaster"
-    exitcode="2"
-fi
-
 # **************************************
 # * Set up $kaster_home and $user_home *
 # **************************************
 
-if [ -w $kaster_home ]
+export fcheck="0"
+
+if [ -f .mk_kpv_home.sh ]
 then
-    mkdir -p $kaster_home
-    mv src/* $kaster_home
+    if [ -w $kaster_home ]
+    then
+        sh .mk_kpv_home.sh
+    else
+        sudo sh .mk_kpv_home.sh
+    fi
 else
-    sudo mkdir -p $kaster_home
-    sudo mv src/* $kaster_home
+    >&2 echo -e "${red}ERROR${defc}: Couldn't find .mk_kpv_home.sh"
+    exitcode="6"
 fi
+
+# ************************************
+# * Generate .kasterrc in $user_home *
+# ************************************
 
 if [ -r $user_home ] && [ -w $user_home ]
 then
-    mkdir $user_home/.kaster
+    rcp="$user_home/.kasterrc"
+    touch $rcp
+
+    if [ $kaster_home != $def_kaster_home ]
+    then
+        echo "program_file_dir = \"$kaster_home\"" >> $rcp
+    fi
+
+    if [ $user_home != $def_user_home ]
+    then
+        echo "user_file_dir = \"$def_user_home\"" >> $rcp
+    fi
+
+    if [ $date_format != $def_df ]
+    then
+        echo "date_format = \"$def_df\"" >> $rcp
+    fi
+
+    if [ $time_format != $def_tf ]
+    then
+        echo "time_format = \"$def_tf\"" >> $rcp
+    fi
 else
     >&2 echo -e "${red}ERROR{$defc}: $user_home doesn't exist, or you don't have read/write access to it."
     echo -e "Please edit \$user_home variable inside the installation script ($0)."
     echo "Set it to path of directory that you have read and write access to."
+    exitcode="7"
 fi
 
 # ***************************
@@ -117,13 +115,14 @@ else
     echo "${yellow}WARNING${defc}: Couldn't find undo_install.sh"
 fi
 
-# ***********************
-# * Finish installation *
-# ***********************
+# ********************************
+# * Report & Finish installation *
+# ********************************
 
-if [ $exitcode -ge 4 ]
+if [ $exitcode -gt 3 ]
 then
-    >&2 echo -e "\nFAILED: Installation failed. Resolve errors (outputed to stderr) and try again."
+    >&2 echo -e "\n{$red}FAILED{$defc}: Installation failed."
+    echo "Resolve errors (outputed to stderr) and try again."
 fi
 
 exit $exitcode
