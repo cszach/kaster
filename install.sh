@@ -7,7 +7,6 @@
 # but it's usually best to leave them as default.
 
 kpv_version="Beta"  # Kaster version, must change for every Kaster's new release
-editor=""           # Path to text editor used to edit Kaster configuration file
 src_path="src"      # Kaster's source path, relative to this install script
 
 kasp="$src_path/kaster.py"       # Path to kaster.py
@@ -56,7 +55,7 @@ then
     fi
 else
     >&2 echo -e "${red}ERROR${defc}: Couldn't find .mk_kpv_home.sh"
-    exitcode="6"
+    exitcode="2"
 fi
 
 # ************************************
@@ -75,23 +74,23 @@ then
 
     if [ $user_home != $def_user_home ]
     then
-        echo "user_file_dir = \"$def_user_home\"" >> $rcp
+        echo "user_file_dir = \"$user_home\"" >> $rcp
     fi
 
     if [ $date_format != $def_df ]
     then
-        echo "date_format = \"$def_df\"" >> $rcp
+        echo "date_format = \"$date_format\"" >> $rcp
     fi
 
     if [ $time_format != $def_tf ]
     then
-        echo "time_format = \"$def_tf\"" >> $rcp
+        echo "time_format = \"$time_format\"" >> $rcp
     fi
 else
     >&2 echo -e "${red}ERROR{$defc}: $user_home doesn't exist, or you don't have read/write access to it."
     echo -e "Please edit \$user_home variable inside the installation script ($0)."
     echo "Set it to path of directory that you have read and write access to."
-    exitcode="7"
+    exitcode="3"
 fi
 
 # ***************************
@@ -104,7 +103,7 @@ then
     chmod +x $kasp
 else
     >&2 echo -e "${red}ERROR${defc}: Couldn't find kaster.py"
-    exitcode="3"
+    exitcode="4"
 fi
 
 if [ -e undo_install.sh ]
@@ -119,7 +118,7 @@ fi
 # * Report & Finish installation *
 # ********************************
 
-if [ $exitcode -gt 3 ]
+if [ $exitcode -ne 0 ]
 then
     >&2 echo -e "\n{$red}FAILED{$defc}: Installation failed."
     echo "Resolve errors (outputed to stderr) and try again."
