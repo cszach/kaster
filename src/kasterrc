@@ -1,0 +1,6 @@
+# Default Kaster configuration
+# DO NOT EDIT.
+program_file_dir = "/usr/lib/kaster"
+user_file_dir = "/home/you_create"
+date_format = "%d/%m/%Y"
+time_format = "%H:%M:%S"
