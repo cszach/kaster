@@ -3,7 +3,7 @@
 
 # Make sure this script isn't being executed manually.
 
-if [ $fcheck != "0" ]
+if [[ $fcheck != "0" ]]
 then
     >&2 echo "ERROR: Do not execute this script manually."
     exit 1
@@ -18,12 +18,12 @@ mv $src_path/* $kaster_home
 
 # Create default .kasterrc
 
-drcp="$kaster_home/kasterrc"
-touch $drcp;
-echo -e "# Default Kaster configuration\n# DO NOT EDIT." > $drcp
-echo "program_file_dir = \"$def_kaster_home\"" >> $drcp
-echo "user_file_dir = \"$def_user_home\""      >> $drcp
-echo "date_format = \"$def_df\""               >> $drcp
-echo "time_format = \"$def_tf\""               >> $drcp
+#drcp="$kaster_home/kasterrc"
+#touch $drcp
+#echo -e "# Default Kaster configuration\n# DO NOT EDIT." > $drcp
+#echo "program_file_dir = \"$def_kaster_home\"" >> $drcp
+#echo "user_file_dir = \"$def_user_home\""      >> $drcp
+#echo "date_format = \"$def_df\""               >> $drcp
+#echo "time_format = \"$def_tf\""               >> $drcp
 
 exit 0

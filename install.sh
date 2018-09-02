@@ -12,8 +12,8 @@ src_path="src"      # Kaster's source path, relative to this install script
 kasp="$src_path/kaster.py"       # Path to kaster.py
 kaster_home="/usr/lib/kaster"    # Directory containing Kaster's program files
 user_home="$(eval echo ~$USER)"  # Directory containing user's Kaster files
-date_format = "%d/%m/%Y"         # Date format for use in Kaster
-time_format = "%H:%M:%S"         # Time format for use in Kaster
+date_format="%d/%m/%Y"           # Date format for use in Kaster
+time_format="%H:%M:%S"           # Time format for use in Kaster
 
 export src_path
 export kaster_home
@@ -49,9 +49,9 @@ if [ -f .mk_kpv_home.sh ]
 then
     if [ -w $kaster_home ]
     then
-        sh .mk_kpv_home.sh
+        . .mk_kpv_home.sh
     else
-        sudo sh .mk_kpv_home.sh
+        eval "sudo -E /bin/sh -c \"sh .mk_kpv_home.sh\""
     fi
 else
     >&2 echo -e "${red}ERROR${defc}: Couldn't find .mk_kpv_home.sh"
