@@ -9,21 +9,21 @@
 kpv_version="Beta"  # Kaster version, must change for every Kaster's new release
 src_path="src"      # Kaster's source path, relative to this install script
 
-kasp="$src_path/kaster.py"       # Path to kaster.py
-kaster_home="/usr/lib/kaster"    # Directory containing Kaster's program files
-user_home="$(eval echo ~$USER)"  # Directory containing user's Kaster files
-date_format="%d/%m/%Y"           # Date format for use in Kaster
-time_format="%H:%M:%S"           # Time format for use in Kaster
+kaster_home="/usr/lib/kaster"  # Directory containing Kaster's program files
+kasp="$kaster_home/kaster.py"  # Path to kaster.py in $kaster_home
+user_home=$HOME                # Directory containing user's Kaster files
+date_format="%d/%m/%Y"         # Date format for use in Kaster
+time_format="%H:%M:%S"         # Time format for use in Kaster
 
 export src_path
 export kaster_home
 
 # Default values. DO NOT CHANGE THESE UNLESS YOU KNOW WHAT YOU ARE DOING.
 
-export def_kaster_home="/usr/lib/kaster"    # Default value for $kaster_home
-export def_user_home="$(eval echo ~$USER)"  # Default value for $user_home
-export def_df="%d/%m/%Y"                    # Default value for $date_format
-export def_tf="%H:%M:%S"                    # Default value for $time_format
+export def_kaster_home="/usr/lib/kaster"  # Default value for $kaster_home
+export def_user_home=$HOME                # Default value for $user_home
+export def_df="%d/%m/%Y"                  # Default value for $date_format
+export def_tf="%H:%M:%S"                  # Default value for $time_format
 
 # ********************************
 
@@ -45,11 +45,13 @@ exitcode="0"  # This script's exitcode
 
 export fcheck="0"
 
+echo "INFO: Creating Kaster's home at $kaster_home"
+
 if [ -f .mk_kpv_home.sh ]
 then
     if [ -w $kaster_home ]
     then
-        . .mk_kpv_home.sh
+        sh .mk_kpv_home.sh
     else
         eval "sudo -E /bin/sh -c \"sh .mk_kpv_home.sh\""
     fi
@@ -64,6 +66,8 @@ fi
 
 if [ -r $user_home ] && [ -w $user_home ]
 then
+    echo "INFO: Creating .kasterrc in $user_home"
+
     rcp="$user_home/.kasterrc"
     touch $rcp
 
@@ -86,11 +90,15 @@ then
     then
         echo "time_format = \"$time_format\"" >> $rcp
     fi
+
+    echo "INFO: Creating user-specific Kaster folder in $user_home"
+    mkdir $user_home/.kaster
 else
-    >&2 echo -e "${red}ERROR{$defc}: $user_home doesn't exist, or you don't have read/write access to it."
+    >&2 echo -e "${red}ERROR${defc}: $user_home doesn't exist, or you don't have read/write access to it."
     echo -e "Please edit \$user_home variable inside the installation script ($0)."
     echo "Set it to path of directory that you have read and write access to."
-    exitcode="3"
+    echo "It is best to set it to your home directory ($HOME)"
+    exitcode="4"
 fi
 
 # ***************************
@@ -101,9 +109,11 @@ if [ -e $kasp ]
 then
     echo "INFO: Making kaster.py executable"
     chmod +x $kasp
+    echo "INFO: Creating a symlink to $kasp in /usr/bin/"
+    sudo ln -s $kasp /usr/bin/kaster &> /dev/null
 else
     >&2 echo -e "${red}ERROR${defc}: Couldn't find kaster.py"
-    exitcode="4"
+    exitcode="5"
 fi
 
 if [ -e undo_install.sh ]
@@ -111,7 +121,7 @@ then
     echo "INFO: Making undo_install.sh executable"
     chmod +x undo_install.sh
 else
-    echo "${yellow}WARNING${defc}: Couldn't find undo_install.sh"
+    echo -e "${yellow}WARNING${defc}: Couldn't find undo_install.sh"
 fi
 
 # ********************************
@@ -120,8 +130,10 @@ fi
 
 if [ $exitcode -ne 0 ]
 then
-    >&2 echo -e "\n{$red}FAILED{$defc}: Installation failed."
+    >&2 echo -e "\n${red}FAILED${defc}: Installation failed."
     echo "Resolve errors (outputed to stderr) and try again."
+else
+    echo -e "\n\033[1;32mKaster is successfully installed.${defc}"
 fi
 
 exit $exitcode
