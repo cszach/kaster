@@ -1,6 +1,32 @@
-# Default Kaster configuration
-# DO NOT EDIT.
+# This is a sample .kasterrc file (default values set).
+# .kasterrc file is a file that stores your configuration for Kaster.
+# Configurations in .kasterrc include:
+#     1. Path to Kaster's home directory (where Kaster's source files are kept)
+#     2. Path to user's home directory (where user's files are kept e.g. those
+#        that store the logins' credentials)
+#     3. Date format
+#     4. Time format
+#
+# You may use this as your actual .kasterrc file, providing that:
+#     - You don't change any variable's name
+#       (those that stand on the left side of the equal sign)
+#     - You don't remove any hash symbol ("#")
+#     - The values for the variables are valid (a value of a variable stands
+#       on the right side of the equal sign)
+
+
+# Kaster's home directory: Where Kaster stores its source code files
+# Default value: /usr/lib/kaster {string}
 program_file_dir = "/usr/lib/kaster"
-user_file_dir = "/home/you_create"
+
+# User's home directory: Where user's files are kept
+# NOTE: Do NOT use the default value
+user_file_dir = "/home/johndoe"
+
+# Date string format and time string format used in Kaster
+# %d = day, %m = month, %Y = year, %H = hour, %M = minute, %S = second
+# %d/%m/%Y = DD/MM/YYYY
+# Date string format's default value: %d/%m/%Y {string}
+# Time string format's default value: %H:%M:%S {string}
 date_format = "%d/%m/%Y"
 time_format = "%H:%M:%S"
