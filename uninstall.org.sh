@@ -12,6 +12,7 @@ echo "      back to Kaster's source directory ($src_path)"
 if [ -d $kaster_home ] && [ -d $src_path ]
 then
     rm $kaster_home/.kasterrc
+    chmod u-x $kasp
     mv $kaster_home/* $src_path
     rmdir $kaster_home
 else
