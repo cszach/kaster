@@ -5,7 +5,7 @@
 
 if [[ $fcheck != "0" ]]
 then
-    >&2 echo -e "${red}ERROR${defc}: Do not execute this script manually."
+    >&2 echo -e "\033[1;31mERROR\033[0m: Do not execute this script manually."
     exit 1
 fi
 

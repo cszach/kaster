@@ -35,7 +35,7 @@ fi
 
 export defc="\033[0m"       # No color
 export yellow="\033[1;33m"  # Yellow
-export red="\033[0;31m"     # Red
+export red="\033[1;31m"     # Red
 
 echo -e "Installing Kaster Password Vault $kpv_version\n"
 
