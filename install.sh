@@ -113,7 +113,7 @@ fi
 if [ -e $kasp ]
 then
     echo "INFO: Making kaster.py executable"
-    chmod +x $kasp
+    chmod u+x $kasp
     echo "INFO: Creating a symlink to $kasp in /usr/bin/"
     sudo ln -s $kasp /usr/bin/kaster &> /dev/null
 else
@@ -121,7 +121,7 @@ else
     exitcode="5"
 fi
 
-if [ -f uninstall.sh ]
+if [ -f uninstall.org.sh ]
 then
     echo "INFO: Completing uninstall script (./uninstall.sh)"
 
@@ -130,11 +130,10 @@ then
 # inside Kaster's home (usually /usr/lib/kaster) back to the source folder.\n\
 # Then if you want to completely remove Kaster, you have to manually delete\n\
 # the source folder and other relevant files (such as LICENSE or README.rst).\n\n\
-src_path=\"$src_path\"\nkaster_home=\"$kaster_home\"\nuser_home=\"$user_home\"\n"\
-> uninstall.new.sh
+src_path=\"$src_path\"\nkaster_home=\"$kaster_home\"\nuser_home=\"$user_home\"\
+\nkasp=\"$kasp\"\n" > uninstall.sh
 
-    cat uninstall.sh >> uninstall.new.sh
-    mv uninstall.new.sh uninstall.sh
+    cat uninstall.org.sh >> uninstall.sh
 
     chmod u+x uninstall.sh
 else
