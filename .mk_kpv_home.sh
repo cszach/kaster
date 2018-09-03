@@ -5,7 +5,7 @@
 
 if [[ $fcheck != "0" ]]
 then
-    >&2 echo -e "\033[1;31mERROR\033[0m: Do not execute this script manually."
+    >&2 echo -e "\033[1;31mERROR\033[0m: Do not execute this script manually"
     exit 1
 fi
 
@@ -19,7 +19,7 @@ if [ -n $src_path ]
 then
     mv $src_path/* $kaster_home
 else
-    >&2 echo -e "${red}ERROR${defc}: \$src_path is empty."
+    >&2 echo -e "${red}ERROR${defc}: \$src_path is empty"
     exit 2
 fi
 

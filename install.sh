@@ -41,16 +41,16 @@ echo -e "Installing Kaster Password Vault $kpv_version\n"
 
 exitcode="0"  # This script's exitcode
 
-# **************************************
-# * Set up $kaster_home and $user_home *
-# **************************************
-
 export fcheck="0"
 
-echo "INFO: Creating Kaster's home at $kaster_home"
+# ***********************
+# * Set up $kaster_home *
+# ***********************
 
 if [ -f .mk_kpv_home.sh ]
 then
+    echo "INFO: Creating Kaster's home at $kaster_home"
+
     if [ -w $kaster_home ]
     then
         sh .mk_kpv_home.sh
@@ -64,9 +64,10 @@ else
     exitcode="3"
 fi
 
-# ************************************
-# * Generate .kasterrc in $user_home *
-# ************************************
+# ****************************************
+# * Generate .kasterrc in $user_home and *
+# * Create .kaster/ folder in $user_home *
+# ****************************************
 
 if [ -r $user_home ] && [ -w $user_home ]
 then
@@ -120,12 +121,22 @@ else
     exitcode="5"
 fi
 
-if [ -e undo_install.sh ]
+if [ -f uninstall.sh ]
 then
-    echo "INFO: Making undo_install.sh executable"
-    chmod +x undo_install.sh
+    echo "INFO: Completing uninstall script (./uninstall.sh)"
+
+    echo -e "#!/bin/sh\n#\n\
+# This script can be used to (partly) uninstall Kaster. It moves everything\n\
+# inside Kaster's home (usually /usr/lib/kaster) back to the source folder.\n\
+# Then if you want to completely remove Kaster, you have to manually delete\n\
+# the source folder and other relevant files (such as LICENSE or README.rst).\n\n\
+src_path=\"$src_path\"\nkaster_home=\"$kaster_home\"\nuser_home=\"$user_home\"\n"\
+> uninstall.new.sh
+
+    cat uninstall.sh >> uninstall.new.sh
+    mv uninstall.new.sh uninstall.sh
 else
-    echo -e "${yellow}WARNING${defc}: Couldn't find undo_install.sh"
+    echo -e "${yellow}WARNING${defc}: Couldn't find uninstall script"
 fi
 
 # ********************************
