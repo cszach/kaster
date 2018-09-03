@@ -33,7 +33,9 @@ then
     exit 1
 fi
 
-defc="\033[0m"; yellow="\033[1;33m"; red="\033[0;31m"  # Define colors
+export defc="\033[0m"       # No color
+export yellow="\033[1;33m"  # Yellow
+export red="\033[0;31m"     # Red
 
 echo -e "Installing Kaster Password Vault $kpv_version\n"
 
@@ -55,9 +57,11 @@ then
     else
         eval "sudo -E /bin/sh -c \"sh .mk_kpv_home.sh\""
     fi
+
+    exitcode=$?
 else
     >&2 echo -e "${red}ERROR${defc}: Couldn't find .mk_kpv_home.sh"
-    exitcode="2"
+    exitcode="3"
 fi
 
 # ************************************
