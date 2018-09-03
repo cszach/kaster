@@ -135,6 +135,8 @@ src_path=\"$src_path\"\nkaster_home=\"$kaster_home\"\nuser_home=\"$user_home\"\n
 
     cat uninstall.sh >> uninstall.new.sh
     mv uninstall.new.sh uninstall.sh
+
+    chmod u+x uninstall.sh
 else
     echo -e "${yellow}WARNING${defc}: Couldn't find uninstall script"
 fi
