@@ -25,7 +25,7 @@ fi
 
 # Create default .kasterrc
 
-drcp="$kaster_home/kasterrc"
+drcp="$kaster_home/.kasterrc"
 touch $drcp
 echo -e "# Default Kaster configuration\n# DO NOT EDIT." > $drcp
 echo "program_file_dir = \"$def_kaster_home\"" >> $drcp
