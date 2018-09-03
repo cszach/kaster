@@ -26,7 +26,7 @@ else
     fi
 fi
 
-if [ -e /usr/bin/kaster ]
+if [ -L /usr/bin/kaster ]
 then
     rm /usr/bin/kaster
 else
@@ -35,7 +35,7 @@ fi
 
 if [ -d $user_home/.kaster ]
 then
-    read -p "Remove $user_home/.kaster ? (DON'T if you've saved passwords) [y|n]" rmhp
+    read -p "Remove $user_home/.kaster ? (DON'T if you've saved passwords) [y|n] " rmhp
     rmhp=$(echo -n $rmhp | tr [:upper:] [:lower:])
 
     if [[ $rmhp == "y" ]] || [[ $rmhp == "yes" ]]
